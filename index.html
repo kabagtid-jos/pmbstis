@@ -17,7 +17,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Bahnschrift', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'] },
-                    colors: { primary: '#1e3a8a', secondary: '#f59e0b', dark: '#0f172a' }
+                    colors: { primary: '#1e3a8a', secondary: '#f59e0b', dark: '#0f172a', brandred: '#ef4444' }
                 }
             }
         }
@@ -37,21 +37,24 @@
         input[type="date"] { color-scheme: light; }
         .dark input[type="date"] { color-scheme: dark; }
 
-        /* CSS KHUSUS STEPPER */
+        /* CSS KHUSUS STEPPER BARU */
         .step-item { position: relative; flex: 1; text-align: center; }
-        .step-item:not(:last-child)::after { content: ''; position: absolute; top: 1rem; left: 50%; width: 100%; height: 2px; background-color: #e2e8f0; z-index: 0; }
+        .step-item:not(:last-child)::after { content: ''; position: absolute; top: 1rem; left: 50%; width: 100%; height: 2px; background-color: #cbd5e1; z-index: 0; }
         .dark .step-item:not(:last-child)::after { background-color: #334155; }
-        .step-item.active:not(:last-child)::after { background-color: #1e3a8a; }
-        .dark .step-item.active:not(:last-child)::after { background-color: #3b82f6; }
-        .step-icon { position: relative; z-index: 10; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; font-size: 0.875rem; font-weight: bold; background-color: #f1f5f9; color: #94a3b8; border: 2px solid #e2e8f0; transition: all 0.3s; }
-        .dark .step-icon { background-color: #1e293b; color: #64748b; border-color: #334155; }
-        .step-item.active .step-icon { background-color: #1e3a8a; color: white; border-color: #1e3a8a; }
-        .dark .step-item.active .step-icon { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-        .step-item.completed .step-icon { background-color: #10b981; color: white; border-color: #10b981; }
+        .step-item.active:not(:last-child)::after, .step-item.completed:not(:last-child)::after { background-color: #1e3a8a; }
+        .dark .step-item.active:not(:last-child)::after, .dark .step-item.completed:not(:last-child)::after { background-color: #3b82f6; }
+        
+        .step-icon { position: relative; z-index: 10; display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 0.5rem; font-size: 1rem; background-color: #f1f5f9; color: #94a3b8; transition: all 0.3s; }
+        .dark .step-icon { background-color: #1e293b; color: #64748b; }
+        .step-item.active .step-icon { background-color: #ef4444; color: white; border-radius: 9999px; } /* Warna merah seperti referensi */
+        .step-item.completed .step-icon { background-color: #10b981; color: white; border-radius: 9999px; }
+        .step-title { font-size: 0.65rem; margin-top: 0.5rem; text-transform: uppercase; color: #64748b; }
+        @media (min-width: 768px) { .step-title { font-size: 0.75rem; } }
     </style>
 </head>
 <body class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 min-h-screen flex flex-col transition-colors duration-300">
 
+    <!-- Navbar ... (Sama seperti sebelumnya) ... -->
     <nav class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-14 md:h-16">
@@ -72,7 +75,7 @@
     </nav>
 
     <main class="flex-grow w-full">
-        <!-- ==================== 1. BERANDA ==================== -->
+        <!-- ==================== 1. BERANDA (Sama seperti sebelumnya) ==================== -->
         <section id="view-home" class="view-section active w-full">
             <div class="gradient-bg text-white py-12 md:py-24 px-4 text-center border-b border-primary/20">
                 <h1 class="text-3xl md:text-5xl font-bold mb-3 md:mb-5 tracking-tight text-white drop-shadow-lg">PMB STIS Abu Zairi</h1>
@@ -87,11 +90,11 @@
             </div>
         </section>
 
-        <!-- ==================== 2. FORM PENDAFTARAN ==================== -->
+        <!-- ==================== 2. FORM PENDAFTARAN AWAL (Sama seperti sebelumnya) ==================== -->
         <section id="view-form" class="view-section py-8 md:py-12 px-4">
             <div class="max-w-3xl mx-auto glass-card rounded-2xl p-5 md:p-10">
                 <button onclick="navigate('home')" class="text-sm md:text-base text-slate-500 hover:text-primary mb-4 md:mb-6"><i class="fas fa-arrow-left mr-2"></i>Kembali ke Beranda</button>
-                <h2 class="text-xl md:text-3xl font-bold mb-1 text-primary dark:text-white">Formulir Pendaftaran</h2>
+                <h2 class="text-xl md:text-3xl font-bold mb-1 text-primary dark:text-white">Registrasi Awal</h2>
                 <p class="text-sm md:text-base text-slate-500 mb-6 pb-3 border-b border-slate-200">Jalur Pilihan: <strong id="form-jalur-label" class="text-secondary"></strong></p>
 
                 <form id="form-pmb" onsubmit="submitForm(event)">
@@ -147,7 +150,7 @@
             </div>
         </section>
 
-        <!-- ==================== 3. LOGIN ==================== -->
+        <!-- ==================== 3. LOGIN (Sama seperti sebelumnya) ==================== -->
         <section id="view-login" class="view-section py-12 md:py-24 px-4">
             <div class="max-w-md mx-auto glass-card rounded-2xl p-6 md:p-10">
                 <div class="text-center mb-6">
@@ -175,12 +178,12 @@
             </div>
         </section>
 
-        <!-- ==================== 4. DASHBOARD MAHASISWA (UI BARU) ==================== -->
+        <!-- ==================== 4. DASHBOARD MAHASISWA BARU ==================== -->
         <section id="view-dashboard-maba" class="view-section py-6 md:py-10 px-4">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
+            <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
                 
                 <!-- SIDEBAR KIRI -->
-                <aside class="w-full md:w-72 shrink-0">
+                <aside class="w-full lg:w-72 shrink-0">
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden sticky top-24">
                         <div class="p-6 text-center border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
                             <div class="w-20 h-20 md:w-24 md:h-24 mx-auto bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center text-4xl text-slate-400 mb-4 overflow-hidden shadow-inner border-4 border-white dark:border-slate-600">
@@ -191,57 +194,183 @@
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider" id="maba-side-jalur">-</p>
                         </div>
                         <div class="p-3 space-y-1">
-                            <button onclick="switchMabaTab('status')" id="maba-btn-status" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-primary bg-blue-50 dark:bg-slate-700/50 dark:text-white rounded-xl transition-colors text-left"><i class="fas fa-home w-5 text-center"></i> Status Terkini</button>
-                            <button onclick="switchMabaTab('berkas')" id="maba-btn-berkas" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-folder-open w-5 text-center"></i> Upload Berkas</button>
-                            <button onclick="switchMabaTab('bayar')" id="maba-btn-bayar" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-file-invoice-dollar w-5 text-center"></i> Pembayaran Tagihan</button>
+                            <button onclick="switchMabaTab('status')" id="maba-btn-status" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-primary bg-blue-50 dark:bg-slate-700/50 dark:text-white rounded-xl transition-colors text-left"><i class="fas fa-home w-5 text-center"></i> Beranda Pendaftar</button>
+                            <button onclick="switchMabaTab('biodata')" id="maba-btn-biodata" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-address-card w-5 text-center"></i> Lengkapi Biodata</button>
+                            <button onclick="switchMabaTab('berkas')" id="maba-btn-berkas" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-file-upload w-5 text-center"></i> Upload Berkas</button>
+                            <button onclick="switchMabaTab('bayar')" id="maba-btn-bayar" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-wallet w-5 text-center"></i> Pembayaran</button>
                         </div>
                     </div>
                 </aside>
 
                 <!-- KONTEN UTAMA KANAN -->
-                <div class="flex-1 flex flex-col gap-6">
+                <div class="flex-1 flex flex-col gap-6 w-full overflow-hidden">
                     
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8">
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-1">Selamat Datang, <span id="maba-head-nama" class="text-primary">Mahasiswa</span></h2>
-                        <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-6">Lanjutkan proses pendaftaran dengan melengkapi data dan upload berkas.</p>
+                        <h2 class="text-xl md:text-2xl font-light text-slate-600 dark:text-slate-300 mb-1">Selamat Datang, <span id="maba-head-nama" class="font-bold text-slate-900 dark:text-white">Mahasiswa</span></h2>
+                        <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-8">Lanjutkan proses pendaftaran dengan melengkapi biodata diri Anda secara lengkap dan melakukan upload berkas.</p>
 
-                        <!-- STEPPER TRACKER -->
-                        <div class="flex items-center w-full px-2 mt-4 mb-4" id="maba-stepper">
-                            <div class="step-item completed"><div class="step-icon"><i class="fas fa-check"></i></div><p class="text-[9px] md:text-[10px] font-bold mt-2 uppercase text-slate-700 dark:text-slate-300">Biodata</p></div>
-                            <div class="step-item completed"><div class="step-icon"><i class="fas fa-check"></i></div><p class="text-[9px] md:text-[10px] font-bold mt-2 uppercase text-slate-700 dark:text-slate-300">Prodi</p></div>
-                            <div class="step-item" id="step-berkas"><div class="step-icon"><i class="fas fa-folder"></i></div><p class="text-[9px] md:text-[10px] font-bold mt-2 uppercase text-slate-700 dark:text-slate-300">Berkas</p></div>
-                            <div class="step-item" id="step-bayar"><div class="step-icon"><i class="fas fa-wallet"></i></div><p class="text-[9px] md:text-[10px] font-bold mt-2 uppercase text-slate-700 dark:text-slate-300">Bayar</p></div>
-                            <div class="step-item" id="step-final"><div class="step-icon"><i class="fas fa-flag-checkered"></i></div><p class="text-[9px] md:text-[10px] font-bold mt-2 uppercase text-slate-700 dark:text-slate-300">Finalisasi</p></div>
+                        <!-- STEPPER TRACKER SESUAI GAMBAR REFERENSI -->
+                        <div class="flex items-center w-full px-1 md:px-4 mb-4" id="maba-stepper">
+                            <div class="step-item active" id="step-1"><div class="step-icon"><i class="fas fa-user"></i></div><p class="step-title font-bold">Biodata<br>Pendaftar</p></div>
+                            <div class="step-item" id="step-2"><div class="step-icon"><i class="fas fa-image"></i></div><p class="step-title">Upload<br>Foto</p></div>
+                            <div class="step-item" id="step-3"><div class="step-icon"><i class="fas fa-list-alt"></i></div><p class="step-title">Program<br>Studi</p></div>
+                            <div class="step-item" id="step-4"><div class="step-icon"><i class="fas fa-newspaper"></i></div><p class="step-title">Upload<br>Berkas</p></div>
+                            <div class="step-item" id="step-5"><div class="step-icon"><i class="fas fa-money-bill-wave"></i></div><p class="step-title">Pembayaran</p></div>
+                            <div class="step-item" id="step-6"><div class="step-icon"><i class="fas fa-check"></i></div><p class="step-title">Finalisasi</p></div>
                         </div>
                     </div>
 
-                    <!-- TAB: STATUS TERKINI -->
+                    <!-- TAB 1: STATUS TERKINI / BERANDA -->
                     <div id="maba-content-status" class="space-y-6">
-                        <div id="maba-alert-container"></div>
+                        <div id="maba-alert-container">
+                            <!-- Alert akan diinjeksi via JS -->
+                        </div>
                         
-                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
-                            <div class="bg-slate-50 dark:bg-slate-700/50 px-5 py-3 border-b border-slate-100 dark:border-slate-700">
-                                <h3 class="font-bold text-sm text-slate-800 dark:text-white">Informasi Pendaftaran</h3>
+                        <div class="bg-blue-50/50 dark:bg-slate-800 rounded-xl border border-blue-100 dark:border-slate-700 p-4">
+                            <p class="text-xs text-blue-800 dark:text-blue-300 font-medium">Contact Person PMB: <span class="font-bold">Panitia STIS</span></p>
+                        </div>
+
+                        <!-- TABEL RANGKUMAN SESUAI REFERENSI -->
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-0 overflow-hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-3 p-5 gap-4 border-b border-slate-100 dark:border-slate-700 text-xs md:text-sm">
+                                <div><p class="text-slate-500 dark:text-slate-400 mb-0.5">Nomor Pendaftar</p><p class="font-bold text-slate-900 dark:text-white" id="sum-nik">-</p></div>
+                                <div><p class="text-slate-500 dark:text-slate-400 mb-0.5">Nama Lengkap</p><p class="font-bold text-slate-900 dark:text-white" id="sum-nama">-</p></div>
+                                <div><p class="text-slate-500 dark:text-slate-400 mb-0.5">Tanggal Daftar</p><p class="font-bold text-slate-900 dark:text-white" id="sum-tgl">-</p></div>
+                                
+                                <div><p class="text-slate-500 dark:text-slate-400 mb-0.5 mt-2">Periode Pendaftaran</p><p class="font-bold text-slate-900 dark:text-white" id="sum-periode">-</p></div>
+                                <div><p class="text-slate-500 dark:text-slate-400 mb-0.5 mt-2">Jalur</p><p class="font-bold text-slate-900 dark:text-white" id="sum-jalur">-</p></div>
+                                <div><p class="text-slate-500 dark:text-slate-400 mb-0.5 mt-2">Sistem Kuliah</p><p class="font-bold text-slate-900 dark:text-white" id="sum-sistem">Reguler (01)</p></div>
+                                
+                                <div class="col-span-1 md:col-span-3 mt-2"><p class="text-slate-500 dark:text-slate-400 mb-0.5">Pilihan 1</p><p class="font-bold text-slate-900 dark:text-white" id="sum-prodi">-</p></div>
                             </div>
-                            <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
-                                <div><p class="text-slate-500 dark:text-slate-400 mb-1">Nomor Pendaftar / NIK</p><p class="font-bold text-slate-900 dark:text-white" id="info-nik">-</p></div>
-                                <div><p class="text-slate-500 dark:text-slate-400 mb-1">Nama Lengkap</p><p class="font-bold text-slate-900 dark:text-white" id="info-nama">-</p></div>
-                                <div><p class="text-slate-500 dark:text-slate-400 mb-1">Pilihan Program Studi</p><p class="font-bold text-slate-900 dark:text-white" id="info-prodi">-</p></div>
-                                <div><p class="text-slate-500 dark:text-slate-400 mb-1">Jalur Pendaftaran</p><p class="font-bold text-slate-900 dark:text-white" id="info-jalur">-</p></div>
-                            </div>
-                            <div class="border-t border-slate-100 dark:border-slate-700 p-0">
+                            <div class="p-0">
                                 <table class="w-full text-left text-xs md:text-sm">
-                                    <tr class="border-b border-slate-100 dark:border-slate-700"><td class="py-3 px-5 font-medium text-slate-600 dark:text-slate-300 w-1/2">Status Pembayaran</td><td class="py-3 px-5 font-bold" id="info-status-bayar">-</td></tr>
-                                    <tr class="border-b border-slate-100 dark:border-slate-700"><td class="py-3 px-5 font-medium text-slate-600 dark:text-slate-300">Status Berkas</td><td class="py-3 px-5 font-bold" id="info-status-berkas">-</td></tr>
+                                    <tr class="border-b border-slate-100 dark:border-slate-700"><td class="py-3 px-5 font-bold text-slate-700 dark:text-slate-300 w-1/3 md:w-1/4">Status Pembayaran</td><td class="py-3 px-5 font-medium" id="sum-stat-bayar">-</td></tr>
+                                    <tr class="border-b border-slate-100 dark:border-slate-700"><td class="py-3 px-5 font-bold text-slate-700 dark:text-slate-300">Seleksi Berkas</td><td class="py-3 px-5 font-medium" id="sum-stat-berkas">-</td></tr>
+                                    <tr class="border-b border-slate-100 dark:border-slate-700"><td class="py-3 px-5 font-bold text-slate-700 dark:text-slate-300">Seleksi Tes & Kelulusan</td><td class="py-3 px-5 font-medium text-brandred dark:text-red-400">Belum ditentukan</td></tr>
+                                    <tr class="border-b border-slate-100 dark:border-slate-700"><td class="py-3 px-5 font-bold text-slate-700 dark:text-slate-300">Diterima pada Prodi</td><td class="py-3 px-5 font-medium text-brandred dark:text-red-400">Belum ditentukan</td></tr>
+                                    <tr><td class="py-3 px-5 font-bold text-slate-700 dark:text-slate-300">Berkas Tidak Valid</td><td class="py-3 px-5 font-medium text-slate-500" id="sum-stat-ket">0 Berkas tidak lolos validasi</td></tr>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <!-- TAB: UPLOAD BERKAS -->
+                    <!-- TAB 2: PENGISIAN BIODATA -->
+                    <div id="maba-content-biodata" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-0 overflow-hidden">
+                        
+                        <div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 overflow-x-auto">
+                            <button class="px-6 py-4 border-b-2 border-primary text-primary dark:text-blue-400 font-bold text-sm whitespace-nowrap transition" id="tab-bio-pribadi" onclick="switchFormBioTab('pribadi')">Data Pribadi</button>
+                            <button class="px-6 py-4 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 font-medium text-sm whitespace-nowrap transition" id="tab-bio-ortu" onclick="switchFormBioTab('ortu')">Orang Tua</button>
+                        </div>
+
+                        <div class="p-5 md:p-8">
+                            <form id="form-lengkap-biodata" onsubmit="mabaSubmitBiodata(event)">
+                                
+                                <!-- FORM DATA PRIBADI -->
+                                <div id="form-sect-pribadi" class="space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-6">
+                                        <!-- readonly fields -->
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">Nomor Pendaftar / NIK</label><input type="text" id="bio-nik" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">Nama Lengkap</label><input type="text" id="bio-nama" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">Tempat Lahir</label><input type="text" id="bio-tempat" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">Tanggal Lahir</label><input type="text" id="bio-tgl" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">Jenis Kelamin</label><input type="text" id="bio-jk" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        
+                                        <!-- Editable fields -->
+                                        <div>
+                                            <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Agama <span class="text-red-500">*</span></label>
+                                            <select id="bio-agama" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary transition dark:text-white">
+                                                <option value="" class="dark:text-slate-800">-- Pilih Agama --</option>
+                                                <option value="Islam" class="dark:text-slate-800">Islam</option><option value="Kristen" class="dark:text-slate-800">Kristen</option>
+                                                <option value="Katolik" class="dark:text-slate-800">Katolik</option><option value="Hindu" class="dark:text-slate-800">Hindu</option>
+                                                <option value="Buddha" class="dark:text-slate-800">Buddha</option><option value="Konghucu" class="dark:text-slate-800">Konghucu</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <h4 class="text-lg font-light text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2 mt-8 mb-4">Data Lainnya</h4>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-6">
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">NISN <span class="text-red-500">*</span></label><input type="text" id="bio-nisn" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">NPWP</label><input type="text" id="bio-npwp" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kewarganegaraan <span class="text-red-500">*</span></label><input type="text" id="bio-kwn" required value="Warga Negara Indonesia" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        
+                                        <!-- Alamat -->
+                                        <div class="col-span-full md:col-span-1"><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Jalan / Alamat Lengkap <span class="text-red-500">*</span></label><input type="text" id="bio-jalan" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Dusun</label><input type="text" id="bio-dusun" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">RT <span class="text-red-500">*</span></label><input type="text" id="bio-rt" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                            <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">RW <span class="text-red-500">*</span></label><input type="text" id="bio-rw" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        </div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kelurahan / Desa <span class="text-red-500">*</span></label><input type="text" id="bio-kel" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kecamatan <span class="text-red-500">*</span></label><input type="text" id="bio-kec" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kodepos <span class="text-red-500">*</span></label><input type="text" id="bio-pos" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        
+                                        <!-- Kontak dll -->
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Telepon Rumah</label><input type="text" id="bio-telp" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">HP (No WhatsApp) *</label><input type="text" id="bio-hp" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-600 dark:text-slate-400">Email *</label><input type="text" id="bio-email" readonly class="w-full border-b border-slate-200 dark:border-slate-700 bg-transparent py-1.5 text-sm font-medium outline-none text-slate-500"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Jenis Tinggal</label><input type="text" id="bio-tinggal" placeholder="Contoh: Bersama Orang Tua / Kos" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Asal SMA/SMK <span class="text-red-500">*</span></label><input type="text" id="bio-sekolah" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
+                                    </div>
+                                    <div class="mt-6 flex justify-end">
+                                        <button type="button" onclick="switchFormBioTab('ortu')" class="bg-slate-800 hover:bg-slate-900 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-6 py-2.5 rounded shadow text-sm font-bold transition">Selanjutnya: Orang Tua <i class="fas fa-arrow-right ml-2"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- FORM ORANG TUA -->
+                                <div id="form-sect-ortu" class="hidden space-y-8">
+                                    
+                                    <div>
+                                        <h4 class="text-lg font-light text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">Data Ayah</h4>
+                                        <div class="space-y-4 max-w-3xl">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">NIK Ayah <span class="text-red-500">*</span></label><div class="col-span-2"><input type="text" id="ortu-nik-ayah" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Nama Ayah <span class="text-red-500">*</span></label><div class="col-span-2"><input type="text" id="ortu-nama-ayah" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Tgl Lahir Ayah</label><div class="col-span-2"><input type="date" id="ortu-tgl-ayah" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Pendidikan Ayah</label><div class="col-span-2"><input type="text" id="ortu-pend-ayah" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Pekerjaan Ayah</label><div class="col-span-2"><input type="text" id="ortu-pek-ayah" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Penghasilan Ayah</label><div class="col-span-2"><input type="text" id="ortu-peng-ayah" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="text-lg font-light text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">Data Ibu</h4>
+                                        <div class="space-y-4 max-w-3xl">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">NIK Ibu <span class="text-red-500">*</span></label><div class="col-span-2"><input type="text" id="ortu-nik-ibu" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Nama Ibu Kandung <span class="text-red-500">*</span></label><div class="col-span-2"><input type="text" id="ortu-nama-ibu" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Tgl Lahir Ibu</label><div class="col-span-2"><input type="date" id="ortu-tgl-ibu" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Pendidikan Ibu</label><div class="col-span-2"><input type="text" id="ortu-pend-ibu" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Pekerjaan Ibu</label><div class="col-span-2"><input type="text" id="ortu-pek-ibu" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Penghasilan Ibu</label><div class="col-span-2"><input type="text" id="ortu-peng-ibu" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="text-lg font-light text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2 mb-4">Data Wali <span class="text-xs text-slate-400 italic">(Isi jika ada)</span></h4>
+                                        <div class="space-y-4 max-w-3xl">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Nama Wali</label><div class="col-span-2"><input type="text" id="ortu-nama-wali" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Tgl Lahir Wali</label><div class="col-span-2"><input type="date" id="ortu-tgl-wali" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Pendidikan Wali</label><div class="col-span-2"><input type="text" id="ortu-pend-wali" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Pekerjaan Wali</label><div class="col-span-2"><input type="text" id="ortu-pek-wali" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2"><label class="text-sm font-bold text-slate-700 dark:text-slate-300 md:mt-1">Penghasilan Wali</label><div class="col-span-2"><input type="text" id="ortu-peng-wali" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1 text-sm outline-none focus:border-primary dark:text-white transition"></div></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-8 flex justify-between items-center pt-4 border-t border-slate-200 dark:border-slate-700">
+                                        <button type="button" onclick="switchFormBioTab('pribadi')" class="text-slate-500 hover:text-primary dark:hover:text-blue-400 text-sm font-bold transition"><i class="fas fa-arrow-left mr-2"></i> Kembali</button>
+                                        <button type="submit" id="btn-save-biodata" class="bg-primary hover:bg-blue-800 text-white px-8 py-3 rounded-xl shadow-lg text-sm font-bold transition"><i class="fas fa-save mr-2"></i> Simpan Finalisasi Data</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: UPLOAD BERKAS -->
                     <div id="maba-content-berkas" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 relative">
-                        <div id="maba-berkas-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
-                            <div id="maba-berkas-overlay-msg" class="bg-white dark:bg-slate-700 p-3 md:p-4 rounded-xl shadow-lg font-bold text-green-600 dark:text-green-400 border border-green-100 dark:border-green-800 text-sm md:text-base"><i class="fas fa-check-circle mr-2 text-xl"></i> Berkas Sudah Lengkap</div>
+                        <div id="maba-berkas-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl p-4 text-center">
+                            <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-3 border-2 border-slate-200 dark:border-slate-600 shadow-sm"><i class="fas fa-lock text-2xl text-slate-400"></i></div>
+                            <p class="font-bold text-slate-800 dark:text-white text-base">Akses Terkunci</p>
+                            <p class="text-xs text-slate-500 mt-1 max-w-xs" id="maba-berkas-overlay-msg">Silakan lengkapi Biodata Pendaftar terlebih dahulu.</p>
                         </div>
                         <h3 class="text-lg md:text-xl font-bold mb-2 dark:text-white flex items-center"><i class="fas fa-folder-open text-primary mr-3 text-2xl"></i> Kelengkapan Berkas</h3>
                         <p class="text-[10px] md:text-xs text-slate-500 mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">Wajib mengunggah dokumen scan (PDF) di bawah ini agar dapat melangkah ke tahap pembayaran.</p>
@@ -261,7 +390,7 @@
                         </div>
                     </div>
 
-                    <!-- TAB: PEMBAYARAN -->
+                    <!-- TAB 4: PEMBAYARAN -->
                     <div id="maba-content-bayar" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 flex flex-col relative">
                         <div id="maba-bayar-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-md z-10 flex flex-col items-center justify-center rounded-2xl p-4 text-center">
                             <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-3 border-2 border-slate-200 dark:border-slate-600 shadow-sm"><i class="fas fa-lock text-2xl text-slate-400"></i></div>
@@ -278,7 +407,6 @@
                             <h4 class="text-3xl font-bold text-secondary relative z-10 tracking-tight" id="maba-tagihan">Rp ---</h4>
                             
                             <div class="mt-6 space-y-3 relative z-10" id="maba-list-bank">
-                                <!-- Area ini akan dirender secara dinamis melalui JavaScript -->
                                 <div class="p-3 bg-white/10 rounded-xl border border-white/10 text-center"><p class="text-sm text-white"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data bank...</p></div>
                             </div>
                         </div>
@@ -296,7 +424,7 @@
             </div>
         </section>
 
-        <!-- ==================== 5. DASHBOARD ADMIN ==================== -->
+        <!-- ==================== 5. DASHBOARD ADMIN (Sama seperti sebelumnya) ==================== -->
         <section id="view-dashboard-admin" class="view-section py-8 md:py-12 px-4 pb-24 md:pb-12">
             <div class="max-w-7xl mx-auto">
                 
@@ -400,27 +528,16 @@
                                     <button type="button" onclick="addBankSetting()" class="text-xs bg-primary hover:bg-blue-800 text-white px-3 py-1.5 rounded shadow"><i class="fas fa-plus mr-1"></i> Tambah Bank</button>
                                 </div>
                                 <div id="bank-settings-container" class="space-y-3 max-h-80 overflow-y-auto pr-1">
-                                    <!-- Bank list di-render via JS -->
                                 </div>
                             </div>
 
                             <div class="col-span-full space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
                                 <h4 class="font-bold text-green-600 dark:text-green-400 border-b border-slate-200 dark:border-slate-600 pb-2"><i class="fab fa-whatsapp mr-2"></i>Integrasi WhatsApp (Fonnte)</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Status Fonnte</label>
-                                        <select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"><option value="Nonaktif">Nonaktif</option><option value="Aktif">Aktif</option></select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Token API Fonnte</label>
-                                        <input type="text" id="set-fonnte-token" placeholder="Masukkan Token API" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">No WA Admin Target</label>
-                                        <input type="text" id="set-fonnte-target" placeholder="Contoh: 08123456789" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary">
-                                    </div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Status Fonnte</label><select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"><option value="Nonaktif">Nonaktif</option><option value="Aktif">Aktif</option></select></div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Token API Fonnte</label><input type="text" id="set-fonnte-token" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">No WA Target</label><input type="text" id="set-fonnte-target" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
                                 </div>
-                                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-2">*Dapatkan token di <a href="https://md.fonnte.com" target="_blank" class="text-blue-500 underline">md.fonnte.com</a>. Jika Aktif, sistem otomatis mengirim pesan ke Nomor WA Admin setiap ada pendaftar baru masuk ke database.</p>
                             </div>
 
                             <div class="col-span-full space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
@@ -439,7 +556,7 @@
 
     </main>
 
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 mt-auto transition-colors mb-16 md:mb-0">
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 mt-auto transition-colors mb-16 lg:mb-0">
         <div class="text-center text-slate-500 dark:text-slate-500 text-xs md:text-sm font-medium">
             &copy; 2026 PMB STIS Abu Zairi. All rights reserved.
         </div>
@@ -459,7 +576,6 @@
             <tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr>
             <tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr>
         </table>
-        
         <div style="margin-top: 50px; float: right; text-align: center; width: 250px; font-size: 14px;">
             <p style="margin: 0;">Bondowoso, <span id="print-tanggal"></span></p>
             <p style="margin: 0;">Hormat Kami,</p>
@@ -474,13 +590,10 @@
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbw9BK3BDHLZGyMITPpkxdgGLivac69XyRrxDLHgb2MYlEk4aAEG0UosoUd0Lsv1Q3Pq/exec'; 
         
         async function fetchAPI(action, payload = {}) {
-            const response = await fetch(`${GAS_API_URL}?action=${action}`, {
-                method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload)
-            });
+            const response = await fetch(`${GAS_API_URL}?action=${action}`, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
             return await response.json();
         }
 
-        // Helper fungsi konversi file ke base64
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -535,17 +648,25 @@
         }
 
         function switchMabaTab(tabName) {
-            ['status', 'berkas', 'bayar'].forEach(t => {
+            ['status', 'biodata', 'berkas', 'bayar'].forEach(t => {
                 document.getElementById(`maba-content-${t}`).classList.add('hidden');
                 let btn = document.getElementById(`maba-btn-${t}`); 
-                if(btn) {
-                    btn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left";
-                }
+                if(btn) btn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left";
             });
             document.getElementById(`maba-content-${tabName}`).classList.remove('hidden');
             let activeBtn = document.getElementById(`maba-btn-${tabName}`); 
-            if(activeBtn) {
-                activeBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-primary bg-blue-50 dark:bg-slate-700/50 dark:text-white rounded-xl transition-colors text-left";
+            if(activeBtn) activeBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-primary bg-blue-50 dark:bg-slate-700/50 dark:text-white rounded-xl transition-colors text-left";
+        }
+
+        function switchFormBioTab(tab) {
+            if(tab === 'pribadi') {
+                document.getElementById('form-sect-pribadi').classList.remove('hidden'); document.getElementById('form-sect-ortu').classList.add('hidden');
+                document.getElementById('tab-bio-pribadi').className = "px-6 py-4 border-b-2 border-primary text-primary dark:text-blue-400 font-bold text-sm whitespace-nowrap transition";
+                document.getElementById('tab-bio-ortu').className = "px-6 py-4 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 font-medium text-sm whitespace-nowrap transition";
+            } else {
+                document.getElementById('form-sect-ortu').classList.remove('hidden'); document.getElementById('form-sect-pribadi').classList.add('hidden');
+                document.getElementById('tab-bio-ortu').className = "px-6 py-4 border-b-2 border-primary text-primary dark:text-blue-400 font-bold text-sm whitespace-nowrap transition";
+                document.getElementById('tab-bio-pribadi').className = "px-6 py-4 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 font-medium text-sm whitespace-nowrap transition";
             }
         }
 
@@ -607,7 +728,6 @@
 
             let data = { nik: nikVal, nama: document.getElementById('inp-nama').value, tempatLahir: document.getElementById('inp-tempat').value, tglLahir: tglVal, jk: document.getElementById('inp-jk').value, hp: hpVal, email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama };
             submittedData = data; 
-            
             let payloadData = { ...data, nik: "'" + nikVal, hp: "'" + hpVal, tglLahir: "'" + tglVal };
 
             try {
@@ -624,10 +744,10 @@
             let userHtml = `<div class="bg-blue-50/50 dark:bg-blue-900/20 p-2.5 md:p-3 rounded-lg mt-2.5 text-left border border-blue-100 dark:border-blue-800/50 transition-colors"><p class="text-[11px] md:text-xs mb-1.5 text-primary dark:text-blue-300 font-semibold">Harap simpan informasi akun ini:</p><table class="w-full text-[11px] md:text-xs dark:text-slate-200"><tr><td class="font-medium w-1/3 py-0.5">Username</td><td class="py-0.5">: <span class="font-bold">${submittedData.hp}</span></td></tr><tr><td class="font-medium py-0.5">Password</td><td class="py-0.5">: <span class="font-bold">${submittedData.tglLahir}</span></td></tr></table></div>`;
             Swal.fire({
                 icon: 'success', title: '<span class="text-base md:text-lg font-bold dark:text-white tracking-tight">Pendaftaran Berhasil!</span>',
-                html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Data Anda telah tersimpan dengan aman di sistem.</div>` + userHtml,
+                html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Silakan login untuk Melengkapi Biodata dan Dokumen Anda.</div>` + userHtml,
                 background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
                 showDenyButton: true, showCancelButton: false,
-                confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login', denyButtonText: '<i class="fas fa-print"></i> Cetak',
+                confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login & Lengkapi', denyButtonText: '<i class="fas fa-print"></i> Cetak',
                 confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', allowOutsideClick: false,
                 customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700', actions: 'flex-wrap' }
             }).then((result) => {
@@ -667,7 +787,7 @@
                 btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
                 if(res.success) {
                     if(res.role === 'admin') { adminCreds = {user: user, pass: pass}; lastAdminData = res.data; switchAdminTab('ringkasan'); renderAdminDashboard(res.data); populateAdminSettingsForm(res.data.settings); navigate('dashboard-admin'); } 
-                    else { renderMabaDashboard(res.data); navigate('dashboard-maba'); switchMabaTab('status'); }
+                    else { renderMabaDashboard(res.data); navigate('dashboard-maba'); }
                 } else { Swal.fire({ title: 'Login Gagal', text: res.message, icon: 'error' }); }
             } catch(err) { btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false; Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database.', icon: 'error' }); }
         }
@@ -675,22 +795,26 @@
         function renderMabaDashboard(data) {
             currentMabaData = data;
             
-            // Populasikan Profil Sidebar & Header
+            // SIDEBAR
             document.getElementById('maba-side-nama').innerText = data.nama || '-';
             document.getElementById('maba-head-nama').innerText = data.nama || '-';
             document.getElementById('maba-side-nik').innerText = data.nik || '-';
             document.getElementById('maba-side-jalur').innerText = data.jalur || '-';
             
-            // Populasikan Detail Tabel
-            document.getElementById('info-nik').innerText = data.nik || '-';
-            document.getElementById('info-nama').innerText = data.nama || '-';
-            document.getElementById('info-prodi').innerText = data.prodi || '-';
-            document.getElementById('info-jalur').innerText = data.jalur || '-';
+            // SUMMARY TABLE
+            let d = new Date(data.timestamp);
+            document.getElementById('sum-nik').innerText = data.nik || '-';
+            document.getElementById('sum-nama').innerText = data.nama || '-';
+            document.getElementById('sum-tgl').innerText = !isNaN(d.getTime()) ? d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : '-';
+            document.getElementById('sum-periode').innerText = appData && appData.semester ? appData.semester : '-';
+            document.getElementById('sum-jalur').innerText = data.jalur || '-';
+            document.getElementById('sum-prodi').innerText = data.prodi || '-';
 
+            // TAGIHAN BAYAR
             let jData = appData && appData.jalur ? appData.jalur.find(j => j.nama === data.jalur) : null;
             if(jData) document.getElementById('maba-tagihan').innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(jData.reg);
 
-            // Merender Daftar Rekening Bank Dinamis
+            // BANK RENDER
             let bankHtml = '<p class="text-[10px] text-slate-300 mb-2 uppercase tracking-wider">Pilihan Rekening Pembayaran:</p>';
             if (appData && appData.banks && appData.banks.length > 0) {
                 appData.banks.forEach(b => {
@@ -703,174 +827,216 @@
                             <p class="text-base md:text-lg font-bold text-white">${b.nama} - <span class="tracking-wider">${b.rekening}</span></p>
                             <p class="text-[10px] md:text-xs text-slate-300">${b.atasNama}</p>
                         </div>
-                        <div class="shrink-0 ml-3 flex items-center justify-center">
-                            ${logoEl}
-                        </div>
+                        <div class="shrink-0 ml-3 flex items-center justify-center">${logoEl}</div>
                     </div>`;
                 });
-            } else {
-                 bankHtml += `<div class="p-3 bg-white/10 rounded-xl border border-white/10 text-center"><p class="text-sm text-white">Belum ada data rekening yang dikonfigurasi.</p></div>`;
-            }
+            } else { bankHtml += `<div class="p-3 bg-white/10 rounded-xl border border-white/10 text-center"><p class="text-sm text-white">Belum ada data rekening yang dikonfigurasi.</p></div>`; }
             document.getElementById('maba-list-bank').innerHTML = bankHtml;
 
+            // POPULATE BIODATA FORM (READONLY + EDITABLE)
+            document.getElementById('bio-nik').value = data.nik || ''; document.getElementById('bio-nama').value = data.nama || '';
+            document.getElementById('bio-tempat').value = data.tempatLahir || '';
+            // Tgl parsing for display
+            let tglStr = data.tglLahir;
+            if(tglStr && tglStr.length === 8 && !tglStr.includes('-')) {
+                tglStr = `${tglStr.substring(0,2)} ${getMonthName(tglStr.substring(2,4))} ${tglStr.substring(4)}`;
+            }
+            document.getElementById('bio-tgl').value = tglStr || '';
+            document.getElementById('bio-jk').value = data.jk || '';
+            document.getElementById('bio-hp').value = data.hp || ''; document.getElementById('bio-email').value = data.email || '';
+
+            // Pre-fill editable fields if exists
+            document.getElementById('bio-agama').value = data['Agama'] || ''; document.getElementById('bio-nisn').value = data['NISN'] || '';
+            document.getElementById('bio-npwp').value = data['NPWP'] || ''; document.getElementById('bio-kwn').value = data['Kewarganegaraan'] || 'Warga Negara Indonesia';
+            document.getElementById('bio-jalan').value = data['Jalan'] || ''; document.getElementById('bio-dusun').value = data['Dusun'] || '';
+            document.getElementById('bio-rt').value = data['RT'] || ''; document.getElementById('bio-rw').value = data['RW'] || '';
+            document.getElementById('bio-kel').value = data['Kelurahan'] || ''; document.getElementById('bio-kec').value = data['Kecamatan'] || '';
+            document.getElementById('bio-pos').value = data['Kodepos'] || ''; document.getElementById('bio-telp').value = data['Telepon'] || '';
+            document.getElementById('bio-tinggal').value = data['Jenis Tinggal'] || ''; document.getElementById('bio-sekolah').value = data['Asal SMA/SMK'] || '';
+
+            document.getElementById('ortu-nik-ayah').value = data['NIK Ayah'] || ''; document.getElementById('ortu-nama-ayah').value = data['Nama Ayah'] || '';
+            document.getElementById('ortu-tgl-ayah').value = parseDateForInput(data['Tgl Lahir Ayah']); document.getElementById('ortu-pend-ayah').value = data['Pendidikan Ayah'] || '';
+            document.getElementById('ortu-pek-ayah').value = data['Pekerjaan Ayah'] || ''; document.getElementById('ortu-peng-ayah').value = data['Penghasilan Ayah'] || '';
+
+            document.getElementById('ortu-nik-ibu').value = data['NIK Ibu'] || ''; document.getElementById('ortu-nama-ibu').value = data['Nama Ibu'] || '';
+            document.getElementById('ortu-tgl-ibu').value = parseDateForInput(data['Tgl Lahir Ibu']); document.getElementById('ortu-pend-ibu').value = data['Pendidikan Ibu'] || '';
+            document.getElementById('ortu-pek-ibu').value = data['Pekerjaan Ibu'] || ''; document.getElementById('ortu-peng-ibu').value = data['Penghasilan Ibu'] || '';
+
+            document.getElementById('ortu-nama-wali').value = data['Nama Wali'] || ''; document.getElementById('ortu-tgl-wali').value = parseDateForInput(data['Tgl Lahir Wali']);
+            document.getElementById('ortu-pend-wali').value = data['Pendidikan Wali'] || ''; document.getElementById('ortu-pek-wali').value = data['Pekerjaan Wali'] || ''; document.getElementById('ortu-peng-wali').value = data['Penghasilan Wali'] || '';
+
+            // ALUR DAN PERIZINAN BERDASARKAN KELENGKAPAN DATA
             const alertC = document.getElementById('maba-alert-container'); 
             const berkasOvl = document.getElementById('maba-berkas-overlay'); 
             const bayarOvl = document.getElementById('maba-bayar-overlay'); 
-            const berkasAct = document.getElementById('berkas-action'); 
-            const bayarAct = document.getElementById('bayar-action');
+            const sumBayar = document.getElementById('sum-stat-bayar');
+            const sumBerkas = document.getElementById('sum-stat-berkas');
+
+            // Reset Stepper Elements
+            for(let i=1; i<=6; i++) document.getElementById(`step-${i}`).className = "step-item";
+
+            let isBiodataLengkap = data['NISN'] ? true : false; // Proxy untuk cek biodata
             
-            const infoBayar = document.getElementById('info-status-bayar');
-            const infoBerkas = document.getElementById('info-status-berkas');
-
-            const stepBerkas = document.getElementById('step-berkas');
-            const stepBayar = document.getElementById('step-bayar');
-            const stepFinal = document.getElementById('step-final');
-
-            alertC.innerHTML = ''; 
-            berkasOvl.classList.add('hidden'); bayarOvl.classList.add('hidden'); 
-            berkasAct.classList.remove('hidden'); bayarAct.classList.remove('hidden');
-            
-            // Reset Stepper
-            stepBerkas.className = "step-item"; stepBayar.className = "step-item"; stepFinal.className = "step-item";
-
-            if (data.statusBayar === 'Lunas' || data.statusVerifikasi === 'Terverifikasi') {
-                alertC.innerHTML = `<div class="bg-green-50 border border-green-200 p-4 rounded-xl text-green-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-check-circle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Pendaftaran Telah Selesai</h4><p class="text-xs mt-1">Selamat! Finalisasi data berhasil dan Anda telah resmi terdaftar sebagai mahasiswa baru.</p></div></div>`;
-                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); bayarAct.classList.add('hidden');
-                document.getElementById('maba-berkas-overlay-msg').innerHTML = `<i class="fas fa-check-circle mr-2 text-xl"></i> Berkas Tervalidasi`;
-                document.getElementById('maba-bayar-overlay').innerHTML = `<div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-3 border-2 border-green-200 dark:border-green-800 shadow-sm"><i class="fas fa-check text-2xl text-green-500"></i></div><p class="font-bold text-slate-800 dark:text-white text-base">Pembayaran Lunas</p><p class="text-xs text-slate-500 mt-1 max-w-xs">Proses pendaftaran Anda telah disetujui sepenuhnya oleh Admin.</p>`;
+            if (!isBiodataLengkap) {
+                // Skenario 1: Baru daftar, belum isi biodata
+                switchMabaTab('status');
+                alertC.innerHTML = `<div class="bg-red-50/80 border border-red-200 p-4 rounded-xl text-red-700 font-medium shadow-sm mb-6"><h4 class="font-bold text-sm">Anda belum melakukan finalisasi data.</h4><p class="text-xs mt-1">Setelah <span class="font-bold">melengkapi biodata diri</span> dan <span class="font-bold">upload berkas</span>, segera lakukan finalisasi data untuk dapat mengikuti tahap selanjutnya.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diseleksi</span>';
                 
-                infoBayar.innerHTML = '<span class="text-green-600">Lunas</span>';
-                infoBerkas.innerHTML = '<span class="text-green-600">Terverifikasi Admin</span>';
-                
-                stepBerkas.className = "step-item completed"; stepBayar.className = "step-item completed"; stepFinal.className = "step-item completed";
+                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden');
+                document.getElementById('step-1').className = "step-item active"; // Biodata aktif
+                document.getElementById('step-3').className = "step-item completed"; // Prodi dianggap selesai saat reg awal
             } 
+            else if (isBiodataLengkap && data.statusVerifikasi === 'Belum Verifikasi') {
+                // Skenario 2: Biodata selesai, belum upload berkas PDF
+                switchMabaTab('berkas'); // Force ke tab berkas
+                alertC.innerHTML = `<div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-700 font-medium shadow-sm mb-6"><h4 class="font-bold text-sm">Upload Berkas Scan.</h4><p class="text-xs mt-1">Biodata tersimpan. Selanjutnya silakan unggah scan Ijazah & KK Anda di menu Upload Berkas.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diseleksi</span>';
+                
+                berkasOvl.classList.add('hidden'); bayarOvl.classList.remove('hidden');
+                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed";
+                document.getElementById('step-4').className = "step-item active";
+            }
             else if (data.statusBayar === 'Ditolak' || data.statusVerifikasi === 'Ditolak') {
-                alertC.innerHTML = `<div class="bg-red-50 border border-red-200 p-4 rounded-xl text-red-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-times-circle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Pendaftaran Ditolak / Perlu Perbaikan</h4><p class="text-xs mt-1">Catatan Admin: <b>${data.keterangan || 'Berkas tidak valid / Bukti transfer salah'}</b>. Silakan unggah ulang berkas atau bukti pembayaran Anda.</p></div></div>`;
-                berkasOvl.classList.add('hidden'); bayarOvl.classList.add('hidden'); 
-                berkasAct.classList.remove('hidden'); bayarAct.classList.remove('hidden');
+                // Skenario: Ditolak Admin
+                switchMabaTab('status');
+                alertC.innerHTML = `<div class="bg-red-50 border border-red-200 p-4 rounded-xl text-red-700 font-medium shadow-sm mb-6"><h4 class="font-bold text-sm"><i class="fas fa-times-circle mr-1"></i> Berkas/Pembayaran Ditolak</h4><p class="text-xs mt-1">Catatan Admin: <b>${data.keterangan || 'Harap perbaiki dokumen.'}</b></p></div>`;
+                document.getElementById('sum-stat-ket').innerHTML = '<span class="text-brandred font-bold">1 Berkas tidak lolos validasi</span>';
+                sumBayar.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>'; sumBerkas.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>';
                 
-                infoBayar.innerHTML = '<span class="text-red-600 font-bold">Ditolak (Perbaikan)</span>';
-                infoBerkas.innerHTML = '<span class="text-red-600 font-bold">Ditolak (Perbaikan)</span>';
+                berkasOvl.classList.add('hidden'); bayarOvl.classList.add('hidden'); // Buka semua untuk perbaikan
+                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed";
+                document.getElementById('step-4').className = "step-item active"; document.getElementById('step-5').className = "step-item active";
+            }
+            else if (data.statusVerifikasi === 'Berkas Lengkap' && data.statusBayar === 'Belum Bayar') { 
+                // Skenario 3: Berkas sudah, belum bayar
+                switchMabaTab('bayar');
+                alertC.innerHTML = `<div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-700 font-medium shadow-sm mb-6"><h4 class="font-bold text-sm">Segera Lakukan Pembayaran</h4><p class="text-xs mt-1">Berkas valid. Silakan lakukan pembayaran tagihan pendaftaran.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-green-600">Berkas lengkap & tersimpan</span>';
                 
-                stepBerkas.className = "step-item active"; stepBayar.className = "step-item active";
+                berkasOvl.classList.remove('hidden'); bayarOvl.classList.add('hidden');
+                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed"; document.getElementById('step-4').className = "step-item completed";
+                document.getElementById('step-5').className = "step-item active";
             }
             else if (data.statusBayar === 'Menunggu Verifikasi') {
-                alertC.innerHTML = `<div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-blue-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-info-circle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Menunggu Verifikasi Admin</h4><p class="text-xs mt-1">Bukti pembayaran Anda sedang kami periksa. Mohon tunggu proses finalisasinya.</p></div></div>`;
-                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); bayarAct.classList.add('hidden');
-                document.getElementById('maba-bayar-overlay').innerHTML = `<div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-3 border-2 border-blue-200 dark:border-blue-800 shadow-sm"><i class="fas fa-clock text-2xl text-blue-500"></i></div><p class="font-bold text-slate-800 dark:text-white text-base">Sedang Dievaluasi</p><p class="text-xs text-slate-500 mt-1 max-w-xs">Tim Admin sedang memverifikasi bukti transfer Anda.</p>`;
+                // Skenario 4: Menunggu admin approve
+                switchMabaTab('status');
+                alertC.innerHTML = `<div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-blue-700 font-medium shadow-sm mb-6"><h4 class="font-bold text-sm"><i class="fas fa-clock mr-1"></i> Sedang Diproses</h4><p class="text-xs mt-1">Bukti pembayaran Anda sedang kami verifikasi. Mohon tunggu finalisasinya.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-blue-600 font-bold">Menunggu Verifikasi</span>';
+                sumBerkas.innerHTML = '<span class="text-green-600">Berkas lengkap & tersimpan</span>';
                 
-                infoBayar.innerHTML = '<span class="text-blue-600">Menunggu Verifikasi</span>';
-                infoBerkas.innerHTML = '<span class="text-green-600">Lengkap</span>';
+                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden');
+                document.getElementById('maba-bayar-overlay-msg').innerText = "Bukti bayar sedang diverifikasi oleh Tim Keuangan.";
                 
-                stepBerkas.className = "step-item completed"; stepBayar.className = "step-item active";
+                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed"; document.getElementById('step-4').className = "step-item completed"; document.getElementById('step-5').className = "step-item active"; document.getElementById('step-6').className = "step-item active";
             }
-            else if (data.statusVerifikasi === 'Berkas Lengkap') { 
-                berkasOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); 
-                alertC.innerHTML = `<div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-exclamation-circle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Segera Lakukan Pembayaran</h4><p class="text-xs mt-1">Berkas berhasil disimpan. Silakan klik menu "Pembayaran Tagihan" untuk melunasi biaya registrasi.</p></div></div>`;
-                infoBayar.innerHTML = '<span class="text-red-500">Belum Bayar</span>';
-                infoBerkas.innerHTML = '<span class="text-green-600">Lengkap</span>';
+            else if (data.statusBayar === 'Lunas' || data.statusVerifikasi === 'Terverifikasi') {
+                // Skenario 5: Lunas
+                switchMabaTab('status');
+                alertC.innerHTML = `<div class="bg-green-50 border border-green-200 p-4 rounded-xl text-green-700 font-medium shadow-sm mb-6"><h4 class="font-bold text-sm"><i class="fas fa-check-circle mr-1"></i> Finalisasi Berhasil</h4><p class="text-xs mt-1">Selamat! Anda telah resmi terdaftar.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-green-600 font-bold">LUNAS</span>';
+                sumBerkas.innerHTML = '<span class="text-green-600 font-bold">Terverifikasi Admin</span>';
                 
-                stepBerkas.className = "step-item completed"; stepBayar.className = "step-item active"; 
-            }
-            else { 
-                bayarOvl.classList.remove('hidden'); bayarAct.classList.add('hidden'); 
-                alertC.innerHTML = `<div class="bg-red-50 border border-red-200 p-4 rounded-xl text-red-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-exclamation-triangle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Anda belum melakukan kelengkapan berkas.</h4><p class="text-xs mt-1">Selesaikan kelengkapan dokumen scan pada menu "Upload Berkas" agar tagihan pembayaran dapat dibuka.</p></div></div>`;
-                infoBayar.innerHTML = '<span class="text-red-500">Belum Bayar</span>';
-                infoBerkas.innerHTML = '<span class="text-red-500">Belum Lengkap</span>';
-                
-                stepBerkas.className = "step-item active";
+                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden');
+                for(let i=1; i<=6; i++) document.getElementById(`step-${i}`).className = "step-item completed";
             }
         }
 
-        // LOGIKA UPLOAD BERKAS KE API
+        // Helper fungsi parse tanggal backend "YYYY-MM-DDT..." ke "YYYY-MM-DD" utk input type=date
+        function parseDateForInput(str) {
+            if(!str) return '';
+            let d = new Date(str);
+            if(isNaN(d.getTime())) return '';
+            return d.toISOString().split('T')[0];
+        }
+
+        function getMonthName(m) {
+            const months = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            return months[parseInt(m)] || "";
+        }
+
+        async function mabaSubmitBiodata(e) {
+            e.preventDefault();
+            Swal.fire({ title: 'Menyimpan Biodata...', html: 'Mohon tunggu...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            
+            let payload = {
+                nik: currentMabaData.nik,
+                agama: document.getElementById('bio-agama').value, nisn: document.getElementById('bio-nisn').value, npwp: document.getElementById('bio-npwp').value,
+                kewarganegaraan: document.getElementById('bio-kwn').value, jalan: document.getElementById('bio-jalan').value, dusun: document.getElementById('bio-dusun').value,
+                rt: document.getElementById('bio-rt').value, rw: document.getElementById('bio-rw').value, kelurahan: document.getElementById('bio-kel').value,
+                kecamatan: document.getElementById('bio-kec').value, kodepos: document.getElementById('bio-pos').value, telepon: document.getElementById('bio-telp').value,
+                jenisTinggal: document.getElementById('bio-tinggal').value, asalSma: document.getElementById('bio-sekolah').value,
+                
+                nikAyah: document.getElementById('ortu-nik-ayah').value, namaAyah: document.getElementById('ortu-nama-ayah').value, tglAyah: document.getElementById('ortu-tgl-ayah').value, pendAyah: document.getElementById('ortu-pend-ayah').value, pekAyah: document.getElementById('ortu-pek-ayah').value, pengAyah: document.getElementById('ortu-peng-ayah').value,
+                nikIbu: document.getElementById('ortu-nik-ibu').value, namaIbu: document.getElementById('ortu-nama-ibu').value, tglIbu: document.getElementById('ortu-tgl-ibu').value, pendIbu: document.getElementById('ortu-pend-ibu').value, pekIbu: document.getElementById('ortu-pek-ibu').value, pengIbu: document.getElementById('ortu-peng-ibu').value,
+                namaWali: document.getElementById('ortu-nama-wali').value, tglWali: document.getElementById('ortu-tgl-wali').value, pendWali: document.getElementById('ortu-pend-wali').value, pekWali: document.getElementById('ortu-pek-wali').value, pengWali: document.getElementById('ortu-peng-wali').value
+            };
+
+            try {
+                let res = await fetchAPI('saveBiodata', payload);
+                if(res.success) {
+                    // Update lokal memori currentMabaData
+                    currentMabaData['NISN'] = payload.nisn;
+                    Object.keys(payload).forEach(k => currentMabaData[k] = payload[k]);
+                    
+                    renderMabaDashboard(currentMabaData);
+                    Swal.fire('Berhasil!', 'Biodata diri telah disimpan. Silakan lanjutkan ke tahap Upload Berkas.', 'success');
+                } else {
+                    Swal.fire('Gagal', res.message, 'error');
+                }
+            } catch(err) {
+                Swal.fire('Koneksi Error', 'Terjadi kesalahan saat menghubungi server.', 'error');
+            }
+        }
+
         async function mabaSubmitBerkas() {
             const fileIjazah = document.getElementById('file-ijazah').files[0];
             const fileKK = document.getElementById('file-kk').files[0];
 
-            if (!fileIjazah || !fileKK) {
-                Swal.fire({ title: 'Peringatan', text: 'Silakan pilih file Scan Ijazah dan Kartu Keluarga terlebih dahulu.', icon: 'warning', confirmButtonColor: '#f59e0b' });
-                return;
-            }
-            if (fileIjazah.size > 2000000 || fileKK.size > 2000000) {
-                Swal.fire({ title: 'Ukuran Terlalu Besar', text: 'Ukuran file maksimal adalah 2MB per dokumen.', icon: 'error' });
-                return;
-            }
+            if (!fileIjazah || !fileKK) { Swal.fire({ title: 'Peringatan', text: 'Silakan pilih file Scan Ijazah dan Kartu Keluarga.', icon: 'warning', confirmButtonColor: '#f59e0b' }); return; }
+            if (fileIjazah.size > 2000000 || fileKK.size > 2000000) { Swal.fire({ title: 'Ukuran Terlalu Besar', text: 'Maksimal 2MB per dokumen.', icon: 'error' }); return; }
 
-            Swal.fire({ title: 'Upload & Simpan Berkas?', text: "Pastikan dokumen sudah sesuai.", icon: 'question', showCancelButton: true, confirmButtonText: 'Ya, Unggah' }).then(async (res) => {
+            Swal.fire({ title: 'Upload & Simpan Berkas?', icon: 'question', showCancelButton: true, confirmButtonText: 'Ya, Unggah' }).then(async (res) => {
                 if (res.isConfirmed) {
-                    Swal.fire({ title: 'Mengunggah Berkas...', html: 'Mohon tunggu dan jangan tutup halaman ini.', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                    Swal.fire({ title: 'Mengunggah Berkas...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
-                        const base64Ijazah = await fileToBase64(fileIjazah);
-                        const base64KK = await fileToBase64(fileKK);
-
+                        const base64Ijazah = await fileToBase64(fileIjazah); const base64KK = await fileToBase64(fileKK);
                         let payload = {
-                            nik: currentMabaData.nik,
-                            nama: currentMabaData.nama,
-                            prodi: currentMabaData.prodi,
-                            type: 'berkas',
-                            files: [
-                                { name: `Ijazah_${currentMabaData.nama}.pdf`, mimeType: fileIjazah.type, data: base64Ijazah },
-                                { name: `KK_${currentMabaData.nama}.pdf`, mimeType: fileKK.type, data: base64KK }
-                            ]
+                            nik: currentMabaData.nik, nama: currentMabaData.nama, prodi: currentMabaData.prodi, type: 'berkas',
+                            files: [ { name: `Ijazah_${currentMabaData.nama}.pdf`, mimeType: fileIjazah.type, data: base64Ijazah }, { name: `KK_${currentMabaData.nama}.pdf`, mimeType: fileKK.type, data: base64KK } ]
                         };
-
                         let response = await fetchAPI('uploadFiles', payload);
-                        if(response.success) { 
-                            currentMabaData.statusVerifikasi = 'Berkas Lengkap'; 
-                            renderMabaDashboard(currentMabaData); 
-                            switchMabaTab('bayar'); 
-                            Swal.fire('Berhasil', 'Berkas Anda berhasil diunggah ke server. Silakan lanjutkan ke menu pembayaran.', 'success'); 
-                        } else {
-                            Swal.fire('Gagal', response.message, 'error');
-                        }
-                    } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi saat mengunggah file.', 'error'); }
+                        if(response.success) { currentMabaData.statusVerifikasi = 'Berkas Lengkap'; renderMabaDashboard(currentMabaData); Swal.fire('Berhasil', 'Berkas berhasil diunggah.', 'success'); } 
+                        else { Swal.fire('Gagal', response.message, 'error'); }
+                    } catch(e) { Swal.fire('Gagal', 'Koneksi terputus saat mengunggah file.', 'error'); }
                 }
             });
         }
 
         async function mabaSubmitBayar() {
             const fileBukti = document.getElementById('file-bukti').files[0];
-            if (!fileBukti) {
-                Swal.fire({ title: 'Peringatan', text: 'Silakan pilih foto/file bukti transfer terlebih dahulu.', icon: 'warning', confirmButtonColor: '#f59e0b' });
-                return;
-            }
-            if (fileBukti.size > 2000000) {
-                Swal.fire({ title: 'Ukuran Terlalu Besar', text: 'Ukuran file bukti bayar maksimal adalah 2MB.', icon: 'error' });
-                return;
-            }
+            if (!fileBukti) { Swal.fire({ title: 'Peringatan', text: 'Pilih foto/file bukti transfer.', icon: 'warning', confirmButtonColor: '#f59e0b' }); return; }
+            if (fileBukti.size > 2000000) { Swal.fire({ title: 'Ukuran Terlalu Besar', text: 'Maksimal 2MB.', icon: 'error' }); return; }
 
-            Swal.fire({ title: 'Kirim Bukti Bayar?', text: "Pastikan foto bukti transfer terlihat jelas.", icon: 'question', showCancelButton: true, confirmButtonText: 'Kirim Sekarang' }).then(async (res) => {
+            Swal.fire({ title: 'Kirim Bukti Bayar?', icon: 'question', showCancelButton: true, confirmButtonText: 'Kirim Sekarang' }).then(async (res) => {
                 if (res.isConfirmed) {
-                    Swal.fire({ title: 'Mengirim Bukti...', html: 'Sedang memproses pembayaran Anda...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                    Swal.fire({ title: 'Mengirim Bukti...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
-                        const base64Bukti = await fileToBase64(fileBukti);
-                        let ekstensi = fileBukti.name.split('.').pop();
-
-                        let payload = {
-                            nik: currentMabaData.nik,
-                            nama: currentMabaData.nama,
-                            prodi: currentMabaData.prodi,
-                            type: 'bayar',
-                            files: [
-                                { name: `Bukti_Bayar_${currentMabaData.nama}.${ekstensi}`, mimeType: fileBukti.type, data: base64Bukti }
-                            ]
-                        };
-
+                        const base64Bukti = await fileToBase64(fileBukti); let ekstensi = fileBukti.name.split('.').pop();
+                        let payload = { nik: currentMabaData.nik, nama: currentMabaData.nama, prodi: currentMabaData.prodi, type: 'bayar', files: [ { name: `Bukti_Bayar_${currentMabaData.nama}.${ekstensi}`, mimeType: fileBukti.type, data: base64Bukti } ] };
                         let response = await fetchAPI('uploadFiles', payload);
-                        if(response.success) { 
-                            currentMabaData.statusBayar = 'Menunggu Verifikasi'; 
-                            renderMabaDashboard(currentMabaData); 
-                            switchMabaTab('status'); 
-                            Swal.fire('Terkirim!', 'Bukti bayar berhasil diunggah dan sedang diverifikasi oleh tim Admin.', 'success'); 
-                        } else {
-                            Swal.fire('Gagal', response.message, 'error');
-                        }
-                    } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi saat mengirim.', 'error'); }
+                        if(response.success) { currentMabaData.statusBayar = 'Menunggu Verifikasi'; renderMabaDashboard(currentMabaData); Swal.fire('Terkirim!', 'Bukti bayar sedang diverifikasi.', 'success'); } 
+                        else { Swal.fire('Gagal', response.message, 'error'); }
+                    } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi.', 'error'); }
                 }
             });
         }
 
         // ==================== LOGIKA ADMIN ====================
+        // (Sama persis seperti sebelumnya)
         function renderAdminDashboard(data) {
             if(!data || !data.maba) return;
             adminAllRows = data.maba.rows || [];
@@ -912,9 +1078,7 @@
                 let matchTa = true;
                 if(fTa !== 'all') { let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa); else matchTa = false; }
                 let matchSearch = true;
-                if(search !== '') {
-                    matchSearch = (String(r[nikIdx]).toLowerCase().includes(search) || String(r[namaIdx]).toLowerCase().includes(search));
-                }
+                if(search !== '') matchSearch = (String(r[nikIdx]).toLowerCase().includes(search) || String(r[namaIdx]).toLowerCase().includes(search));
                 return matchProdi && matchTa && matchSearch;
             });
             renderFilteredDashboard(filteredRows);
@@ -949,29 +1113,26 @@
             }
             document.getElementById('log-list').innerHTML = logsHtml;
 
-            let thead = ''; adminHeaders.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
+            // RENDER TABEL UTAMA (Hanya tampilkan 13 kolom awal agar rapi)
+            let maxCols = 13;
+            let thead = ''; 
+            adminHeaders.forEach((h, i) => { if(i < maxCols || h === 'Aksi') thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`; });
             document.getElementById('admin-thead').innerHTML = thead;
 
-            let tbody = ''; let nikIdx = adminHeaders.indexOf('NIK'); let statusIdx = adminHeaders.indexOf('Status Pembayaran');
-            let verifIdx = adminHeaders.indexOf('Status Verifikasi');
+            let tbody = ''; let nikIdx = adminHeaders.indexOf('NIK'); let statusIdx = adminHeaders.indexOf('Status Pembayaran'); let verifIdx = adminHeaders.indexOf('Status Verifikasi');
             rows.forEach(r => {
                 tbody += '<tr class="border-b border-slate-100 dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
-                for(let i=0; i<r.length; i++) { tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 text-xs md:text-sm">${r[i]}</td>`; }
+                for(let i=0; i<r.length; i++) { if(i < maxCols) tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 text-xs md:text-sm">${r[i]}</td>`; }
                 
-                let statBayar = r[statusIdx];
-                let statVerif = verifIdx !== -1 ? r[verifIdx] : '';
-
+                let statBayar = r[statusIdx]; let statVerif = verifIdx !== -1 ? r[verifIdx] : '';
                 let aksiBtn = `<div class="flex gap-1.5 items-center">
                     <button onclick="cekBerkas('${r[nikIdx]}')" class="bg-blue-500 hover:bg-blue-600 text-white w-7 h-7 rounded shadow text-xs font-bold transition flex items-center justify-center" title="Cek Detail Berkas"><i class="fas fa-folder-open"></i></button>`;
 
                 if (statBayar === 'Menunggu Verifikasi' || statVerif === 'Berkas Lengkap') {
                     aksiBtn += `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1.5 rounded shadow text-[10px] md:text-xs font-bold transition flex items-center whitespace-nowrap" title="Verifikasi Lunas"><i class="fas fa-check mr-1"></i> Verifikasi</button>
                                 <button onclick="adminReject('${r[nikIdx]}')" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded shadow text-xs font-bold transition flex items-center justify-center" title="Tolak Berkas/Bayar"><i class="fas fa-times"></i></button>`;
-                } else if (statBayar === 'Lunas') {
-                    aksiBtn += `<span class="text-green-600 dark:text-green-400 font-bold text-xs whitespace-nowrap ml-1"><i class="fas fa-check-circle mr-1"></i> Selesai</span>`;
-                } else if (statBayar === 'Ditolak' || statVerif === 'Ditolak') {
-                    aksiBtn += `<span class="text-red-600 dark:text-red-400 font-bold text-xs whitespace-nowrap ml-1"><i class="fas fa-times-circle mr-1"></i> Ditolak</span>`;
-                }
+                } else if (statBayar === 'Lunas') { aksiBtn += `<span class="text-green-600 dark:text-green-400 font-bold text-xs whitespace-nowrap ml-1"><i class="fas fa-check-circle mr-1"></i> Selesai</span>`; } 
+                else if (statBayar === 'Ditolak' || statVerif === 'Ditolak') { aksiBtn += `<span class="text-red-600 dark:text-red-400 font-bold text-xs whitespace-nowrap ml-1"><i class="fas fa-times-circle mr-1"></i> Ditolak</span>`; }
                 aksiBtn += `</div>`;
                 
                 tbody += `<td class="p-3 md:p-4">${aksiBtn}</td></tr>`;
@@ -996,13 +1157,12 @@
         }
 
         function populateAdminSettingsForm(rawSettingsVals) {
-            let prodiList = [];
-            window.adminBanks = [];
+            let prodiList = []; window.adminBanks = [];
             const elStatus = document.getElementById('set-fonnte-status'); if(elStatus) elStatus.value = 'Nonaktif';
             
             for(let i=1; i<rawSettingsVals.length; i++) {
                 let row = rawSettingsVals[i];
-                if(row[0] === 'Semester') { document.getElementById('set-semester').value = row[1]; }
+                if(row[0] === 'Semester') document.getElementById('set-semester').value = row[1];
                 if(row[0] === 'Gelombang') { document.getElementById('set-gelombang').value = row[1]; document.getElementById('set-gelombang-tgl').value = row[2]; }
                 if(row[0] === 'Jalur' && row[1] === 'Reguler') { document.getElementById('set-biaya-reg').value = row[3]; document.getElementById('set-biaya-ulang').value = row[4]; }
                 if(row[0] === 'Prodi') prodiList.push(row[1]);
@@ -1019,60 +1179,22 @@
         }
 
         function renderBankSettings() {
-            let container = document.getElementById('bank-settings-container');
-            let html = '';
+            let container = document.getElementById('bank-settings-container'); let html = '';
             if(window.adminBanks.length === 0) html = '<p class="text-xs text-slate-500 text-center py-2">Belum ada bank. Silakan tambah bank.</p>';
             window.adminBanks.forEach((b, index) => {
-                html += `
-                <div class="p-3 border border-slate-200 dark:border-slate-600 rounded-lg mb-3 relative bg-white dark:bg-slate-800 shadow-sm">
-                    <button type="button" onclick="removeBankSetting(${index})" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
-                        <div>
-                            <label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">Nama Bank</label>
-                            <input type="text" id="bank-nama-${index}" value="${b.nama}" placeholder="Contoh: BSI" class="w-full px-2 py-1.5 text-xs rounded border outline-none dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">No Rekening</label>
-                            <input type="text" id="bank-rek-${index}" value="${b.rek}" placeholder="Contoh: 123456789" class="w-full px-2 py-1.5 text-xs rounded border outline-none dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-1 focus:ring-primary">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end">
-                        <div>
-                            <label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">Atas Nama</label>
-                            <input type="text" id="bank-an-${index}" value="${b.an}" placeholder="Contoh: STIS Abu Zairi" class="w-full px-2 py-1.5 text-xs rounded border outline-none dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-1 focus:ring-primary">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex-grow">
-                                <label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">Upload Logo</label>
-                                <input type="file" accept="image/*" onchange="handleBankLogoChange(${index}, this)" class="w-full text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-blue-50 file:text-primary file:font-semibold hover:file:bg-blue-100 cursor-pointer text-slate-500">
-                            </div>
-                            <div id="bank-logo-preview-${index}" class="w-12 h-8 bg-slate-100 dark:bg-slate-700 flex items-center justify-center rounded border border-slate-200 dark:border-slate-600 overflow-hidden shrink-0">
-                                ${b.logo ? `<img src="${b.logo}" class="h-full object-contain bg-white">` : '<i class="fas fa-image text-slate-300 dark:text-slate-500 text-sm"></i>'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                `;
+                html += `<div class="p-3 border border-slate-200 dark:border-slate-600 rounded-lg mb-3 relative bg-white dark:bg-slate-800 shadow-sm"><button type="button" onclick="removeBankSetting(${index})" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2"><div><label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">Nama Bank</label><input type="text" id="bank-nama-${index}" value="${b.nama}" placeholder="Contoh: BSI" class="w-full px-2 py-1.5 text-xs rounded border outline-none dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-1 focus:ring-primary"></div><div><label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">No Rekening</label><input type="text" id="bank-rek-${index}" value="${b.rek}" placeholder="Contoh: 123456789" class="w-full px-2 py-1.5 text-xs rounded border outline-none dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-1 focus:ring-primary"></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-end"><div><label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">Atas Nama</label><input type="text" id="bank-an-${index}" value="${b.an}" placeholder="Contoh: STIS Abu Zairi" class="w-full px-2 py-1.5 text-xs rounded border outline-none dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:ring-1 focus:ring-primary"></div><div class="flex items-center gap-2"><div class="flex-grow"><label class="block text-[10px] font-bold mb-1 text-slate-600 dark:text-slate-300">Upload Logo</label><input type="file" accept="image/*" onchange="handleBankLogoChange(${index}, this)" class="w-full text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-blue-50 file:text-primary file:font-semibold hover:file:bg-blue-100 cursor-pointer text-slate-500"></div><div id="bank-logo-preview-${index}" class="w-12 h-8 bg-slate-100 dark:bg-slate-700 flex items-center justify-center rounded border border-slate-200 dark:border-slate-600 overflow-hidden shrink-0">${b.logo ? `<img src="${b.logo}" class="h-full object-contain bg-white">` : '<i class="fas fa-image text-slate-300 dark:text-slate-500 text-sm"></i>'}</div></div></div></div>`;
             });
             container.innerHTML = html;
         }
 
         function addBankSetting() {
-            window.adminBanks.forEach((b, idx) => {
-                let elNama = document.getElementById(`bank-nama-${idx}`);
-                if(elNama) b.nama = elNama.value; b.rek = document.getElementById(`bank-rek-${idx}`).value; b.an = document.getElementById(`bank-an-${idx}`).value;
-            });
-            window.adminBanks.push({nama: '', rek: '', an: '', logo: ''});
-            renderBankSettings();
+            window.adminBanks.forEach((b, idx) => { let elNama = document.getElementById(`bank-nama-${idx}`); if(elNama) b.nama = elNama.value; b.rek = document.getElementById(`bank-rek-${idx}`).value; b.an = document.getElementById(`bank-an-${idx}`).value; });
+            window.adminBanks.push({nama: '', rek: '', an: '', logo: ''}); renderBankSettings();
         }
 
         function removeBankSetting(index) {
-            window.adminBanks.forEach((b, idx) => {
-                let elNama = document.getElementById(`bank-nama-${idx}`);
-                if(elNama) { b.nama = elNama.value; b.rek = document.getElementById(`bank-rek-${idx}`).value; b.an = document.getElementById(`bank-an-${idx}`).value; }
-            });
-            window.adminBanks.splice(index, 1);
-            renderBankSettings();
+            window.adminBanks.forEach((b, idx) => { let elNama = document.getElementById(`bank-nama-${idx}`); if(elNama) { b.nama = elNama.value; b.rek = document.getElementById(`bank-rek-${idx}`).value; b.an = document.getElementById(`bank-an-${idx}`).value; } });
+            window.adminBanks.splice(index, 1); renderBankSettings();
         }
 
         function handleBankLogoChange(index, input) {
@@ -1081,24 +1203,16 @@
                 reader.onload = function(e) {
                     let img = new Image();
                     img.onload = function() {
-                        // Resizing otomatis ke max lebar 120px atau tinggi 60px agar file sangat ringan
-                        let canvas = document.createElement('canvas');
-                        let ctx = canvas.getContext('2d');
-                        let MAX_WIDTH = 120; let MAX_HEIGHT = 60;
-                        let width = img.width; let height = img.height;
-
-                        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-                        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                        
-                        canvas.width = width; canvas.height = height;
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
+                        let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d');
+                        let MAX_WIDTH = 120; let MAX_HEIGHT = 60; let width = img.width; let height = img.height;
+                        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+                        canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height);
                         let dataUrl = canvas.toDataURL('image/png');
                         window.adminBanks[index].logo = dataUrl;
                         document.getElementById(`bank-logo-preview-${index}`).innerHTML = `<img src="${dataUrl}" class="h-full object-contain bg-white">`;
-                    }
+                    };
                     img.src = e.target.result;
-                }
+                };
                 reader.readAsDataURL(input.files[0]);
             }
         }
@@ -1114,12 +1228,8 @@
             prodis.forEach(p => newSettings.push(['Prodi', p.trim(), '', '', '', 'Aktif']));
             
             window.adminBanks.forEach((b, index) => {
-                let nama = document.getElementById(`bank-nama-${index}`).value;
-                let rek = document.getElementById(`bank-rek-${index}`).value;
-                let an = document.getElementById(`bank-an-${index}`).value;
-                if (nama.trim() !== '') {
-                    newSettings.push(['Bank', nama, rek, an, b.logo || '', 'Aktif']);
-                }
+                let nama = document.getElementById(`bank-nama-${index}`).value; let rek = document.getElementById(`bank-rek-${index}`).value; let an = document.getElementById(`bank-an-${index}`).value;
+                if (nama.trim() !== '') newSettings.push(['Bank', nama, rek, an, b.logo || '', 'Aktif']);
             });
 
             newSettings.push(['Gelombang', document.getElementById('set-gelombang').value, document.getElementById('set-gelombang-tgl').value, '', '', 'Aktif']);
@@ -1136,13 +1246,9 @@
             } catch(err) { btn.innerHTML = originalText; btn.disabled = false; Swal.fire('Gagal', 'Koneksi error', 'error'); }
         }
 
-        // FUNGSI BARU: Export CSV, Cek Berkas, dan Tolak Pendaftaran
         function exportCSV() {
-            let searchInput = document.getElementById('filter-search');
-            let search = searchInput ? searchInput.value.toLowerCase() : '';
-            let fTa = document.getElementById('filter-ta').value;
-            let fProdi = document.getElementById('filter-prodi').value;
-            
+            let searchInput = document.getElementById('filter-search'); let search = searchInput ? searchInput.value.toLowerCase() : '';
+            let fTa = document.getElementById('filter-ta').value; let fProdi = document.getElementById('filter-prodi').value;
             let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
             let timeIndex = adminHeaders.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
             let nikIdx = adminHeaders.indexOf('NIK'); if(nikIdx===-1) nikIdx = 1;
@@ -1150,34 +1256,23 @@
 
             let filteredRows = adminAllRows.filter(r => {
                 let matchProdi = (fProdi === 'all' || r[prodiIndex] === fProdi);
-                let matchTa = true;
-                if(fTa !== 'all') { let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa); else matchTa = false; }
-                let matchSearch = true;
-                if(search !== '') matchSearch = (String(r[nikIdx]).toLowerCase().includes(search) || String(r[namaIdx]).toLowerCase().includes(search));
+                let matchTa = true; if(fTa !== 'all') { let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa); else matchTa = false; }
+                let matchSearch = true; if(search !== '') matchSearch = (String(r[nikIdx]).toLowerCase().includes(search) || String(r[namaIdx]).toLowerCase().includes(search));
                 return matchProdi && matchTa && matchSearch;
             });
 
             if(filteredRows.length === 0) { Swal.fire('Kosong', 'Tidak ada data pendaftar untuk diekspor.', 'info'); return; }
 
             let csvContent = "data:text/csv;charset=utf-8,";
-            let exportHeaders = adminHeaders.filter(h => h !== "Aksi");
-            csvContent += exportHeaders.join(",") + "\r\n";
+            let exportHeaders = adminHeaders.filter(h => h !== "Aksi"); csvContent += exportHeaders.join(",") + "\r\n";
             
             filteredRows.forEach(row => {
-                let rowArray = row.map(cell => {
-                    let cellStr = String(cell).replace(/"/g, '""');
-                    return `"${cellStr}"`;
-                });
+                let rowArray = row.map(cell => { let cellStr = String(cell).replace(/"/g, '""'); return `"${cellStr}"`; });
                 csvContent += rowArray.join(",") + "\r\n";
             });
 
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Data_PMB_STIS_${new Date().getTime()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            let encodedUri = encodeURI(csvContent); let link = document.createElement("a"); link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Data_PMB_STIS_${new Date().getTime()}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         async function cekBerkas(nik) {
@@ -1189,28 +1284,14 @@
                     response.files.forEach(f => {
                         let icon = f.name.includes('.pdf') ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
                         fileHtml += `<a href="${f.url}" target="_blank" class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"><i class="fas ${icon} text-xl w-8 text-center"></i><span class="text-sm font-medium dark:text-slate-200 flex-1 truncate">${f.name}</span><i class="fas fa-external-link-alt text-slate-400 text-xs"></i></a>`;
-                    });
-                    fileHtml += '</div>';
+                    }); fileHtml += '</div>';
                     Swal.fire({ title: 'File Ditemukan', html: fileHtml, icon: 'info', showConfirmButton: false, showCloseButton: true });
-                } else {
-                    Swal.fire('Kosong', 'Mahasiswa ini belum mengunggah file atau folder tidak ditemukan.', 'info');
-                }
+                } else { Swal.fire('Kosong', 'Mahasiswa ini belum mengunggah file.', 'info'); }
             } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi', 'error'); }
         }
 
         async function adminReject(nik) {
-            const { value: reason } = await Swal.fire({
-                title: 'Tolak Pendaftaran',
-                input: 'textarea',
-                inputLabel: 'Alasan Penolakan (Perbaikan)',
-                inputPlaceholder: 'Contoh: Bukti transfer buram, mohon unggah ulang...',
-                inputAttributes: { 'aria-label': 'Alasan penolakan' },
-                showCancelButton: true,
-                confirmButtonText: 'Tolak & Kirim Notif',
-                confirmButtonColor: '#ef4444',
-                cancelButtonText: 'Batal'
-            });
-
+            const { value: reason } = await Swal.fire({ title: 'Tolak Pendaftaran', input: 'textarea', inputLabel: 'Alasan Penolakan', showCancelButton: true, confirmButtonText: 'Tolak & Kirim Notif', confirmButtonColor: '#ef4444', cancelButtonText: 'Batal' });
             if (reason) {
                 Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                 try {
