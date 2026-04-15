@@ -546,6 +546,29 @@
             });
         }
 
+        // FUNGSI CETAK FORMULIR YANG DITAMBAHKAN KEMBALI
+        function cetakFormulir() {
+            document.getElementById('print-no').innerText = "PMB-" + Math.floor(Math.random() * 1000000);
+            document.getElementById('print-nama').innerText = submittedData.nama;
+            document.getElementById('print-nik').innerText = submittedData.nik;
+            document.getElementById('print-jalur').innerText = submittedData.jalur;
+            document.getElementById('print-prodi').innerText = submittedData.prodi;
+            document.getElementById('print-user').innerText = submittedData.hp;
+            document.getElementById('print-pass').innerText = submittedData.tglLahir;
+
+            let element = document.getElementById('print-area'); 
+            element.classList.remove('hidden');
+            
+            html2pdf().set({ 
+                margin: 1, 
+                filename: `Formulir_PMB_${submittedData.nama}.pdf`, 
+                html2canvas: { scale: 2 }, 
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+            }).from(element).save().then(() => { 
+                element.classList.add('hidden'); 
+            });
+        }
+
         // ==================== LOGIKA ALUR MABA ====================
         async function doLogin(e) {
             e.preventDefault();
