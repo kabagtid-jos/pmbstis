@@ -439,27 +439,97 @@
                     </div>
 
                     <!-- TAB 3: UPLOAD BERKAS -->
-                    <div id="maba-content-berkas" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 relative">
-                        <div id="maba-berkas-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl p-4 text-center">
+                    <div id="maba-content-berkas" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-0 overflow-hidden relative">
+                        <div id="maba-berkas-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-4 text-center">
                             <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-3 border-2 border-slate-200 dark:border-slate-600 shadow-sm"><i class="fas fa-lock text-2xl text-slate-400"></i></div>
                             <p class="font-bold text-slate-800 dark:text-white text-base">Akses Terkunci</p>
                             <p class="text-xs text-slate-500 mt-1 max-w-xs" id="maba-berkas-overlay-msg">Silakan lengkapi Biodata Pendaftar terlebih dahulu.</p>
                         </div>
-                        <h3 class="text-lg md:text-xl font-bold mb-2 dark:text-white flex items-center"><i class="fas fa-folder-open text-primary mr-3 text-2xl"></i> Kelengkapan Berkas</h3>
-                        <p class="text-[10px] md:text-xs text-slate-500 mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">Wajib mengunggah dokumen scan (PDF) di bawah ini agar dapat melangkah ke tahap pembayaran.</p>
                         
-                        <div class="space-y-4">
-                            <div class="flex flex-col md:flex-row md:items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/30 gap-3">
-                                <div><p class="font-bold text-sm dark:text-white">1. Scan Ijazah / SKL</p><p class="text-[10px] text-red-500 mt-0.5">Wajib (PDF, Max 2MB)</p></div>
-                                <input type="file" id="file-ijazah" accept="application/pdf" class="w-full md:w-auto text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 dark:file:bg-slate-600 dark:file:text-white dark:hover:file:bg-slate-500 bg-white dark:bg-slate-800 rounded-md border border-slate-200 dark:border-slate-600 cursor-pointer outline-none">
-                            </div>
-                            <div class="flex flex-col md:flex-row md:items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/30 gap-3">
-                                <div><p class="font-bold text-sm dark:text-white">2. Scan Kartu Keluarga</p><p class="text-[10px] text-red-500 mt-0.5">Wajib (PDF, Max 2MB)</p></div>
-                                <input type="file" id="file-kk" accept="application/pdf" class="w-full md:w-auto text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 dark:file:bg-slate-600 dark:file:text-white dark:hover:file:bg-slate-500 bg-white dark:bg-slate-800 rounded-md border border-slate-200 dark:border-slate-600 cursor-pointer outline-none">
-                            </div>
+                        <div class="flex flex-col p-4 md:p-6 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 gap-1">
+                            <h3 class="text-lg md:text-2xl font-light text-slate-600 dark:text-white">Berkas</h3>
+                            <p class="text-xs md:text-sm text-slate-500 mt-1">Upload berkas yang diwajibkan untuk jalur ini, pastikan file berkas bisa di baca dengan jelas.</p>
                         </div>
-                        <div id="berkas-action" class="mt-6 pt-5 border-t border-slate-200 dark:border-slate-700">
-                            <button onclick="mabaSubmitBerkas()" class="w-full bg-primary hover:bg-blue-800 text-white py-3 md:py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/30 transition-all"><i class="fas fa-upload mr-2"></i> Unggah Berkas & Lanjutkan</button>
+
+                        <div class="p-5 md:p-8 space-y-6">
+                            <div id="maba-berkas-alert"></div>
+                            
+                            <div class="bg-[#f4f8fb] dark:bg-slate-700/50 border-l-[5px] border-[#337ab7] px-4 py-3 rounded-r-md shadow-sm">
+                                <p class="text-sm font-bold text-[#337ab7] dark:text-blue-300">Dokumen yang Wajib Dilampirkan</p>
+                            </div>
+
+                            <div class="overflow-x-auto border border-slate-200 dark:border-slate-700">
+                                <table class="w-full text-left text-xs border-collapse min-w-[800px]">
+                                    <thead>
+                                        <tr class="bg-[#2c3e50] text-white text-center">
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-10">No</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700">Nama Berkas</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-64">Deskripsi</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-16">Wajib</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-48">File Berkas</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-28">Status Validasi</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-24">Keterangan Validasi</th>
+                                            <th class="p-3 border border-[#2c3e50] dark:border-slate-700 w-20">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-slate-700 dark:text-slate-300">
+                                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition border-b border-slate-200 dark:border-slate-700">
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center">1</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 font-medium uppercase">Scan Ijazah Asli/Surat Keterangan Lulus</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700">Scan Berkas asli bukan foto copy terlihat jelas dan tidak terpotong</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center">Ya</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 truncate max-w-xs" id="file-name-1">-</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center" id="file-status-1">Belum divalidasi</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700"></td>
+                                            <td class="p-2 text-center">
+                                                <input type="file" id="inp-berkas-1" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(1, this)">
+                                                <button type="button" onclick="document.getElementById('inp-berkas-1').click()" class="bg-[#2ecc71] hover:bg-green-600 text-white w-7 h-7 rounded text-xs flex items-center justify-center mx-auto transition" title="Pilih File"><i class="fas fa-arrow-up"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition border-b border-slate-200 dark:border-slate-700">
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center">2</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 font-medium uppercase">Scan Kartu Keluarga (KK)</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700">Scan Kartu Keluarga asli terlihat jelas dan tidak terpotong</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center">Ya</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 truncate max-w-xs" id="file-name-2">-</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center" id="file-status-2">Belum divalidasi</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700"></td>
+                                            <td class="p-2 text-center">
+                                                <input type="file" id="inp-berkas-2" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(2, this)">
+                                                <button type="button" onclick="document.getElementById('inp-berkas-2').click()" class="bg-[#2ecc71] hover:bg-green-600 text-white w-7 h-7 rounded text-xs flex items-center justify-center mx-auto transition" title="Pilih File"><i class="fas fa-arrow-up"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center">3</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 font-medium uppercase">Scan KIP/KKS/PKH/SKTM</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700">Scan Kartu KIP/KKS/PKH/SKTM Asli, terlihat jelas dan tidak terpotong</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center">Tidak</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 truncate max-w-xs" id="file-name-3">-</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700 text-center" id="file-status-3">Belum divalidasi</td>
+                                            <td class="p-2 border-r border-slate-200 dark:border-slate-700"></td>
+                                            <td class="p-2 text-center">
+                                                <input type="file" id="inp-berkas-3" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(3, this)">
+                                                <button type="button" onclick="document.getElementById('inp-berkas-3').click()" class="bg-[#2ecc71] hover:bg-green-600 text-white w-7 h-7 rounded text-xs flex items-center justify-center mx-auto transition" title="Pilih File"><i class="fas fa-arrow-up"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Tips Section -->
+                            <div class="bg-[#d9edf7] border border-[#bce8f1] p-4 rounded text-[#31708f] text-xs">
+                                <p class="font-bold mb-1">Tips:</p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Tipe File yang dibolehkan PDF, JPG, PNG</li>
+                                    <li>Maksimal ukuran setiap file adalah 5 MB</li>
+                                    <li><a href="https://www.ilovepdf.com/compress_pdf" target="_blank" class="text-[#337ab7] hover:underline">Kompress PDF</a></li>
+                                    <li><a href="https://tinypng.com/" target="_blank" class="text-[#337ab7] hover:underline">Kompress Gambar</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                                <button onclick="mabaSubmitBerkas()" id="btn-save-berkas" class="bg-[#337ab7] hover:bg-blue-800 text-white px-6 py-2.5 rounded shadow text-sm font-bold transition flex items-center"><i class="fas fa-upload mr-2"></i> SIMPAN & LANJUTKAN</button>
+                            </div>
                         </div>
                     </div>
 
@@ -976,6 +1046,27 @@
             
             let prodiAlertContainer = document.getElementById('maba-prodi-alert');
             if(prodiAlertContainer) prodiAlertContainer.innerHTML = alertFinalisasiHtml;
+            
+            let berkasAlertContainer = document.getElementById('maba-berkas-alert');
+            if(berkasAlertContainer) berkasAlertContainer.innerHTML = alertFinalisasiHtml;
+
+            // Status Indikator di Tabel Berkas
+            if (data.statusVerifikasi === 'Berkas Lengkap' || data.statusVerifikasi === 'Terverifikasi') {
+                for(let i=1; i<=3; i++) {
+                    let elStat = document.getElementById(`file-status-${i}`);
+                    if(elStat) elStat.innerHTML = '<span class="text-green-600 font-bold">Sudah Diunggah</span>';
+                }
+            } else if (data.statusVerifikasi === 'Ditolak') {
+                for(let i=1; i<=3; i++) {
+                    let elStat = document.getElementById(`file-status-${i}`);
+                    if(elStat) elStat.innerHTML = '<span class="text-red-600 font-bold">Ditolak / Perbaiki</span>';
+                }
+            } else {
+                for(let i=1; i<=3; i++) {
+                    let elStat = document.getElementById(`file-status-${i}`);
+                    if(elStat) elStat.innerHTML = 'Belum divalidasi';
+                }
+            }
 
             // Pastikan overlay direset hidden di awal
             if (fotoOvl) fotoOvl.classList.add('hidden');
@@ -1198,24 +1289,66 @@
             }
         }
 
-        async function mabaSubmitBerkas() {
-            const fileIjazah = document.getElementById('file-ijazah').files[0];
-            const fileKK = document.getElementById('file-kk').files[0];
+        function updateFileName(id, input) {
+            let el = document.getElementById(`file-name-${id}`);
+            if(input.files && input.files[0]) {
+                if(input.files[0].size > 5242880) { // 5MB
+                    Swal.fire('Ukuran Terlalu Besar', 'Maksimal ukuran file adalah 5MB.', 'error');
+                    input.value = '';
+                    el.innerText = '-';
+                    document.getElementById(`file-status-${id}`).innerHTML = 'Belum divalidasi';
+                    return;
+                }
+                el.innerText = input.files[0].name;
+                document.getElementById(`file-status-${id}`).innerHTML = '<span class="text-blue-600 font-bold">Siap diunggah</span>';
+            } else {
+                el.innerText = '-';
+                document.getElementById(`file-status-${id}`).innerHTML = 'Belum divalidasi';
+            }
+        }
 
-            if (!fileIjazah || !fileKK) { Swal.fire({ title: 'Peringatan', text: 'Silakan pilih file Scan Ijazah dan Kartu Keluarga.', icon: 'warning', confirmButtonColor: '#f59e0b' }); return; }
-            if (fileIjazah.size > 2000000 || fileKK.size > 2000000) { Swal.fire({ title: 'Ukuran Terlalu Besar', text: 'Maksimal 2MB per dokumen.', icon: 'error' }); return; }
+        async function mabaSubmitBerkas() {
+            const file1 = document.getElementById('inp-berkas-1').files[0];
+            const file2 = document.getElementById('inp-berkas-2').files[0];
+            const file3 = document.getElementById('inp-berkas-3').files[0]; // KIP/SKTM (Optional)
+
+            if (!file1 || !file2) { 
+                Swal.fire({ title: 'Peringatan', text: 'Scan Ijazah dan KK wajib diunggah!', icon: 'warning', confirmButtonColor: '#f59e0b' }); 
+                return; 
+            }
 
             Swal.fire({ title: 'Upload & Simpan Berkas?', icon: 'question', showCancelButton: true, confirmButtonText: 'Ya, Unggah' }).then(async (res) => {
                 if (res.isConfirmed) {
-                    Swal.fire({ title: 'Mengunggah Berkas...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                    Swal.fire({ title: 'Mengunggah Berkas...', html: 'Proses ini memakan waktu beberapa detik...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
                     try {
-                        const base64Ijazah = await fileToBase64(fileIjazah); const base64KK = await fileToBase64(fileKK);
+                        let filesPayload = [];
+                        
+                        let f1Data = await fileToBase64(file1);
+                        let ext1 = file1.name.split('.').pop();
+                        filesPayload.push({ name: `Ijazah_${currentMabaData.nama}.${ext1}`, mimeType: file1.type, data: f1Data });
+                        
+                        let f2Data = await fileToBase64(file2);
+                        let ext2 = file2.name.split('.').pop();
+                        filesPayload.push({ name: `KK_${currentMabaData.nama}.${ext2}`, mimeType: file2.type, data: f2Data });
+
+                        if(file3) {
+                            let f3Data = await fileToBase64(file3);
+                            let ext3 = file3.name.split('.').pop();
+                            filesPayload.push({ name: `KIP_SKTM_${currentMabaData.nama}.${ext3}`, mimeType: file3.type, data: f3Data });
+                        }
+
                         let payload = {
                             nik: currentMabaData.nik, nama: currentMabaData.nama, prodi: currentMabaData.prodi, type: 'berkas',
-                            files: [ { name: `Ijazah_${currentMabaData.nama}.pdf`, mimeType: fileIjazah.type, data: base64Ijazah }, { name: `KK_${currentMabaData.nama}.pdf`, mimeType: fileKK.type, data: base64KK } ]
+                            files: filesPayload
                         };
+                        
                         let response = await fetchAPI('uploadFiles', payload);
-                        if(response.success) { currentMabaData.statusVerifikasi = 'Berkas Lengkap'; renderMabaDashboard(currentMabaData); Swal.fire('Berhasil', 'Berkas berhasil diunggah.', 'success'); } 
+                        if(response.success) { 
+                            currentMabaData.statusVerifikasi = 'Berkas Lengkap'; 
+                            renderMabaDashboard(currentMabaData); 
+                            Swal.fire('Berhasil', 'Semua berkas berhasil diunggah ke sistem.', 'success'); 
+                            switchMabaTab('bayar');
+                        } 
                         else { Swal.fire('Gagal', response.message, 'error'); }
                     } catch(e) { Swal.fire('Gagal', 'Koneksi terputus saat mengunggah file.', 'error'); }
                 }
