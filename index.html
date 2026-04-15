@@ -54,7 +54,6 @@
 </head>
 <body class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- Navbar ... (Sama seperti sebelumnya) ... -->
     <nav class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-14 md:h-16">
@@ -75,7 +74,7 @@
     </nav>
 
     <main class="flex-grow w-full">
-        <!-- ==================== 1. BERANDA (Sama seperti sebelumnya) ==================== -->
+        <!-- ==================== 1. BERANDA ==================== -->
         <section id="view-home" class="view-section active w-full">
             <div class="gradient-bg text-white py-12 md:py-24 px-4 text-center border-b border-primary/20">
                 <h1 class="text-3xl md:text-5xl font-bold mb-3 md:mb-5 tracking-tight text-white drop-shadow-lg">PMB STIS Abu Zairi</h1>
@@ -90,7 +89,7 @@
             </div>
         </section>
 
-        <!-- ==================== 2. FORM PENDAFTARAN AWAL (Sama seperti sebelumnya) ==================== -->
+        <!-- ==================== 2. FORM PENDAFTARAN AWAL ==================== -->
         <section id="view-form" class="view-section py-8 md:py-12 px-4">
             <div class="max-w-3xl mx-auto glass-card rounded-2xl p-5 md:p-10">
                 <button onclick="navigate('home')" class="text-sm md:text-base text-slate-500 hover:text-primary mb-4 md:mb-6"><i class="fas fa-arrow-left mr-2"></i>Kembali ke Beranda</button>
@@ -150,7 +149,7 @@
             </div>
         </section>
 
-        <!-- ==================== 3. LOGIN (Sama seperti sebelumnya) ==================== -->
+        <!-- ==================== 3. LOGIN ==================== -->
         <section id="view-login" class="view-section py-12 md:py-24 px-4">
             <div class="max-w-md mx-auto glass-card rounded-2xl p-6 md:p-10">
                 <div class="text-center mb-6">
@@ -305,7 +304,6 @@
                                         <div class="relative">
                                             <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kewarganegaraan <span class="text-red-500">*</span></label>
                                             <input type="text" id="bio-kwn" required placeholder="Mulai ketik nama negara..." autocomplete="off" oninput="handleKwnInput(this.value)" onfocus="handleKwnInput(this.value)" onblur="setTimeout(()=>document.getElementById('kwn-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition">
-                                            <!-- Kotak Rekomendasi Pencarian -->
                                             <ul id="kwn-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300">
                                             </ul>
                                         </div>
@@ -892,6 +890,11 @@
     <script>
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbw9BK3BDHLZGyMITPpkxdgGLivac69XyRrxDLHgb2MYlEk4aAEG0UosoUd0Lsv1Q3Pq/exec'; 
         
+        // === KONFIGURASI API WILAYAH (KECAMATAN) ===
+        // Silakan daftar gratis di https://binderbyte.com/ untuk mendapatkan API Key yang lebih stabil
+        // Jika tidak diisi, sistem akan mencoba menggunakan API publik cadangan.
+        const API_KEY_BINDERBYTE = "d31787ec5773340c9fa0948b106438c1695aa817d9d26efcbf95c167ec5c96d3"; 
+        
         async function fetchAPI(action, payload = {}) {
             const response = await fetch(`${GAS_API_URL}?action=${action}`, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
             return await response.json();
@@ -985,12 +988,18 @@
                 let res = null;
                 let success = false;
                 
-                // Daftar API publik gratis alternatif untuk Kodepos / Wilayah Indonesia (Otomatis beralih jika salah satu down)
-                const endpoints = [
-                    `https://kodepos-api.vercel.app/search?q=${encodeURIComponent(val)}`,
+                let endpoints = [
                     `https://kodepos.vercel.app/search?q=${encodeURIComponent(val)}`,
-                    `https://api.binderbyte.com/wilayah/kecamatan?api_key=master&nama=${encodeURIComponent(val)}`
+                    `https://kodepos-api.vercel.app/search?q=${encodeURIComponent(val)}`
                 ];
+
+                // Jika ada API Key, prioritaskan Binderbyte
+                if (API_KEY_BINDERBYTE && API_KEY_BINDERBYTE.trim() !== "") {
+                    endpoints.unshift(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${API_KEY_BINDERBYTE}&nama=${encodeURIComponent(val)}`);
+                } else {
+                    // Gunakan "master" hanya sebagai cadangan terakhir
+                    endpoints.push(`https://api.binderbyte.com/wilayah/kecamatan?api_key=master&nama=${encodeURIComponent(val)}`);
+                }
 
                 for (let url of endpoints) {
                     try {
@@ -1002,11 +1011,11 @@
                             if (dataArr.length > 0) {
                                 res.data = dataArr; 
                                 success = true;
-                                break; // Jika berhasil dapat data, hentikan loop pencarian
+                                break; 
                             }
                         }
                     } catch (e) {
-                        console.warn("Server API gagal merespon, mencoba server cadangan...");
+                        console.warn("Server API gagal merespon: " + url);
                     }
                 }
                 
@@ -1015,26 +1024,23 @@
                     let html = '';
                     
                     res.data.forEach(d => {
-                        // Adaptasi berbagai format nama properti dari API yang berbeda
                         let cityStr = d.city || d.kabupaten || d.kota || '';
                         let subStr = d.subdistrict || d.kecamatan || d.nama || '';
                         let provStr = d.province || d.provinsi || '';
 
                         if(!subStr || !cityStr || !provStr) return;
 
-                        // Format penamaan Kabupaten agar rapi menjadi "Kab."
                         if (cityStr.toLowerCase().startsWith('kabupaten ')) {
                             cityStr = cityStr.replace(/kabupaten /i, 'Kab. ');
                         } else if (!cityStr.toLowerCase().startsWith('kota ') && !cityStr.toLowerCase().startsWith('kab. ')) {
                             cityStr = 'Kab. ' + cityStr;
                         }
 
-                        // Pola output sesuai referensi: Kec. Balung - Kab. Jember - Prov. Jawa Timur
                         let formatStr = `Kec. ${subStr} - ${cityStr} - Prov. ${provStr}`;
                         
                         if (!uniqueKec.has(formatStr)) {
                             uniqueKec.add(formatStr);
-                            let safeName = formatStr.replace(/'/g, "\\'"); // Escape tanda kutip jika ada
+                            let safeName = formatStr.replace(/'/g, "\\'"); 
                             html += `<li class="px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b border-slate-100 dark:border-slate-600 last:border-0" onmousedown="selectKec('${safeName}')">${formatStr}</li>`;
                         }
                     });
@@ -1045,7 +1051,7 @@
                         suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Data wilayah tidak lengkap. Silakan ketik manual.</li>';
                     }
                 } else {
-                    suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Kecamatan tidak ditemukan. Silakan ketik manual.</li>';
+                    suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Kecamatan tidak ditemukan atau server limit. Silakan ketik manual.</li>';
                 }
             } catch (error) {
                 console.error("Gagal mengambil data kecamatan", error);
