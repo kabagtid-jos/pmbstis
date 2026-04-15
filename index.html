@@ -88,7 +88,31 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">NIK *</label>
-                            <input type="number" id="inp-nik" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
+                            <!-- Tipe diubah ke text dengan validasi angka agar nol di depan tidak hilang otomatis -->
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="16" id="inp-nik" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+                        <div class="col-span-full md:col-span-1">
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Nama Lengkap *</label>
+                            <input type="text" id="inp-nama" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Tempat Lahir *</label>
+                            <input type="text" id="inp-tempat" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Tanggal Lahir *</label>
+                            <input type="date" id="inp-tgl" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Jenis Kelamin *</label>
+                            <select id="inp-jk" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
+                                <option value="">-- Pilih --</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Nomor HP/WA *</label>
+                            <!-- Tipe diubah ke text dengan inputmode numeric -->
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" id="inp-hp" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">Nama Lengkap *</label>
@@ -494,12 +518,30 @@
 
         async function submitForm(e) {
             e.preventDefault();
+            
+            // Validasi NIK wajib 16 Digit
+            let nikVal = document.getElementById('inp-nik').value;
+            if (nikVal.length !== 16) {
+                Swal.fire({ title: 'Peringatan!', text: 'NIK harus terdiri dari tepat 16 digit angka.', icon: 'warning', confirmButtonColor: '#f59e0b' });
+                return;
+            }
+
             if(parseInt(document.getElementById('inp-captcha').value) !== captchaAnswer) { Swal.fire({ title: 'Gagal', text: 'Captcha salah!', icon: 'error' }); generateCaptcha(); return; }
+            
             let btn = document.getElementById('btn-submit'); btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...'; btn.disabled = true;
-            let data = { nik: document.getElementById('inp-nik').value, nama: document.getElementById('inp-nama').value, tempatLahir: document.getElementById('inp-tempat').value, tglLahir: document.getElementById('inp-tgl').value, jk: document.getElementById('inp-jk').value, hp: document.getElementById('inp-hp').value, email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama };
+            
+            let hpVal = document.getElementById('inp-hp').value;
+            let tglVal = document.getElementById('inp-tgl').value;
+
+            // Simpan data murni untuk pop-up success dan sistem lokal
+            let data = { nik: nikVal, nama: document.getElementById('inp-nama').value, tempatLahir: document.getElementById('inp-tempat').value, tglLahir: tglVal, jk: document.getElementById('inp-jk').value, hp: hpVal, email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama };
             submittedData = data; 
+            
+            // Format Payload ke Spreadsheet (Tambah tanda kutip agar dibaca Text)
+            let payloadData = { ...data, nik: "'" + nikVal, hp: "'" + hpVal, tglLahir: "'" + tglVal };
+
             try {
-                const res = await fetchAPI('register', data);
+                const res = await fetchAPI('register', payloadData);
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false;
                 if(res.success) { document.getElementById('form-pmb').reset(); showSuccessPopup(); } else { Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' }); generateCaptcha(); }
             } catch (err) { 
