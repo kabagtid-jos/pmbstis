@@ -301,10 +301,10 @@
                                         <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">NISN <span class="text-red-500">*</span></label><input type="text" id="bio-nisn" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
                                         <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">NPWP</label><input type="text" id="bio-npwp" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
                                         
-                                        <!-- Perubahan Input Kewarganegaraan menjadi Custom Autocomplete -->
+                                        <!-- Perubahan Input Kewarganegaraan dengan Custom Autocomplete (Kosong secara default) -->
                                         <div class="relative">
                                             <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kewarganegaraan <span class="text-red-500">*</span></label>
-                                            <input type="text" id="bio-kwn" required value="Indonesia" placeholder="Mulai ketik nama negara..." autocomplete="off" oninput="handleKwnInput(this.value)" onfocus="handleKwnInput(this.value)" onblur="setTimeout(()=>document.getElementById('kwn-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition">
+                                            <input type="text" id="bio-kwn" required placeholder="Mulai ketik nama negara..." autocomplete="off" oninput="handleKwnInput(this.value)" onfocus="handleKwnInput(this.value)" onblur="setTimeout(()=>document.getElementById('kwn-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition">
                                             <!-- Kotak Rekomendasi Pencarian -->
                                             <ul id="kwn-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300">
                                             </ul>
@@ -928,7 +928,6 @@
                 return;
             }
             
-            // Filter negara berdasarkan input (tidak case-sensitive) & batasi max 8 rekomendasi
             const filtered = globalCountries.filter(c => c.toLowerCase().includes(val.toLowerCase())).slice(0, 8);
             
             if (filtered.length > 0) {
@@ -940,7 +939,7 @@
                 suggBox.innerHTML = html;
                 suggBox.classList.remove('hidden');
             } else {
-                suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Mencari data... / Tidak ditemukan</li>';
+                suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Tidak ditemukan</li>';
                 suggBox.classList.remove('hidden');
             }
         }
@@ -1195,7 +1194,7 @@
 
             // Pre-fill editable fields if exists
             document.getElementById('bio-agama').value = data['Agama'] || ''; document.getElementById('bio-nisn').value = data['NISN'] || '';
-            document.getElementById('bio-npwp').value = data['NPWP'] || ''; document.getElementById('bio-kwn').value = data['Kewarganegaraan'] || 'Warga Negara Indonesia';
+            document.getElementById('bio-npwp').value = data['NPWP'] || ''; document.getElementById('bio-kwn').value = data['Kewarganegaraan'] || '';
             document.getElementById('bio-jalan').value = data['Jalan'] || ''; document.getElementById('bio-dusun').value = data['Dusun'] || '';
             document.getElementById('bio-rt').value = data['RT'] || ''; document.getElementById('bio-rw').value = data['RW'] || '';
             document.getElementById('bio-kel').value = data['Kelurahan'] || ''; document.getElementById('bio-kec').value = data['Kecamatan'] || '';
