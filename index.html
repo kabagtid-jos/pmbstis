@@ -6,7 +6,6 @@
     <title>PMB STIS Abu Zairi</title>
     <link rel="icon" href="https://i.ibb.co.com/GvR2ntXc/Chat-GPT-Image-Apr-15-2026-02-27-34-PM.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -17,14 +16,14 @@
             darkMode: 'class', 
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    fontFamily: { sans: ['Bahnschrift', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'] },
                     colors: { primary: '#1e3a8a', secondary: '#f59e0b', dark: '#0f172a' }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'Bahnschrift', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         .view-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
         .view-section.active { display: block; opacity: 1; }
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: 0 10px 40px -10px rgba(30, 58, 138, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05); border: 1px solid rgba(30, 58, 138, 0.05); }
@@ -45,7 +44,7 @@
                 <div class="flex items-center cursor-pointer" onclick="navigate('home')">
                     <div class="flex-shrink-0 flex items-center gap-2 md:gap-3">
                         <img src="https://i.ibb.co.com/GvR2ntXc/Chat-GPT-Image-Apr-15-2026-02-27-34-PM.png" alt="Logo STIS" class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover shadow-sm border-2 border-primary/10">
-                        <span class="font-bold text-lg md:text-xl text-primary tracking-tight">PMB STIS</span>
+                        <span class="font-bold text-lg md:text-xl text-primary dark:text-white tracking-tight">PMB STIS</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 md:gap-4">
@@ -96,7 +95,7 @@
                             <input type="text" id="inp-tempat" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs md:text-sm font-semibold mb-1">Tanggal Lahir * <span class="text-[10px] font-normal text-slate-400">(Pass Akun)</span></label>
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Tanggal Lahir *</label>
                             <input type="date" id="inp-tgl" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none" style="color-scheme: dark light;">
                         </div>
                         <div>
@@ -106,7 +105,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs md:text-sm font-semibold mb-1">Nomor HP/WA * <span class="text-[10px] font-normal text-slate-400">(Username)</span></label>
+                            <label class="block text-xs md:text-sm font-semibold mb-1">Nomor HP/WA *</label>
                             <input type="number" id="inp-hp" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
                         </div>
                         <div class="col-span-full md:col-span-1">
