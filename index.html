@@ -973,8 +973,23 @@
         const API_KEY_BINDERBYTE = "d31787ec5773340c9fa0948b106438c1695aa817d9d26efcbf95c167ec5c96d3"; 
         
         async function fetchAPI(action, payload = {}) {
-            const response = await fetch(`${GAS_API_URL}?action=${action}`, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-            return await response.json();
+            try {
+                const response = await fetch(`${GAS_API_URL}?action=${action}`, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload) 
+                });
+                
+                const text = await response.text();
+                
+                try {
+                    return JSON.parse(text);
+                } catch(e) {
+                    console.error("Format balasan server error:", text.substring(0, 150));
+                    throw new Error("Skrip Google Apps Script belum diizinkan (Otorisasi). Silakan buka editor Apps Script, pilih fungsi 'getInitData', klik 'Jalankan', lalu klik 'Tinjau Izin'.");
+                }
+            } catch (err) {
+                throw err;
+            }
         }
 
         function fileToBase64(file) {
@@ -1228,10 +1243,10 @@
             try {
                 const data = await fetchAPI('getInitData');
                 if (data.success) handleInitDataSuccess(data);
-                else throw new Error("Gagal mengambil data");
+                else throw new Error(data.message || "Gagal mengambil data dari Spreadsheet. Pastikan nama Sheet benar.");
             } catch (err) {
                 const container = document.getElementById('pmb-info-container');
-                if (container) container.innerHTML = `<div class="glass-card rounded-3xl p-6 md:p-10 text-center border border-red-200"><i class="fas fa-exclamation-triangle text-4xl md:text-5xl text-red-500 mb-4"></i><h3 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-2">Koneksi ke Server Ditolak</h3><button onclick="location.reload()" class="px-6 py-2.5 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md"><i class="fas fa-sync-alt mr-2"></i> Muat Ulang Halaman</button></div>`;
+                if (container) container.innerHTML = `<div class="glass-card rounded-3xl p-6 md:p-10 text-center border border-red-200"><i class="fas fa-exclamation-triangle text-4xl md:text-5xl text-red-500 mb-4"></i><h3 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-2">Koneksi / Otorisasi Ditolak</h3><p class="text-sm text-slate-600 dark:text-slate-400 mb-6">${err.message}</p><button onclick="location.reload()" class="px-6 py-2.5 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md"><i class="fas fa-sync-alt mr-2"></i> Muat Ulang Halaman</button></div>`;
             }
         }
 
