@@ -34,8 +34,6 @@
         div.swal2-html-container { font-size: 0.85rem !important; margin: 0.5em 0 0 0 !important; }
         .swal2-actions { margin-top: 1.25rem !important; gap: 0.5rem !important; }
         button.swal2-styled { padding: 0.5rem 1rem !important; font-size: 0.85rem !important; border-radius: 0.5rem !important; margin: 0 !important; }
-        
-        /* Memperbaiki warna kalender bawaan browser agar menyesuaikan tema web */
         input[type="date"] { color-scheme: light; }
         .dark input[type="date"] { color-scheme: dark; }
     </style>
@@ -88,7 +86,6 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">NIK *</label>
-                            <!-- Tipe diubah ke text dengan validasi angka agar nol di depan tidak hilang otomatis -->
                             <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="16" id="inp-nik" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
@@ -111,7 +108,6 @@
                         </div>
                         <div>
                             <label class="block text-xs md:text-sm font-semibold mb-1">Nomor HP/WA *</label>
-                            <!-- Tipe diubah ke text dengan inputmode numeric -->
                             <input type="text" inputmode="numeric" pattern="[0-9]*" id="inp-hp" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
@@ -127,7 +123,7 @@
                             <label class="block text-xs md:text-sm font-semibold mb-2">Verifikasi Keamanan *</label>
                             <div class="flex items-center gap-3">
                                 <div class="bg-white dark:bg-slate-700 dark:text-white px-3 py-1.5 border border-slate-200 dark:border-slate-600 rounded-lg font-mono font-bold text-base" id="captcha-question">? + ? =</div>
-                                <input type="number" id="inp-captcha" required placeholder="Hasil" class="w-20 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                <input type="number" id="inp-captcha" required placeholder="Hasil" class="w-20 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                             </div>
                         </div>
 
@@ -234,7 +230,6 @@
         <!-- ==================== 5. DASHBOARD ADMIN ==================== -->
         <section id="view-dashboard-admin" class="view-section py-8 md:py-12 px-4 pb-24 md:pb-12">
             <div class="max-w-7xl mx-auto">
-                
                 <div class="hidden md:flex gap-6 mb-6 border-b border-slate-200 dark:border-slate-700 pb-1 mt-4" id="desktop-admin-tabs">
                     <button onclick="switchAdminTab('ringkasan')" id="tab-desk-ringkasan" class="font-bold text-primary dark:text-secondary border-b-2 border-primary dark:border-secondary px-4 py-2 text-base transition-colors">Ringkasan</button>
                     <button onclick="switchAdminTab('maba')" id="tab-desk-maba" class="font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-4 py-2 text-base transition-colors border-b-2 border-transparent">Data Pendaftar</button>
@@ -248,26 +243,19 @@
                 </div>
 
                 <div id="admin-content-ringkasan" class="transition-colors">
-                    
-                    <!-- FILTER DASHBOARD -->
                     <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6">
                         <div class="w-full sm:w-1/2 relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar-alt"></i></div>
-                            <select id="filter-ta" onchange="applyAdminFilters()" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm transition-colors cursor-pointer appearance-none">
-                                <option value="all">Semua Tahun Akademik</option>
-                            </select>
+                            <select id="filter-ta" onchange="applyAdminFilters()" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm transition-colors cursor-pointer appearance-none"><option value="all">Semua Tahun Akademik</option></select>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-xs"></i></div>
                         </div>
                         <div class="w-full sm:w-1/2 relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-graduation-cap"></i></div>
-                            <select id="filter-prodi" onchange="applyAdminFilters()" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm transition-colors cursor-pointer appearance-none">
-                                <option value="all">Semua Program Studi</option>
-                            </select>
+                            <select id="filter-prodi" onchange="applyAdminFilters()" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm transition-colors cursor-pointer appearance-none"><option value="all">Semua Program Studi</option></select>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-xs"></i></div>
                         </div>
                     </div>
 
-                    <!-- CARDS RINGKASAN -->
                     <div class="grid grid-cols-2 gap-4 md:gap-6 mb-5 md:mb-6">
                         <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl shadow-md flex flex-col items-center justify-center text-center transition-colors">
                             <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-400 flex items-center justify-center text-lg md:text-2xl mb-2 md:mb-3"><i class="fas fa-user-graduate"></i></div>
@@ -284,9 +272,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-6 transition-colors">
                             <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4"><i class="fas fa-chart-pie text-primary mr-2"></i>Pendaftar per Prodi</h3>
-                            <div class="relative h-64 w-full flex items-center justify-center" id="prodiChartContainer">
-                                <canvas id="prodiChart"></canvas>
-                            </div>
+                            <div class="relative h-64 w-full flex items-center justify-center" id="prodiChartContainer"><canvas id="prodiChart"></canvas></div>
                         </div>
                         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-6 flex flex-col transition-colors">
                             <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4"><i class="fas fa-history text-secondary mr-2"></i>Pendaftar Terbaru</h3>
@@ -303,7 +289,6 @@
                     </table>
                 </div>
 
-                <!-- ADMIN PENGATURAN (DENGAN FONNTE) -->
                 <div id="admin-content-settings" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
                     <h3 class="font-bold mb-4 border-b border-slate-100 dark:border-slate-700 pb-3 dark:text-white"><i class="fas fa-cogs mr-2 text-secondary"></i> Pengaturan Aplikasi</h3>
                     <form id="form-settings" onsubmit="saveAdminSettings(event)">
@@ -323,16 +308,12 @@
                                 <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Daftar Prodi (Pisahkan baris / Enter)</label><textarea id="set-prodi" rows="3" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></textarea></div>
                             </div>
                             
-                            <!-- Setting Fonnte -->
                             <div class="col-span-full space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
                                 <h4 class="font-bold text-green-600 dark:text-green-400 border-b border-slate-200 dark:border-slate-600 pb-2"><i class="fab fa-whatsapp mr-2"></i>Integrasi WhatsApp (Fonnte)</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Status Fonnte</label>
-                                        <select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary">
-                                            <option value="Nonaktif">Nonaktif</option>
-                                            <option value="Aktif">Aktif</option>
-                                        </select>
+                                        <select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"><option value="Nonaktif">Nonaktif</option><option value="Aktif">Aktif</option></select>
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Token API Fonnte</label>
@@ -368,12 +349,13 @@
         </div>
     </footer>
 
-    <div id="print-area" class="hidden bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif;">
+    <!-- AREA CETAK FORMULIR -->
+    <div id="print-area" class="hidden bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif; color: #000;">
         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
             <h2 style="margin:0; color: #1e3a8a;">STIS ABU ZAIRI</h2>
             <p style="margin:0;">FORMULIR PENDAFTARAN MAHASISWA BARU</p>
         </div>
-        <table style="width: 100%; border-collapse: collapse;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <tr><td style="padding: 8px; width: 35%;"><strong>No Pendaftaran</strong></td><td>: <span id="print-no"></span></td></tr>
             <tr><td style="padding: 8px;"><strong>Nama Lengkap</strong></td><td>: <span id="print-nama"></span></td></tr>
             <tr><td style="padding: 8px;"><strong>NIK</strong></td><td>: <span id="print-nik"></span></td></tr>
@@ -381,11 +363,16 @@
             <tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr>
             <tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr>
         </table>
-        <div style="margin-top: 40px; text-align: right;">
-            <p>Panitia PMB</p>
-            <br><br><br>
-            <p>(................................)</p>
+        
+        <!-- BAGIAN TANDA TANGAN (BONDOWOSO, TANGGAL & TAHUN, HORMAT KAMI) -->
+        <div style="margin-top: 50px; float: right; text-align: center; width: 250px; font-size: 14px;">
+            <p style="margin: 0;">Bondowoso, <span id="print-tanggal"></span></p>
+            <p style="margin: 0;">Hormat Kami,</p>
+            <p style="margin: 0;">Panitia PMB STIS Abu Zairi</p>
+            <br><br><br><br>
+            <p style="margin: 0;">(........................................)</p>
         </div>
+        <div style="clear: both;"></div>
     </div>
 
     <!-- JS Logic -->
@@ -401,7 +388,7 @@
 
         let appData = null; let selectedJalur = null; let captchaAnswer = 0; let submittedData = null;
         let prodiChartInstance = null; let lastAdminData = null; let currentMabaData = null; let adminCreds = {user: '', pass: ''};
-        let adminAllRows = []; let adminHeaders = []; // Variabel filter admin
+        let adminAllRows = []; let adminHeaders = []; 
 
         document.addEventListener('DOMContentLoaded', () => { initTheme(); loadInitData(); generateCaptcha(); });
 
@@ -416,15 +403,7 @@
             const html = document.documentElement;
             if (html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.theme = 'light'; document.getElementById('theme-icon').className = 'fas fa-moon text-slate-600'; } 
             else { html.classList.add('dark'); localStorage.theme = 'dark'; document.getElementById('theme-icon').className = 'fas fa-sun text-secondary'; }
-            
-            if(prodiChartInstance && lastAdminData) applyAdminFilters(); // Re-render grafik agar warna sesuai tema
-        }
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            if (html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.theme = 'light'; document.getElementById('theme-icon').className = 'fas fa-moon text-slate-600'; } 
-            else { html.classList.add('dark'); localStorage.theme = 'dark'; document.getElementById('theme-icon').className = 'fas fa-sun text-secondary'; }
-            if(prodiChartInstance && lastAdminData) renderAdminDashboard(lastAdminData);
+            if(prodiChartInstance && lastAdminData) applyAdminFilters(); 
         }
 
         function navigate(viewId) {
@@ -496,29 +475,20 @@
         async function submitForm(e) {
             e.preventDefault();
             
-            // Validasi NIK wajib 16 Digit
             let nikVal = document.getElementById('inp-nik').value;
-            if (nikVal.length !== 16) {
-                Swal.fire({ title: 'Peringatan!', text: 'NIK harus terdiri dari tepat 16 digit angka.', icon: 'warning', confirmButtonColor: '#f59e0b' });
-                return;
-            }
-
+            if (nikVal.length !== 16) { Swal.fire({ title: 'Peringatan!', text: 'NIK harus terdiri dari tepat 16 digit angka.', icon: 'warning', confirmButtonColor: '#f59e0b' }); return; }
             if(parseInt(document.getElementById('inp-captcha').value) !== captchaAnswer) { Swal.fire({ title: 'Gagal', text: 'Captcha salah!', icon: 'error' }); generateCaptcha(); return; }
             
             let btn = document.getElementById('btn-submit'); btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...'; btn.disabled = true;
             
             let hpVal = document.getElementById('inp-hp').value;
-            
-            // Mengubah format tanggal dari YYYY-MM-DD menjadi DDMMYYYY
             let tglRaw = document.getElementById('inp-tgl').value;
             let tglParts = tglRaw.split('-');
             let tglVal = tglParts.length === 3 ? tglParts[2] + tglParts[1] + tglParts[0] : tglRaw.replace(/-/g, '');
 
-            // Simpan data murni untuk pop-up success dan sistem lokal
             let data = { nik: nikVal, nama: document.getElementById('inp-nama').value, tempatLahir: document.getElementById('inp-tempat').value, tglLahir: tglVal, jk: document.getElementById('inp-jk').value, hp: hpVal, email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama };
             submittedData = data; 
             
-            // Format Payload ke Spreadsheet (Tambah tanda kutip agar dibaca Text)
             let payloadData = { ...data, nik: "'" + nikVal, hp: "'" + hpVal, tglLahir: "'" + tglVal };
 
             try {
@@ -537,16 +507,23 @@
                 icon: 'success', title: '<span class="text-base md:text-lg font-bold dark:text-white tracking-tight">Pendaftaran Berhasil!</span>',
                 html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Data Anda telah tersimpan dengan aman di sistem.</div>` + userHtml,
                 background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
-                showDenyButton: true, confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login', denyButtonText: '<i class="fas fa-print"></i> Cetak',
-                confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', allowOutsideClick: false,
-                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
+                showDenyButton: true, showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login', denyButtonText: '<i class="fas fa-print"></i> Cetak', cancelButtonText: '<i class="fab fa-whatsapp"></i> Info ke WA',
+                confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', cancelButtonColor: '#25D366', allowOutsideClick: false,
+                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700', actions: 'flex-wrap' }
             }).then((result) => {
                 if (result.isConfirmed) { document.getElementById('login-user').value = submittedData.hp; navigate('login'); }
                 else if (result.isDenied) { cetakFormulir(); setTimeout(showSuccessPopup, 1000); }
+                else if (result.dismiss === Swal.DismissReason.cancel) {
+                    let nomorAdmin = "6281234567890"; 
+                    let pesanWA = `Halo Admin, saya mahasiswa baru telah berhasil mendaftar di PMB STIS Abu Zairi.%0A%0A*Nama:* ${submittedData.nama}%0A*NIK:* ${submittedData.nik}%0A*Prodi:* ${submittedData.prodi}%0A%0AMohon instruksi selanjutnya.`;
+                    window.open(`https://wa.me/${nomorAdmin}?text=${pesanWA}`, '_blank');
+                    setTimeout(showSuccessPopup, 500);
+                }
             });
         }
 
-        // FUNGSI CETAK FORMULIR YANG DITAMBAHKAN KEMBALI
+        // FUNGSI MENCETAK PDF
         function cetakFormulir() {
             document.getElementById('print-no').innerText = "PMB-" + Math.floor(Math.random() * 1000000);
             document.getElementById('print-nama').innerText = submittedData.nama;
@@ -555,6 +532,11 @@
             document.getElementById('print-prodi').innerText = submittedData.prodi;
             document.getElementById('print-user').innerText = submittedData.hp;
             document.getElementById('print-pass').innerText = submittedData.tglLahir;
+            
+            // Format Tanggal Hari Ini (Misal: 15 April 2026)
+            let today = new Date();
+            let options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('print-tanggal').innerText = today.toLocaleDateString('id-ID', options);
 
             let element = document.getElementById('print-area'); 
             element.classList.remove('hidden');
@@ -569,7 +551,6 @@
             });
         }
 
-        // ==================== LOGIKA ALUR MABA ====================
         async function doLogin(e) {
             e.preventDefault();
             let user = document.getElementById('login-user').value; let pass = document.getElementById('login-pass').value;
@@ -633,23 +614,18 @@
             });
         }
 
-        // ==================== LOGIKA ADMIN ALUR VERIFIKASI ====================
         function renderAdminDashboard(data) {
             if(!data || !data.maba) return;
             adminAllRows = data.maba.rows || [];
             adminHeaders = [...data.maba.headers, "Aksi"]; 
 
-            // 1. Populate Dropdown Filters Options
-            let taSet = new Set();
-            let prodiSet = new Set();
-            
+            let taSet = new Set(); let prodiSet = new Set();
             let prodiIndex = data.maba.headers.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
             let timeIndex = data.maba.headers.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
 
             adminAllRows.forEach(r => {
                 if(r[prodiIndex]) prodiSet.add(r[prodiIndex]);
-                let d = new Date(r[timeIndex]);
-                if(!isNaN(d.getTime())) taSet.add(d.getFullYear().toString());
+                let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) taSet.add(d.getFullYear().toString());
             });
 
             let taHtml = '<option value="all">Semua Tahun Akademik</option>';
@@ -660,68 +636,41 @@
             Array.from(prodiSet).sort().forEach(p => prodiHtml += `<option value="${p}">${p}</option>`);
             document.getElementById('filter-prodi').innerHTML = prodiHtml;
 
-            // 2. Terapkan filter pertama kali (menampilkan semua data bawaan)
             applyAdminFilters();
         }
 
         function applyAdminFilters() {
             let fTa = document.getElementById('filter-ta').value;
             let fProdi = document.getElementById('filter-prodi').value;
-            
             let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
             let timeIndex = adminHeaders.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
 
-            // Proses penyaringan (filtering)
             let filteredRows = adminAllRows.filter(r => {
                 let matchProdi = (fProdi === 'all' || r[prodiIndex] === fProdi);
                 let matchTa = true;
-                if(fTa !== 'all') {
-                    let d = new Date(r[timeIndex]);
-                    if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa);
-                    else matchTa = false;
-                }
+                if(fTa !== 'all') { let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa); else matchTa = false; }
                 return matchProdi && matchTa;
             });
-
             renderFilteredDashboard(filteredRows);
         }
 
         function renderFilteredDashboard(rows) {
-            // Update Cards
             document.getElementById('card-total-maba').innerText = rows.length;
-            
             let prodiCounts = {}; let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
             rows.forEach(r => { let prodi = r[prodiIndex]; if(prodiCounts[prodi] !== undefined) prodiCounts[prodi]++; else prodiCounts[prodi] = 1; });
             document.getElementById('card-total-prodi').innerText = Object.keys(prodiCounts).length;
 
-            // Update Chart
             let chartContainer = document.getElementById('prodiChartContainer');
             if(prodiChartInstance) prodiChartInstance.destroy();
             
             if(Object.keys(prodiCounts).length > 0) {
                 chartContainer.innerHTML = '<canvas id="prodiChart"></canvas>';
                 prodiChartInstance = new Chart(document.getElementById('prodiChart').getContext('2d'), { 
-                    type: 'doughnut', 
-                    data: { 
-                        labels: Object.keys(prodiCounts), 
-                        datasets: [{ 
-                            data: Object.values(prodiCounts), 
-                            backgroundColor: ['#1e3a8a', '#f59e0b', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899'], 
-                            borderWidth: document.documentElement.classList.contains('dark') ? 0 : 3, 
-                            borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
-                            hoverOffset: 4
-                        }] 
-                    }, 
-                    options: { 
-                        responsive: true, maintainAspectRatio: false, cutout: '65%',
-                        plugins: { legend: { display: true, position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { family: 'Bahnschrift', size: 12 }, color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569' } } } 
-                    } 
+                    type: 'doughnut', data: { labels: Object.keys(prodiCounts), datasets: [{ data: Object.values(prodiCounts), backgroundColor: ['#1e3a8a', '#f59e0b', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899'], borderWidth: document.documentElement.classList.contains('dark') ? 0 : 3, borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff', hoverOffset: 4 }] }, 
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: true, position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { family: 'Bahnschrift', size: 12 }, color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569' } } } } 
                 });
-            } else {
-                chartContainer.innerHTML = '<p class="text-slate-400 dark:text-slate-500 text-sm">Tidak ada data untuk grafik.</p>';
-            }
+            } else { chartContainer.innerHTML = '<p class="text-slate-400 dark:text-slate-500 text-sm">Tidak ada data untuk grafik.</p>'; }
 
-            // Update Logs Terbaru
             let logsHtml = ''; let recentRows = [...rows].reverse().slice(0, 5);
             if(recentRows.length === 0) { logsHtml = '<li class="text-sm py-3 text-center dark:text-slate-400">Belum ada data pendaftar.</li>'; } 
             else {
@@ -729,41 +678,21 @@
                 let timeIndex = adminHeaders.indexOf('Timestamp') !== -1 ? adminHeaders.indexOf('Timestamp') : 0;
                 recentRows.forEach(r => {
                     let d = new Date(r[timeIndex]); let timeStr = !isNaN(d.getTime()) ? d.toLocaleDateString('id-ID', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : r[timeIndex];
-                    logsHtml += `
-                        <li class="bg-slate-50 dark:bg-slate-700/40 rounded-xl p-3 flex justify-between items-center transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 text-primary dark:text-blue-400 flex justify-center items-center font-bold text-sm shadow-sm border border-slate-100 dark:border-slate-600">
-                                    ${String(r[namaIndex]).charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-200 line-clamp-1">${r[namaIndex]}</p>
-                                    <p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium">${r[prodiIndex]}</p>
-                                </div>
-                            </div>
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 ml-2 whitespace-nowrap">${timeStr}</span>
-                        </li>
-                    `;
+                    logsHtml += `<li class="bg-slate-50 dark:bg-slate-700/40 rounded-xl p-3 flex justify-between items-center transition-colors"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 text-primary dark:text-blue-400 flex justify-center items-center font-bold text-sm shadow-sm border border-slate-100 dark:border-slate-600">${String(r[namaIndex]).charAt(0).toUpperCase()}</div><div><p class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-200 line-clamp-1">${r[namaIndex]}</p><p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium">${r[prodiIndex]}</p></div></div><span class="text-[10px] text-slate-400 dark:text-slate-500 ml-2 whitespace-nowrap">${timeStr}</span></li>`;
                 });
             }
             document.getElementById('log-list').innerHTML = logsHtml;
 
-            // Update Tabel Maba Admin
             let thead = ''; adminHeaders.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
             document.getElementById('admin-thead').innerHTML = thead;
 
-            let tbody = '';
-            let nikIdx = adminHeaders.indexOf('NIK');
-            let statusIdx = adminHeaders.indexOf('Status Pembayaran');
-
+            let tbody = ''; let nikIdx = adminHeaders.indexOf('NIK'); let statusIdx = adminHeaders.indexOf('Status Pembayaran');
             rows.forEach(r => {
                 tbody += '<tr class="border-b border-slate-100 dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
-                // Render cells without the "Aksi" column first
                 for(let i=0; i<r.length; i++) { tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 text-xs md:text-sm">${r[i]}</td>`; }
-                
                 let aksiBtn = '-';
                 if (r[statusIdx] === 'Menunggu Verifikasi') aksiBtn = `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded shadow text-xs font-bold transition"><i class="fas fa-check mr-1"></i> Verifikasi</button>`;
                 else if (r[statusIdx] === 'Lunas') aksiBtn = `<span class="text-green-600 dark:text-green-400 font-bold text-xs"><i class="fas fa-check-circle"></i> Selesai</span>`;
-                
                 tbody += `<td class="p-3 md:p-4 whitespace-nowrap">${aksiBtn}</td></tr>`;
             });
             document.getElementById('admin-tbody').innerHTML = tbody;
@@ -785,11 +714,8 @@
             });
         }
 
-        // Pengaturan Form
         function populateAdminSettingsForm(rawSettingsVals) {
             let prodiList = [];
-            
-            // Set Default
             const elStatus = document.getElementById('set-fonnte-status'); if(elStatus) elStatus.value = 'Nonaktif';
             
             for(let i=1; i<rawSettingsVals.length; i++) {
@@ -799,8 +725,6 @@
                 if(row[0] === 'Jalur' && row[1] === 'Reguler') { document.getElementById('set-biaya-reg').value = row[3]; document.getElementById('set-biaya-ulang').value = row[4]; }
                 if(row[0] === 'Prodi') prodiList.push(row[1]);
                 if(row[0] === 'Admin') { document.getElementById('set-admin-user').value = row[1]; document.getElementById('set-admin-pass').value = row[2]; }
-                
-                // Parse Fonnte Settings
                 if(row[0] === 'Fonnte') {
                     if(row[1] === 'Status') { const el = document.getElementById('set-fonnte-status'); if(el) el.value = row[2] || 'Nonaktif'; }
                     if(row[1] === 'Token') { const el = document.getElementById('set-fonnte-token'); if(el) el.value = row[2]; }
@@ -816,15 +740,11 @@
             
             let newSettings = [];
             newSettings.push(['Jalur', 'Reguler', 'Sistem Kuliah: Offline', document.getElementById('set-biaya-reg').value, document.getElementById('set-biaya-ulang').value, 'Aktif']);
-            
             let prodis = document.getElementById('set-prodi').value.split('\n').filter(p => p.trim() !== '');
             prodis.forEach(p => newSettings.push(['Prodi', p.trim(), '', '', '', 'Aktif']));
-            
             newSettings.push(['Gelombang', document.getElementById('set-gelombang').value, document.getElementById('set-gelombang-tgl').value, '', '', 'Aktif']);
             newSettings.push(['Semester', document.getElementById('set-semester').value, '', '', '', 'Aktif']);
             newSettings.push(['Admin', document.getElementById('set-admin-user').value, document.getElementById('set-admin-pass').value, '', '', 'Aktif']);
-
-            // Push Fonnte Settings
             newSettings.push(['Fonnte', 'Status', document.getElementById('set-fonnte-status').value, '', '', 'Aktif']);
             newSettings.push(['Fonnte', 'Token', document.getElementById('set-fonnte-token').value, '', '', 'Aktif']);
             newSettings.push(['Fonnte', 'Target', document.getElementById('set-fonnte-target').value, '', '', 'Aktif']);
