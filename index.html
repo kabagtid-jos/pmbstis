@@ -360,10 +360,14 @@
         document.addEventListener('DOMContentLoaded', () => { initTheme(); loadInitData(); generateCaptcha(); });
 
         function initTheme() {
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark'); document.getElementById('theme-icon').className = 'fas fa-sun text-secondary';
-            } else {
-                document.documentElement.classList.remove('dark'); document.getElementById('theme-icon').className = 'fas fa-moon';
+            try {
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark'); document.getElementById('theme-icon').className = 'fas fa-sun text-secondary';
+                } else {
+                    document.documentElement.classList.remove('dark'); document.getElementById('theme-icon').className = 'fas fa-moon';
+                }
+            } catch(e) {
+                console.warn('Browser memblokir localStorage, mengabaikan pengaturan tema.');
             }
         }
 
@@ -427,6 +431,23 @@
             let primaryJalur = data.jalur && data.jalur.length > 0 ? data.jalur[0] : { nama: "Reguler", reg: 0, ulang: 0 };
             selectedJalur = primaryJalur;
             document.getElementById('form-jalur-label').innerText = primaryJalur.nama || '-';
+            
+            // --- BAGIAN YANG DIPERBAIKI (MENGHILANGKAN LOADING SPINNER) ---
+            let homeCardHtml = `
+                <div class="glass-card rounded-3xl p-6 md:p-10 text-center flex flex-col items-center transition-colors relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 dark:bg-secondary/5 rounded-full blur-2xl -z-10 group-hover:bg-secondary/20 transition duration-500"></div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-50 dark:bg-slate-800/80 text-primary rounded-full flex items-center justify-center text-2xl md:text-3xl mb-5 md:mb-6 shadow-inner border border-primary/10"><i class="fas fa-user-plus"></i></div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-slate-900 dark:text-white transition-colors tracking-tight">Pendaftaran Mahasiswa Baru</h2>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6 md:mb-8 max-w-lg mx-auto transition-colors leading-relaxed">Mari bergabung dan kembangkan potensi terbaik Anda. Silakan klik tombol di bawah ini untuk melihat rincian biaya dan melanjutkan ke pengisian formulir pendaftaran.</p>
+                    <button onclick="showInformasiPendaftaran()" class="w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/40 flex items-center justify-center gap-2 text-base md:text-lg tracking-wide hover:-translate-y-1">
+                        <i class="fas fa-hand-pointer"></i> Daftar Sekarang
+                    </button>
+                </div>
+            `;
+            const pmbInfoContainer = document.getElementById('pmb-info-container');
+            if(pmbInfoContainer) pmbInfoContainer.innerHTML = homeCardHtml;
+            // --------------------------------------------------------------
+
             let prodiHtml = '<option value="">-- Pilih Program Studi --</option>';
             if(data.prodi) data.prodi.forEach(p => { prodiHtml += `<option value="${p}">${p}</option>`; });
             document.getElementById('inp-prodi').innerHTML = prodiHtml;
