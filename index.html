@@ -659,12 +659,12 @@
         // --- HELPER LOGO BANK OTOMATIS ---
         function getBankLogo(name) {
             let n = name.toLowerCase();
-            if(n.includes('bsi') || n.includes('syariah indonesia')) return 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Bank_Syariah_Indonesia.svg';
-            if(n.includes('bca') || n.includes('central asia')) return 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg';
-            if(n.includes('bri') || n.includes('rakyat indonesia')) return 'https://upload.wikimedia.org/wikipedia/commons/2/2e/BRI_2020.svg';
-            if(n.includes('bni') || n.includes('negara indonesia')) return 'https://upload.wikimedia.org/wikipedia/id/5/55/BNI_logo.svg';
-            if(n.includes('mandiri')) return 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Bank_Mandiri_logo_2016.svg';
-            if(n.includes('jatim')) return 'https://upload.wikimedia.org/wikipedia/commons/4/41/Bank_Jatim_logo.svg';
+            if(n.includes('bsi') || n.includes('syariah indonesia')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Bank_Syariah_Indonesia.svg/512px-Bank_Syariah_Indonesia.svg.png';
+            if(n.includes('bca') || n.includes('central asia')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/512px-Bank_Central_Asia.svg.png';
+            if(n.includes('bri') || n.includes('rakyat indonesia')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/BRI_2020.svg/512px-BRI_2020.svg.png';
+            if(n.includes('bni') || n.includes('negara indonesia')) return 'https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/512px-BNI_logo.svg.png';
+            if(n.includes('mandiri')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Bank_Mandiri_logo_2016.svg/512px-Bank_Mandiri_logo_2016.svg.png';
+            if(n.includes('jatim')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Bank_Jatim_logo.svg/512px-Bank_Jatim_logo.svg.png';
             return 'fas fa-building-columns';
         }
 
@@ -706,8 +706,9 @@
             if (appData && appData.banks && appData.banks.length > 0) {
                 appData.banks.forEach(b => {
                     let logoUrl = getBankLogo(b.nama);
-                    // Menambahkan penanganan onerror jika link gambar gagal dimuat
-                    let logoEl = logoUrl.startsWith('http') ? `<img src="${logoUrl}" alt="${b.nama}" onerror="this.outerHTML='<i class=\\'fas fa-building-columns text-2xl text-white/50\\'></i>'" class="h-6 md:h-7 object-contain bg-white px-1.5 py-0.5 rounded shadow-sm">` : `<i class="${logoUrl} text-2xl text-white/50"></i>`;
+                    // Perbaikan syntax onerror menggunakan &quot; agar tidak error saat dieksekusi browser
+                    let fallbackIcon = '<i class=&quot;fas fa-building-columns text-2xl text-white/50&quot;></i>';
+                    let logoEl = logoUrl.startsWith('http') ? `<img src="${logoUrl}" alt="${b.nama}" onerror="this.outerHTML='${fallbackIcon}'" class="h-6 md:h-7 object-contain bg-white px-1.5 py-0.5 rounded shadow-sm">` : `<i class="${logoUrl} text-2xl text-white/50"></i>`;
                     
                     bankHtml += `<div class="flex items-center justify-between p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10 mb-2 transition-colors hover:bg-white/20">
                         <div>
