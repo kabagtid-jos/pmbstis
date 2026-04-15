@@ -362,7 +362,16 @@
                 </div>
 
                 <div id="admin-content-maba" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 overflow-x-auto">
-                    <h3 class="font-bold mb-4 border-b border-slate-100 dark:border-slate-700 pb-3 dark:text-white">Tabel Data Mahasiswa Baru</h3>
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+                        <h3 class="font-bold border-b border-slate-100 dark:border-slate-700 pb-2 dark:text-white flex-grow w-full md:w-auto">Tabel Data Mahasiswa Baru</h3>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <div class="relative flex-grow md:w-64">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fas fa-search"></i></span>
+                                <input type="text" id="filter-search" onkeyup="applyAdminFilters()" placeholder="Cari NIK / Nama..." class="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary text-sm shadow-sm transition-colors">
+                            </div>
+                            <button onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg shadow text-sm font-bold transition flex items-center whitespace-nowrap"><i class="fas fa-file-excel mr-2"></i> Export CSV</button>
+                        </div>
+                    </div>
                     <table class="w-full text-left border-collapse" id="admin-table">
                         <thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-xs md:text-sm transition-colors" id="admin-thead"></tr></thead>
                         <tbody class="text-xs md:text-sm" id="admin-tbody"></tbody>
@@ -705,6 +714,16 @@
                 
                 stepBerkas.className = "step-item completed"; stepBayar.className = "step-item completed"; stepFinal.className = "step-item completed";
             } 
+            else if (data.statusBayar === 'Ditolak' || data.statusVerifikasi === 'Ditolak') {
+                alertC.innerHTML = `<div class="bg-red-50 border border-red-200 p-4 rounded-xl text-red-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-times-circle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Pendaftaran Ditolak / Perlu Perbaikan</h4><p class="text-xs mt-1">Catatan Admin: <b>${data.keterangan || 'Berkas tidak valid / Bukti transfer salah'}</b>. Silakan unggah ulang berkas atau bukti pembayaran Anda.</p></div></div>`;
+                berkasOvl.classList.add('hidden'); bayarOvl.classList.add('hidden'); 
+                berkasAct.classList.remove('hidden'); bayarAct.classList.remove('hidden');
+                
+                infoBayar.innerHTML = '<span class="text-red-600 font-bold">Ditolak (Perbaikan)</span>';
+                infoBerkas.innerHTML = '<span class="text-red-600 font-bold">Ditolak (Perbaikan)</span>';
+                
+                stepBerkas.className = "step-item active"; stepBayar.className = "step-item active";
+            }
             else if (data.statusBayar === 'Menunggu Verifikasi') {
                 alertC.innerHTML = `<div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-blue-700 font-medium flex items-start shadow-sm mb-6"><i class="fas fa-info-circle text-2xl mr-3 mt-0.5"></i> <div><h4 class="font-bold text-sm">Menunggu Verifikasi Admin</h4><p class="text-xs mt-1">Bukti pembayaran Anda sedang kami periksa. Mohon tunggu proses finalisasinya.</p></div></div>`;
                 berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); bayarAct.classList.add('hidden');
@@ -850,14 +869,23 @@
         function applyAdminFilters() {
             let fTa = document.getElementById('filter-ta').value;
             let fProdi = document.getElementById('filter-prodi').value;
+            let searchInput = document.getElementById('filter-search');
+            let search = searchInput ? searchInput.value.toLowerCase() : '';
+            
             let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
             let timeIndex = adminHeaders.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
+            let nikIdx = adminHeaders.indexOf('NIK'); if(nikIdx===-1) nikIdx = 1;
+            let namaIdx = adminHeaders.indexOf('Nama Lengkap'); if(namaIdx===-1) namaIdx = 2;
 
             let filteredRows = adminAllRows.filter(r => {
                 let matchProdi = (fProdi === 'all' || r[prodiIndex] === fProdi);
                 let matchTa = true;
                 if(fTa !== 'all') { let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa); else matchTa = false; }
-                return matchProdi && matchTa;
+                let matchSearch = true;
+                if(search !== '') {
+                    matchSearch = (String(r[nikIdx]).toLowerCase().includes(search) || String(r[namaIdx]).toLowerCase().includes(search));
+                }
+                return matchProdi && matchTa && matchSearch;
             });
             renderFilteredDashboard(filteredRows);
         }
@@ -895,13 +923,28 @@
             document.getElementById('admin-thead').innerHTML = thead;
 
             let tbody = ''; let nikIdx = adminHeaders.indexOf('NIK'); let statusIdx = adminHeaders.indexOf('Status Pembayaran');
+            let verifIdx = adminHeaders.indexOf('Status Verifikasi');
             rows.forEach(r => {
                 tbody += '<tr class="border-b border-slate-100 dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
                 for(let i=0; i<r.length; i++) { tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 text-xs md:text-sm">${r[i]}</td>`; }
-                let aksiBtn = '-';
-                if (r[statusIdx] === 'Menunggu Verifikasi') aksiBtn = `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded shadow text-xs font-bold transition"><i class="fas fa-check mr-1"></i> Verifikasi</button>`;
-                else if (r[statusIdx] === 'Lunas') aksiBtn = `<span class="text-green-600 dark:text-green-400 font-bold text-xs"><i class="fas fa-check-circle"></i> Selesai</span>`;
-                tbody += `<td class="p-3 md:p-4 whitespace-nowrap">${aksiBtn}</td></tr>`;
+                
+                let statBayar = r[statusIdx];
+                let statVerif = verifIdx !== -1 ? r[verifIdx] : '';
+
+                let aksiBtn = `<div class="flex gap-1.5 items-center">
+                    <button onclick="cekBerkas('${r[nikIdx]}')" class="bg-blue-500 hover:bg-blue-600 text-white w-7 h-7 rounded shadow text-xs font-bold transition flex items-center justify-center" title="Cek Detail Berkas"><i class="fas fa-folder-open"></i></button>`;
+
+                if (statBayar === 'Menunggu Verifikasi' || statVerif === 'Berkas Lengkap') {
+                    aksiBtn += `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1.5 rounded shadow text-[10px] md:text-xs font-bold transition flex items-center whitespace-nowrap" title="Verifikasi Lunas"><i class="fas fa-check mr-1"></i> Verifikasi</button>
+                                <button onclick="adminReject('${r[nikIdx]}')" class="bg-red-500 hover:bg-red-600 text-white w-7 h-7 rounded shadow text-xs font-bold transition flex items-center justify-center" title="Tolak Berkas/Bayar"><i class="fas fa-times"></i></button>`;
+                } else if (statBayar === 'Lunas') {
+                    aksiBtn += `<span class="text-green-600 dark:text-green-400 font-bold text-xs whitespace-nowrap ml-1"><i class="fas fa-check-circle mr-1"></i> Selesai</span>`;
+                } else if (statBayar === 'Ditolak' || statVerif === 'Ditolak') {
+                    aksiBtn += `<span class="text-red-600 dark:text-red-400 font-bold text-xs whitespace-nowrap ml-1"><i class="fas fa-times-circle mr-1"></i> Ditolak</span>`;
+                }
+                aksiBtn += `</div>`;
+                
+                tbody += `<td class="p-3 md:p-4">${aksiBtn}</td></tr>`;
             });
             document.getElementById('admin-tbody').innerHTML = tbody;
         }
@@ -962,6 +1005,94 @@
                 btn.innerHTML = originalText; btn.disabled = false;
                 if(response.success) { Swal.fire('Berhasil', response.message, 'success'); loadInitData(); } else { Swal.fire('Gagal', response.message, 'error'); }
             } catch(err) { btn.innerHTML = originalText; btn.disabled = false; Swal.fire('Gagal', 'Koneksi error', 'error'); }
+        }
+
+        // FUNGSI BARU: Export CSV, Cek Berkas, dan Tolak Pendaftaran
+        function exportCSV() {
+            let searchInput = document.getElementById('filter-search');
+            let search = searchInput ? searchInput.value.toLowerCase() : '';
+            let fTa = document.getElementById('filter-ta').value;
+            let fProdi = document.getElementById('filter-prodi').value;
+            
+            let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
+            let timeIndex = adminHeaders.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
+            let nikIdx = adminHeaders.indexOf('NIK'); if(nikIdx===-1) nikIdx = 1;
+            let namaIdx = adminHeaders.indexOf('Nama Lengkap'); if(namaIdx===-1) namaIdx = 2;
+
+            let filteredRows = adminAllRows.filter(r => {
+                let matchProdi = (fProdi === 'all' || r[prodiIndex] === fProdi);
+                let matchTa = true;
+                if(fTa !== 'all') { let d = new Date(r[timeIndex]); if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa); else matchTa = false; }
+                let matchSearch = true;
+                if(search !== '') matchSearch = (String(r[nikIdx]).toLowerCase().includes(search) || String(r[namaIdx]).toLowerCase().includes(search));
+                return matchProdi && matchTa && matchSearch;
+            });
+
+            if(filteredRows.length === 0) { Swal.fire('Kosong', 'Tidak ada data pendaftar untuk diekspor.', 'info'); return; }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            let exportHeaders = adminHeaders.filter(h => h !== "Aksi");
+            csvContent += exportHeaders.join(",") + "\r\n";
+            
+            filteredRows.forEach(row => {
+                let rowArray = row.map(cell => {
+                    let cellStr = String(cell).replace(/"/g, '""');
+                    return `"${cellStr}"`;
+                });
+                csvContent += rowArray.join(",") + "\r\n";
+            });
+
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Data_PMB_STIS_${new Date().getTime()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function cekBerkas(nik) {
+            Swal.fire({ title: 'Mencari Berkas...', html: 'Menghubungkan ke Google Drive...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            try {
+                let response = await fetchAPI('getMabaFiles', { nik: nik });
+                if(response.success && response.files && response.files.length > 0) {
+                    let fileHtml = '<div class="space-y-3 mt-4 text-left">';
+                    response.files.forEach(f => {
+                        let icon = f.name.includes('.pdf') ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
+                        fileHtml += `<a href="${f.url}" target="_blank" class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"><i class="fas ${icon} text-xl w-8 text-center"></i><span class="text-sm font-medium dark:text-slate-200 flex-1 truncate">${f.name}</span><i class="fas fa-external-link-alt text-slate-400 text-xs"></i></a>`;
+                    });
+                    fileHtml += '</div>';
+                    Swal.fire({ title: 'File Ditemukan', html: fileHtml, icon: 'info', showConfirmButton: false, showCloseButton: true });
+                } else {
+                    Swal.fire('Kosong', 'Mahasiswa ini belum mengunggah file atau folder tidak ditemukan.', 'info');
+                }
+            } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi', 'error'); }
+        }
+
+        async function adminReject(nik) {
+            const { value: reason } = await Swal.fire({
+                title: 'Tolak Pendaftaran',
+                input: 'textarea',
+                inputLabel: 'Alasan Penolakan (Perbaikan)',
+                inputPlaceholder: 'Contoh: Bukti transfer buram, mohon unggah ulang...',
+                inputAttributes: { 'aria-label': 'Alasan penolakan' },
+                showCancelButton: true,
+                confirmButtonText: 'Tolak & Kirim Notif',
+                confirmButtonColor: '#ef4444',
+                cancelButtonText: 'Batal'
+            });
+
+            if (reason) {
+                Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                try {
+                    let response = await fetchAPI('rejectMaba', { nik: nik, reason: reason });
+                    if(response.success) {
+                        let loginRes = await fetchAPI('login', { username: adminCreds.user, password: adminCreds.pass });
+                        if(loginRes.success) { lastAdminData = loginRes.data; renderAdminDashboard(loginRes.data); }
+                        Swal.fire('Ditolak', 'Mahasiswa diminta untuk memperbaiki dokumennya.', 'success');
+                    }
+                } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi', 'error'); }
+            }
         }
     </script>
 </body>
