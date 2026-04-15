@@ -19,13 +19,13 @@
 
     <script>
         tailwind.config = {
-            darkMode: 'class', // Mengaktifkan class-based dark mode
+            darkMode: 'class', 
             theme: {
                 extend: {
                     fontFamily: { sans: ['Poppins', 'sans-serif'] },
                     colors: { 
-                        primary: '#1e3a8a',   // Biru Donker (Navy)
-                        secondary: '#f59e0b', // Aksen Emas (Gold)
+                        primary: '#1e3a8a',   
+                        secondary: '#f59e0b', 
                         dark: '#0f172a' 
                     }
                 }
@@ -38,48 +38,17 @@
         .view-section.active { display: block; opacity: 1; }
         
         /* Glass Card Elegan */
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(12px); 
-            box-shadow: 0 10px 40px -10px rgba(30, 58, 138, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05); 
-            border: 1px solid rgba(30, 58, 138, 0.05); 
-        }
-        .dark .glass-card { 
-            background: rgba(15, 23, 42, 0.85); 
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-        }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: 0 10px 40px -10px rgba(30, 58, 138, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05); border: 1px solid rgba(30, 58, 138, 0.05); }
+        .dark .glass-card { background: rgba(15, 23, 42, 0.85); box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); }
         
-        /* Gradien Biru Donker */
-        .gradient-bg { 
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%); 
-        }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%); }
         
-        /* Modifikasi Ukuran Pop-up SweetAlert2 (Lebih Kompak/Kecil) */
-        div.swal2-popup {
-            width: 85% !important;
-            max-width: 380px !important;
-            padding: 1.25rem 1rem 1.25rem 1rem !important;
-            border-radius: 1.25rem !important;
-        }
-        h2.swal2-title {
-            font-size: 1.15rem !important;
-            margin-bottom: 0.25rem !important;
-        }
-        div.swal2-html-container {
-            font-size: 0.85rem !important;
-            margin: 0.5em 0 0 0 !important;
-        }
-        .swal2-actions {
-            margin-top: 1.25rem !important;
-            gap: 0.5rem !important;
-        }
-        button.swal2-styled {
-            padding: 0.5rem 1rem !important;
-            font-size: 0.85rem !important;
-            border-radius: 0.5rem !important;
-            margin: 0 !important;
-        }
+        /* SweetAlert2 Popup Styling */
+        div.swal2-popup { width: 85% !important; max-width: 380px !important; padding: 1.25rem 1rem 1.25rem 1rem !important; border-radius: 1.25rem !important; }
+        h2.swal2-title { font-size: 1.15rem !important; margin-bottom: 0.25rem !important; }
+        div.swal2-html-container { font-size: 0.85rem !important; margin: 0.5em 0 0 0 !important; }
+        .swal2-actions { margin-top: 1.25rem !important; gap: 0.5rem !important; }
+        button.swal2-styled { padding: 0.5rem 1rem !important; font-size: 0.85rem !important; border-radius: 0.5rem !important; margin: 0 !important; }
     </style>
 </head>
 <body class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 min-h-screen flex flex-col transition-colors duration-300">
@@ -95,15 +64,12 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 md:gap-4">
-                    <!-- Tombol Dark Mode -->
                     <button id="theme-toggle" onclick="toggleTheme()" class="text-slate-600 hover:text-secondary dark:text-slate-300 dark:hover:text-secondary text-lg md:text-xl p-2 transition-colors focus:outline-none" title="Ubah Tema">
                         <i id="theme-icon" class="fas fa-moon"></i>
                     </button>
-                    <!-- Icon Home -->
                     <button id="nav-btn-home" onclick="navigate('home')" class="text-slate-600 hover:text-primary dark:text-slate-300 dark:hover:text-primary font-medium hidden sm:block text-lg md:text-xl transition-colors" title="Beranda">
                         <i class="fas fa-home"></i>
                     </button>
-                    <!-- Tombol Login/Logout -->
                     <button id="nav-btn-login" onclick="navigate('login')" class="bg-primary hover:bg-blue-800 text-white px-4 py-1.5 md:px-5 md:py-2 text-sm md:text-base rounded-full font-medium transition shadow-md tracking-wide">
                         <i class="fas fa-sign-in-alt mr-1 md:mr-2"></i>Login
                     </button>
@@ -118,7 +84,7 @@
     <!-- Main Content Area -->
     <main class="flex-grow w-full">
         
-        <!-- ==================== 1. BERANDA (PILIH JALUR) ==================== -->
+        <!-- ==================== 1. BERANDA ==================== -->
         <section id="view-home" class="view-section active w-full">
             <div class="gradient-bg text-white py-12 md:py-24 px-4 text-center border-b border-primary/20">
                 <h1 class="text-3xl md:text-5xl font-bold mb-3 md:mb-5 tracking-tight text-white drop-shadow-lg">PMB STIS Abu Zairi</h1>
@@ -151,18 +117,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">NIK <span class="text-red-500">*</span></label>
-                            <input type="number" id="inp-nik" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors">
+                            <input type="number" id="inp-nik" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Nama Lengkap <span class="text-red-500">*</span></label>
-                            <input type="text" id="inp-nama" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors">
+                            <input type="text" id="inp-nama" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Tempat Lahir <span class="text-red-500">*</span></label>
                             <input type="text" id="inp-tempat" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div>
-                            <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Tanggal Lahir <span class="text-red-500">*</span> <span class="text-[10px] md:text-xs font-normal text-slate-400">(Akan jadi Password)</span></label>
+                            <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Tanggal Lahir <span class="text-red-500">*</span> <span class="text-[10px] md:text-xs font-normal text-slate-400">(Pass Akun)</span></label>
                             <input type="date" id="inp-tgl" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors" style="color-scheme: dark light;">
                         </div>
                         <div>
@@ -174,7 +140,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Nomor HP / WA <span class="text-red-500">*</span> <span class="text-[10px] md:text-xs font-normal text-slate-400">(Akan jadi Username)</span></label>
+                            <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Nomor HP / WA <span class="text-red-500">*</span> <span class="text-[10px] md:text-xs font-normal text-slate-400">(Username)</span></label>
                             <input type="number" id="inp-hp" required class="w-full px-3 py-2.5 md:px-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
@@ -213,19 +179,19 @@
                 <div class="text-center mb-6 md:mb-8">
                     <div class="w-12 h-12 md:w-16 md:h-16 gradient-bg rounded-full flex items-center justify-center text-white text-2xl md:text-3xl mx-auto mb-3 md:mb-5 shadow-lg"><i class="fas fa-user-lock"></i></div>
                     <h2 class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white transition-colors tracking-tight">Login PMB</h2>
-                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-1 md:mt-2 transition-colors">Akses dashboard pendaftaran Anda</p>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-1 md:mt-2 transition-colors">Akses dashboard Anda</p>
                 </div>
                 
                 <form onsubmit="doLogin(event)">
                     <div class="mb-4 md:mb-5">
-                        <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Username (No HP)</label>
+                        <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Username</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 md:pl-4 text-slate-400"><i class="fas fa-phone text-sm md:text-base"></i></span>
                             <input type="text" id="login-user" required class="w-full pl-9 pr-3 py-2.5 md:pl-11 md:pr-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                     </div>
                     <div class="mb-5 md:mb-8">
-                        <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Password (Tanggal Lahir: YYYY-MM-DD)</label>
+                        <label class="block text-xs md:text-sm font-semibold mb-1 md:mb-2 dark:text-slate-300">Password</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 md:pl-4 text-slate-400"><i class="fas fa-lock text-sm md:text-base"></i></span>
                             <input type="password" id="login-pass" required class="w-full pl-9 pr-3 py-2.5 md:pl-11 md:pr-4 md:py-3 text-sm md:text-base rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
@@ -235,15 +201,10 @@
                         Masuk Dashboard
                     </button>
                 </form>
-                
-                <div class="mt-5 md:mt-8 text-center text-xs md:text-sm text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-4 md:pt-5 transition-colors">
-                    Lupa Password? <br>
-                    Hubungi Admin di WA: <a href="https://wa.me/6281234567890" target="_blank" class="text-secondary font-bold hover:underline">0812-3456-7890</a>
-                </div>
             </div>
         </section>
 
-        <!-- ==================== 4. DASHBOARD MAHASISWA BARU ==================== -->
+        <!-- ==================== 4. DASHBOARD MAHASISWA ==================== -->
         <section id="view-dashboard-maba" class="view-section py-8 md:py-12 px-4">
             <div class="max-w-5xl mx-auto">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 mb-4 md:mb-6 transition-colors relative overflow-hidden">
@@ -253,7 +214,7 @@
                             <h2 class="text-xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Selamat Datang, <span id="maba-nama" class="text-primary">Mahasiswa</span></h2>
                             <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">NIK: <span id="maba-nik" class="font-semibold"></span> | Jalur: <span id="maba-jalur" class="font-semibold"></span> | Prodi: <span id="maba-prodi" class="font-semibold text-secondary"></span></p>
                         </div>
-                        <div id="badge-status-bayar" class="px-3 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800 shadow-sm">
+                        <div id="badge-status-bayar" class="px-3 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm bg-yellow-100 text-yellow-700 border border-yellow-200 shadow-sm">
                             Status: Belum Bayar
                         </div>
                     </div>
@@ -263,23 +224,7 @@
                     <!-- Berkas -->
                     <div class="md:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 transition-colors">
                         <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-6 border-b border-slate-200 dark:border-slate-700 pb-3 dark:text-white flex items-center"><i class="fas fa-folder-open text-primary mr-3 text-2xl"></i> Upload Berkas Syarat</h3>
-                        <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mb-4 md:mb-6">Lengkapi dokumen di bawah ini agar dapat diverifikasi oleh bagian administrasi.</p>
-                        
-                        <div class="space-y-3 md:space-y-4 text-sm md:text-base">
-                            <div class="flex items-center justify-between p-3 md:p-5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/50 transition-colors hover:shadow-sm">
-                                <div><p class="font-semibold dark:text-white">1. Scan Ijazah / SKL</p><p class="text-[10px] md:text-xs text-red-500 dark:text-red-400 mt-0.5">Wajib (PDF)</p></div>
-                                <button class="px-2.5 py-1.5 md:px-4 md:py-2 bg-white dark:bg-slate-600 hover:bg-slate-100 dark:hover:bg-slate-500 border border-slate-200 dark:border-slate-500 dark:text-white rounded-lg text-xs md:text-sm font-medium transition-colors shadow-sm"><i class="fas fa-upload mr-1"></i> Upload</button>
-                            </div>
-                            <div class="flex items-center justify-between p-3 md:p-5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/50 transition-colors hover:shadow-sm">
-                                <div><p class="font-semibold dark:text-white">2. Scan Kartu Keluarga</p><p class="text-[10px] md:text-xs text-red-500 dark:text-red-400 mt-0.5">Wajib (PDF)</p></div>
-                                <button class="px-2.5 py-1.5 md:px-4 md:py-2 bg-white dark:bg-slate-600 hover:bg-slate-100 dark:hover:bg-slate-500 border border-slate-200 dark:border-slate-500 dark:text-white rounded-lg text-xs md:text-sm font-medium transition-colors shadow-sm"><i class="fas fa-upload mr-1"></i> Upload</button>
-                            </div>
-                            <div class="flex items-center justify-between p-3 md:p-5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/50 transition-colors hover:shadow-sm">
-                                <div><p class="font-semibold dark:text-white">3. Pas Foto 3x4 (Warna)</p><p class="text-[10px] md:text-xs text-red-500 dark:text-red-400 mt-0.5">Wajib (JPG/PNG)</p></div>
-                                <button class="px-2.5 py-1.5 md:px-4 md:py-2 bg-white dark:bg-slate-600 hover:bg-slate-100 dark:hover:bg-slate-500 border border-slate-200 dark:border-slate-500 dark:text-white rounded-lg text-xs md:text-sm font-medium transition-colors shadow-sm"><i class="fas fa-upload mr-1"></i> Upload</button>
-                            </div>
-                        </div>
-                        <p class="text-[10px] md:text-xs text-slate-400 dark:text-slate-500 mt-4 md:mt-6 italic">*Fitur upload dokumen langsung akan disimpan ke Google Drive dengan aman.</p>
+                        <p class="text-[10px] md:text-xs text-slate-400 dark:text-slate-500 mt-4 italic">*Fitur upload dokumen akan disimpan ke Google Drive dengan aman.</p>
                     </div>
 
                     <!-- Tagihan -->
@@ -294,15 +239,12 @@
                             <strong class="text-lg text-primary dark:text-secondary">BSI - 1234567890</strong><br>
                             <span class="text-xs md:text-sm text-slate-500 dark:text-slate-400">a.n STIS Abu Zairi</span>
                         </div>
-                        <button class="w-full mt-auto bg-secondary hover:bg-amber-600 text-white font-semibold py-3 text-sm md:text-base rounded-xl transition shadow-lg hover:shadow-secondary/40 tracking-wide flex items-center justify-center gap-2">
-                            <i class="fas fa-camera"></i> Konfirmasi Bayar
-                        </button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== 5. DASHBOARD ADMIN ==================== -->
+        <!-- ==================== 5. DASHBOARD ADMIN (DENGAN TAB PENGATURAN) ==================== -->
         <section id="view-dashboard-admin" class="view-section py-8 md:py-12 px-4">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
@@ -312,23 +254,87 @@
                     </a>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 overflow-x-auto transition-colors">
+                <!-- TABS -->
+                <div class="flex gap-4 md:gap-6 mb-6 border-b border-slate-200 dark:border-slate-700 pb-1">
+                    <button onclick="switchAdminTab('maba')" id="tab-btn-maba" class="font-bold text-primary dark:text-secondary border-b-2 border-primary dark:border-secondary px-2 md:px-4 py-2 text-sm md:text-base transition-colors">Data Pendaftar</button>
+                    <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-2 md:px-4 py-2 text-sm md:text-base transition-colors border-b-2 border-transparent">Pengaturan Web</button>
+                </div>
+
+                <!-- KONTEN TAB: DATA PENDAFTAR -->
+                <div id="admin-content-maba" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 overflow-x-auto transition-colors">
                     <h3 class="text-base md:text-xl font-bold mb-4 md:mb-6 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">Rekap Data Mahasiswa Baru</h3>
                     <table class="w-full text-left border-collapse" id="admin-table">
                         <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-xs md:text-sm transition-colors" id="admin-thead">
-                                <!-- Headers injected here -->
-                            </tr>
+                            <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-xs md:text-sm transition-colors" id="admin-thead"></tr>
                         </thead>
-                        <tbody class="text-xs md:text-sm dark:text-slate-200" id="admin-tbody">
-                            <!-- Rows injected here -->
-                        </tbody>
+                        <tbody class="text-xs md:text-sm dark:text-slate-200" id="admin-tbody"></tbody>
                     </table>
                 </div>
-                
-                <div class="mt-6 md:mt-8 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-5 md:p-6 transition-colors shadow-sm">
-                    <h3 class="font-bold text-sm md:text-base text-primary dark:text-blue-400 mb-2 md:mb-3 flex items-center"><i class="fas fa-info-circle mr-2"></i>Informasi Pengaturan</h3>
-                    <p class="text-xs md:text-sm text-slate-600 dark:text-blue-200/70 leading-relaxed">Untuk melakukan <b>Setting Jalur, Gelombang, Semester, dan Program Studi</b>, silakan klik tombol "Buka Spreadsheet" di atas dan edit data pada sheet <b>"Settings"</b>. Aplikasi ini dirancang untuk membaca dan menyesuaikan perubahan tersebut secara otomatis dan <i>real-time</i>.</p>
+
+                <!-- KONTEN TAB: PENGATURAN WEB -->
+                <div id="admin-content-settings" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 transition-colors">
+                    <h3 class="text-base md:text-xl font-bold mb-4 md:mb-6 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3"><i class="fas fa-cogs mr-2 text-secondary"></i> Pengaturan Aplikasi</h3>
+                    
+                    <form id="form-settings" onsubmit="saveAdminSettings(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Pengaturan Gelombang -->
+                            <div class="space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h4 class="font-bold text-primary dark:text-blue-400 border-b border-slate-200 dark:border-slate-600 pb-2">Informasi Umum</h4>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Tahun Akademik / Semester</label>
+                                    <input type="text" id="set-semester" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Nama Gelombang Aktif</label>
+                                    <input type="text" id="set-gelombang" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Periode Pendaftaran (Tanggal)</label>
+                                    <input type="text" id="set-gelombang-tgl" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                            </div>
+
+                            <!-- Pengaturan Biaya & Prodi -->
+                            <div class="space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h4 class="font-bold text-primary dark:text-blue-400 border-b border-slate-200 dark:border-slate-600 pb-2">Biaya & Program Studi</h4>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Biaya Registrasi (Rp)</label>
+                                        <input type="number" id="set-biaya-reg" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Biaya Daftar Ulang (Rp)</label>
+                                        <input type="number" id="set-biaya-ulang" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Daftar Program Studi (Pisahkan dengan baris baru / Enter)</label>
+                                    <textarea id="set-prodi" rows="3" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none" placeholder="S1 Sistem Informasi&#10;S1 Teknik Informatika"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Pengaturan Admin -->
+                            <div class="col-span-full space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <h4 class="font-bold text-red-600 dark:text-red-400 border-b border-slate-200 dark:border-slate-600 pb-2"><i class="fas fa-lock mr-2"></i>Kredensial Admin</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Username Admin</label>
+                                        <input type="text" id="set-admin-user" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Password Admin</label>
+                                        <input type="text" id="set-admin-pass" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-span-full mt-2">
+                                <button type="submit" id="btn-save-settings" class="w-full md:w-auto px-8 bg-secondary hover:bg-amber-600 text-white font-bold py-3 text-sm md:text-base rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                                    <i class="fas fa-save"></i> Simpan Perubahan Pengaturan
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
@@ -341,46 +347,22 @@
         </div>
     </footer>
 
-    <!-- Hidden element for PDF Generation -->
-    <div id="print-area" class="hidden bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif;">
-        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
-            <h2 style="margin:0; color: #1e3a8a;">STIS ABU ZAIRI</h2>
-            <p style="margin:0;">FORMULIR PENDAFTARAN MAHASISWA BARU</p>
-        </div>
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr><td style="padding: 8px; width: 35%;"><strong>No Pendaftaran</strong></td><td>: <span id="print-no"></span></td></tr>
-            <tr><td style="padding: 8px;"><strong>Nama Lengkap</strong></td><td>: <span id="print-nama"></span></td></tr>
-            <tr><td style="padding: 8px;"><strong>NIK</strong></td><td>: <span id="print-nik"></span></td></tr>
-            <tr><td style="padding: 8px;"><strong>Jalur / Prodi</strong></td><td>: <span id="print-jalur"></span> / <span id="print-prodi"></span></td></tr>
-            <tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr>
-            <tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr>
-        </table>
-        <div style="margin-top: 40px; text-align: right;">
-            <p>Panitia PMB</p>
-            <br><br><br>
-            <p>(................................)</p>
-        </div>
-    </div>
-
     <!-- JS Logic -->
     <script>
         // MASUKKAN URL APPS SCRIPT ANDA DI SINI
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbx-HEdnO9w6dDeOlFbSOAY3U2oWjliWYbsmp1s6oJ5ZqYt70CIsr7mtm6aWiJ6kTjW5/exec'; // GANTI DENGAN URL DEPLOY ANDA
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbx-HEdnO9w6dDeOlFbSOAY3U2oWjliWYbsmp1s6oJ5ZqYt70CIsr7mtm6aWiJ6kTjW5/exec'; 
         
-        // State
         let appData = null;
         let selectedJalur = null;
         let captchaAnswer = 0;
         let submittedData = null;
 
-        // Init
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             loadInitData();
             generateCaptcha();
         });
 
-        // Theme Toggle Logic
         function initTheme() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -404,13 +386,11 @@
             }
         }
 
-        // Navigation (SPA logic)
         function navigate(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${viewId}`).classList.add('active');
             window.scrollTo(0, 0);
 
-            // Nav UI
             if(viewId === 'dashboard-maba' || viewId === 'dashboard-admin') {
                 document.getElementById('nav-btn-login').classList.add('hidden');
                 document.getElementById('nav-btn-logout').classList.remove('hidden');
@@ -429,102 +409,63 @@
                 showConfirmButton: false,
                 background: isDark ? '#0f172a' : '#ffffff'
             });
-            setTimeout(() => navigate('home'), 1500);
+            setTimeout(() => { navigate('home'); location.reload(); }, 1500);
         }
 
-        // Fetch Data from Server (MODIFIED FOR GITHUB)
+        // Logic Tab Admin
+        function switchAdminTab(tabName) {
+            document.getElementById('admin-content-maba').classList.add('hidden');
+            document.getElementById('admin-content-settings').classList.add('hidden');
+            
+            document.getElementById('tab-btn-maba').className = "font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-2 md:px-4 py-2 text-sm md:text-base transition-colors border-b-2 border-transparent";
+            document.getElementById('tab-btn-settings').className = "font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-2 md:px-4 py-2 text-sm md:text-base transition-colors border-b-2 border-transparent";
+
+            if (tabName === 'maba') {
+                document.getElementById('admin-content-maba').classList.remove('hidden');
+                document.getElementById('tab-btn-maba').className = "font-bold text-primary dark:text-secondary border-b-2 border-primary dark:border-secondary px-2 md:px-4 py-2 text-sm md:text-base transition-colors";
+            } else {
+                document.getElementById('admin-content-settings').classList.remove('hidden');
+                document.getElementById('tab-btn-settings').className = "font-bold text-primary dark:text-secondary border-b-2 border-primary dark:border-secondary px-2 md:px-4 py-2 text-sm md:text-base transition-colors";
+            }
+        }
+
         async function loadInitData() {
             if (GAS_API_URL.includes('AKfycb...')) {
-                console.warn("URL API masih default. Menggunakan data simulasi.");
-                
-                // Peringatan jika belum mengganti URL
+                console.warn("URL API default.");
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'Belum Terhubung Database!',
-                    html: 'Anda belum mengganti <b>GAS_API_URL</b> di dalam kode (baris ~854) dengan URL Web App milik Anda.<br><br>Data yang tampil saat ini adalah <b>Data Simulasi</b> dan tidak akan sinkron dengan Spreadsheet.',
-                    confirmButtonColor: '#f59e0b',
-                    background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#ffffff',
-                    color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#334155'
+                    icon: 'warning', title: 'Belum Terhubung Database!',
+                    html: 'Anda belum mengganti <b>GAS_API_URL</b> di kode dengan URL Web App milik Anda.',
+                    confirmButtonColor: '#f59e0b'
                 });
-
-                let mockData = {
-                    semester: "Ganjil 2026/2027",
-                    gelombang: "Gelombang I",
-                    gelombangTgl: "01 Januari - 30 April 2026",
-                    jalur: [
-                        { nama: "Reguler", sistem: "Sistem Kuliah: Offline", reg: 200000, ulang: 1500000 }
-                    ],
-                    prodi: ["S1 Sistem Informasi", "S1 Teknik Informatika"]
-                };
+                let mockData = { semester: "TA Simulasi", gelombang: "Gel. Simulasi", gelombangTgl: "01 Jan - 30 Apr", jalur: [{ nama: "Reguler", sistem: "Offline", reg: 200000, ulang: 1500000 }], prodi: ["S1 Sistem Informasi"] };
                 handleInitDataSuccess(mockData);
                 return;
             }
 
             try {
-                // Gunakan fetch ke API Google Apps Script
-                const response = await fetch(`${GAS_API_URL}?action=getInitData`, {
-                    method: 'POST',
-                    body: JSON.stringify({}),
-                });
-                
+                const response = await fetch(`${GAS_API_URL}?action=getInitData`, { method: 'POST', body: JSON.stringify({}) });
                 const data = await response.json();
-                
-                if(data.success) {
-                    handleInitDataSuccess(data);
-                } else {
-                    throw new Error(data.message || "Gagal mengambil data");
-                }
+                if(data.success) handleInitDataSuccess(data);
             } catch (err) {
-                console.error("Error loading data:", err);
-                
-                // Fallback mock data jika API belum diset / gagal
                 console.warn("Koneksi gagal/belum diset. Menggunakan data simulasi.");
-                let mockData = {
-                    semester: "Ganjil 2026/2027",
-                    gelombang: "Gelombang I",
-                    gelombangTgl: "01 Januari - 30 April 2026",
-                    jalur: [
-                        { nama: "Reguler", sistem: "Sistem Kuliah: Offline", reg: 200000, ulang: 1500000 }
-                    ],
-                    prodi: ["S1 Sistem Informasi", "S1 Teknik Informatika"]
-                };
-                handleInitDataSuccess(mockData);
             }
         }
 
         function handleInitDataSuccess(data) {
             appData = data;
             document.getElementById('info-semester').innerHTML = `<i class="fas fa-calendar-alt text-secondary mr-1 md:mr-2"></i><span class="hidden sm:inline">Tahun Akademik: </span><span class="sm:hidden">TA: </span><b>${data.semester}</b>`;
-            
-            // Format teks gelombang: Sembunyikan tanggal di mobile agar muat sejajar
             let gelombangTextDesktop = data.gelombangTgl ? `${data.gelombang} (${data.gelombangTgl})` : data.gelombang;
             document.getElementById('info-gelombang').innerHTML = `<i class="fas fa-water text-secondary mr-1 md:mr-2"></i><span class="hidden sm:inline"><b>${gelombangTextDesktop}</b></span><span class="sm:hidden"><b>${data.gelombang}</b></span>`;
             
-            // Render Info PMB (Single Jalur Reguler)
             let primaryJalur = data.jalur && data.jalur.length > 0 ? data.jalur[0] : { nama: "Reguler", sistem: "Offline", reg: 0, ulang: 0 };
             selectedJalur = primaryJalur;
             document.getElementById('form-jalur-label').innerText = primaryJalur.nama;
 
-            let homeCardHtml = `
-                <div class="glass-card rounded-3xl p-6 md:p-10 text-center flex flex-col items-center transition-colors relative overflow-hidden group">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 dark:bg-secondary/5 rounded-full blur-2xl -z-10 group-hover:bg-secondary/20 transition duration-500"></div>
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-50 dark:bg-slate-800/80 text-primary rounded-full flex items-center justify-center text-2xl md:text-3xl mb-5 md:mb-6 shadow-inner border border-primary/10"><i class="fas fa-user-plus"></i></div>
-                    <h2 class="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-slate-900 dark:text-white transition-colors tracking-tight">Pendaftaran Mahasiswa Baru</h2>
-                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6 md:mb-8 max-w-lg mx-auto transition-colors leading-relaxed">Mari bergabung dan kembangkan potensi terbaik Anda. Silakan klik tombol di bawah ini untuk melihat rincian biaya dan melanjutkan ke pengisian formulir pendaftaran.</p>
-                    <button onclick="showInformasiPendaftaran()" class="w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/40 flex items-center justify-center gap-2 text-base md:text-lg tracking-wide hover:-translate-y-1">
-                        <i class="fas fa-hand-pointer"></i> Daftar Sekarang
-                    </button>
-                </div>
-            `;
-            document.getElementById('pmb-info-container').innerHTML = homeCardHtml;
-
-            // Populate Prodi Dropdown
             let prodiHtml = '<option value="">-- Pilih Program Studi --</option>';
             data.prodi.forEach(p => { prodiHtml += `<option value="${p}">${p}</option>`; });
             document.getElementById('inp-prodi').innerHTML = prodiHtml;
         }
 
-        // Action: Pop up Informasi Pendaftaran
         function showInformasiPendaftaran() {
             let primaryJalur = selectedJalur;
             let regFee = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(primaryJalur.reg);
@@ -537,33 +478,18 @@
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Gelombang</span> <strong class="dark:text-white">${appData.gelombang}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Periode</span> <strong class="dark:text-white">${appData.gelombangTgl || '-'}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Jalur</span> <strong class="dark:text-white">${primaryJalur.nama}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Sistem</span> <strong class="dark:text-white">${primaryJalur.sistem}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Registrasi</span> <strong class="text-primary dark:text-blue-400">${regFee}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Daftar Ulang</span> <strong class="text-secondary">${ulangFee}</strong></div>
                 </div>
-                <div class="text-[9px] md:text-[10px] text-slate-400 dark:text-slate-500 mt-2 md:mt-3 text-right italic">*Biaya daftar ulang sudah termasuk Almamater</div>
             `;
 
             Swal.fire({
                 title: '<span class="dark:text-white font-bold tracking-tight">Rincian Pendaftaran</span>',
-                html: infoHtml,
-                icon: 'info',
-                background: isDark ? '#0f172a' : '#ffffff', // Warna popup gelap
-                color: isDark ? '#f8fafc' : '#334155',
-                showCancelButton: true,
-                confirmButtonColor: '#1e3a8a',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: '<i class="fas fa-edit mr-1"></i> Lanjutkan ke Formulir',
-                cancelButtonText: 'Batal',
-                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate('form');
-                }
-            });
+                html: infoHtml, icon: 'info', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
+                showCancelButton: true, confirmButtonColor: '#1e3a8a', confirmButtonText: 'Lanjutkan Formulir', cancelButtonText: 'Batal'
+            }).then((result) => { if (result.isConfirmed) navigate('form'); });
         }
 
-        // Captcha Logic
         function generateCaptcha() {
             let num1 = Math.floor(Math.random() * 10) + 1;
             let num2 = Math.floor(Math.random() * 10) + 1;
@@ -572,22 +498,11 @@
             document.getElementById('inp-captcha').value = '';
         }
 
-        // Submit Form Pendaftaran (MODIFIED FOR GITHUB)
         async function submitForm(e) {
             e.preventDefault();
-            
             if(parseInt(document.getElementById('inp-captcha').value) !== captchaAnswer) {
-                let isDark = document.documentElement.classList.contains('dark');
-                Swal.fire({
-                    title: 'Verifikasi Gagal', 
-                    text: 'Hasil hitungan keamanan (Captcha) salah!', 
-                    icon: 'error',
-                    background: isDark ? '#0f172a' : '#ffffff',
-                    color: isDark ? '#f8fafc' : '#334155',
-                    confirmButtonColor: '#1e3a8a'
-                });
-                generateCaptcha();
-                return;
+                Swal.fire({ title: 'Gagal', text: 'Captcha salah!', icon: 'error' });
+                generateCaptcha(); return;
             }
 
             let btn = document.getElementById('btn-submit');
@@ -595,261 +510,161 @@
             btn.disabled = true;
 
             let data = {
-                nik: document.getElementById('inp-nik').value,
-                nama: document.getElementById('inp-nama').value,
-                tempatLahir: document.getElementById('inp-tempat').value,
-                tglLahir: document.getElementById('inp-tgl').value,
-                jk: document.getElementById('inp-jk').value,
-                hp: document.getElementById('inp-hp').value,
-                email: document.getElementById('inp-email').value,
-                prodi: document.getElementById('inp-prodi').value,
-                jalur: selectedJalur.nama
+                nik: document.getElementById('inp-nik').value, nama: document.getElementById('inp-nama').value,
+                tempatLahir: document.getElementById('inp-tempat').value, tglLahir: document.getElementById('inp-tgl').value,
+                jk: document.getElementById('inp-jk').value, hp: document.getElementById('inp-hp').value,
+                email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama
             };
             submittedData = data; 
 
             if (GAS_API_URL.includes('AKfycb...')) {
-                console.warn("URL API masih default. Menggunakan simulasi pendaftaran.");
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang';
-                    btn.disabled = false;
-                    document.getElementById('form-pmb').reset();
-                    generateCaptcha();
-                    showSuccessPopup();
-                }, 1000);
-                return;
+                setTimeout(() => { btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false; showSuccessPopup(); }, 1000); return;
             }
 
             try {
-                const response = await fetch(`${GAS_API_URL}?action=register`, {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
-                
+                const response = await fetch(`${GAS_API_URL}?action=register`, { method: 'POST', body: JSON.stringify(data) });
                 const res = await response.json();
-                
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang';
-                btn.disabled = false;
-                
-                if(res.success) {
-                    document.getElementById('form-pmb').reset();
-                    generateCaptcha();
-                    showSuccessPopup();
-                } else {
-                    let isDark = document.documentElement.classList.contains('dark');
-                    Swal.fire({
-                        title: 'Pendaftaran Gagal', 
-                        text: res.message, 
-                        icon: 'error',
-                        background: isDark ? '#0f172a' : '#ffffff',
-                        color: isDark ? '#f8fafc' : '#334155',
-                        confirmButtonColor: '#1e3a8a'
-                    });
-                }
+                btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false;
+                if(res.success) { document.getElementById('form-pmb').reset(); showSuccessPopup(); } 
+                else Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' });
             } catch (err) {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang';
-                btn.disabled = false;
-                
-                // Fallback sukses untuk simulasi saat offline/testing
-                console.warn("Koneksi gagal. Menggunakan simulasi pendaftaran.");
-                document.getElementById('form-pmb').reset();
-                generateCaptcha();
-                showSuccessPopup();
+                btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false;
             }
         }
 
         function showSuccessPopup() {
-            let isDark = document.documentElement.classList.contains('dark');
-            
-            let userHtml = `
-                <div class="bg-blue-50/50 dark:bg-blue-900/20 p-2.5 md:p-3 rounded-lg mt-2.5 text-left border border-blue-100 dark:border-blue-800/50 transition-colors">
-                    <p class="text-[11px] md:text-xs mb-1.5 text-primary dark:text-blue-300 font-semibold">Harap simpan informasi akun ini:</p>
-                    <table class="w-full text-[11px] md:text-xs dark:text-slate-200">
-                        <tr><td class="font-medium w-1/3 py-0.5">Username</td><td class="py-0.5">: <span class="font-bold">${submittedData.hp}</span></td></tr>
-                        <tr><td class="font-medium py-0.5">Password</td><td class="py-0.5">: <span class="font-bold">${submittedData.tglLahir}</span></td></tr>
-                    </table>
-                    <p class="text-[9px] md:text-[10px] text-slate-500 dark:text-slate-400 mt-2 border-t border-blue-100 dark:border-slate-700 pt-1.5 leading-tight">*Instruksi login dan verifikasi juga telah dikirimkan ke email <b>${submittedData.email}</b></p>
-                </div>
-            `;
-
             Swal.fire({
-                icon: 'success',
-                title: '<span class="text-base md:text-lg font-bold dark:text-white tracking-tight">Pendaftaran Berhasil!</span>',
-                html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Data Anda telah tersimpan dengan aman di sistem.</div>` + userHtml,
-                background: isDark ? '#0f172a' : '#ffffff',
-                color: isDark ? '#f8fafc' : '#334155',
-                showDenyButton: true,
-                confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login Sekarang',
-                denyButtonText: '<i class="fas fa-print"></i> Cetak Formulir',
-                confirmButtonColor: '#1e3a8a',
-                denyButtonColor: '#f59e0b',
-                allowOutsideClick: false,
-                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
+                icon: 'success', title: 'Pendaftaran Berhasil!',
+                html: `Username: <b>${submittedData.hp}</b><br>Password: <b>${submittedData.tglLahir}</b>`,
+                showDenyButton: true, confirmButtonText: 'Login Sekarang', denyButtonText: 'Tutup'
             }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('login-user').value = submittedData.hp;
-                    navigate('login');
-                } else if (result.isDenied) {
-                    cetakFormulir();
-                    // Show popup again after printing
-                    setTimeout(showSuccessPopup, 1000); 
-                }
+                if (result.isConfirmed) { document.getElementById('login-user').value = submittedData.hp; navigate('login'); }
             });
         }
 
-        function cetakFormulir() {
-            // Populate hidden div
-            document.getElementById('print-no').innerText = "PMB-" + Math.floor(Math.random() * 1000000);
-            document.getElementById('print-nama').innerText = submittedData.nama;
-            document.getElementById('print-nik').innerText = submittedData.nik;
-            document.getElementById('print-jalur').innerText = submittedData.jalur;
-            document.getElementById('print-prodi').innerText = submittedData.prodi;
-            document.getElementById('print-user').innerText = submittedData.hp;
-            document.getElementById('print-pass').innerText = submittedData.tglLahir;
-
-            let element = document.getElementById('print-area');
-            element.classList.remove('hidden');
-            
-            let opt = {
-                margin:       1,
-                filename:     `Formulir_PMB_${submittedData.nama}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.classList.add('hidden');
-            });
-        }
-
-        // Login Logic (MODIFIED FOR GITHUB)
         async function doLogin(e) {
             e.preventDefault();
             let user = document.getElementById('login-user').value;
             let pass = document.getElementById('login-pass').value;
-            let isDark = document.documentElement.classList.contains('dark');
-            
             let btn = document.getElementById('btn-login');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifikasi...';
             btn.disabled = true;
 
             if (GAS_API_URL.includes('AKfycb...')) {
-                console.warn("URL API masih default. Menggunakan simulasi login.");
                 setTimeout(() => {
-                    btn.innerHTML = 'Masuk Dashboard';
-                    btn.disabled = false;
-                    
-                    if (user === 'admin') {
-                        renderAdminDashboard({
-                            headers: ['Timestamp', 'NIK', 'Nama Lengkap', 'Program Studi', 'Jalur', 'Status Pembayaran'],
-                            rows: [['2026-04-15', '35000000000', 'Admin Simulator', 'S1 Sistem Informasi', 'Reguler', 'Lunas']]
-                        });
-                        navigate('dashboard-admin');
-                    } else {
-                        renderMabaDashboard({
-                            nama: 'Siswa Simulasi',
-                            nik: '35000000000',
-                            jalur: 'Reguler',
-                            prodi: 'S1 Sistem Informasi',
-                            statusBayar: 'Belum Bayar'
-                        });
-                        navigate('dashboard-maba');
-                    }
+                    btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
+                    if (user === 'admin') navigate('dashboard-admin'); else navigate('dashboard-maba');
                 }, 1000);
                 return;
             }
 
             try {
-                const response = await fetch(`${GAS_API_URL}?action=login`, {
-                    method: 'POST',
-                    body: JSON.stringify({ username: user, password: pass })
-                });
-                
+                const response = await fetch(`${GAS_API_URL}?action=login`, { method: 'POST', body: JSON.stringify({ username: user, password: pass }) });
                 const res = await response.json();
-                
-                btn.innerHTML = 'Masuk Dashboard';
-                btn.disabled = false;
+                btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
                 
                 if(res.success) {
                     if(res.role === 'admin') {
                         renderAdminDashboard(res.data);
+                        populateAdminSettingsForm(res.data.settings); // Isi form settings saat login
                         navigate('dashboard-admin');
                     } else {
                         renderMabaDashboard(res.data);
                         navigate('dashboard-maba');
                     }
                 } else {
-                    Swal.fire({
-                        title: '<span class="font-bold tracking-tight">Login Gagal</span>', 
-                        text: res.message, 
-                        icon: 'error',
-                        background: isDark ? '#0f172a' : '#ffffff',
-                        color: isDark ? '#f8fafc' : '#334155',
-                        confirmButtonColor: '#1e3a8a',
-                        customClass: { popup: 'rounded-2xl shadow-2xl' }
-                    });
+                    Swal.fire({ title: 'Login Gagal', text: res.message, icon: 'error' });
                 }
             } catch(err) {
-                btn.innerHTML = 'Masuk Dashboard';
-                btn.disabled = false;
-                
-                // Mock Login jika koneksi API terputus
-                console.warn("Koneksi gagal. Menggunakan simulasi login.");
-                if (user === 'admin') {
-                    renderAdminDashboard({
-                        headers: ['Timestamp', 'NIK', 'Nama Lengkap', 'Program Studi', 'Jalur', 'Status Pembayaran'],
-                        rows: [['2026-04-15', '35000000000', 'Admin Simulator', 'S1 Sistem Informasi', 'Reguler', 'Lunas']]
-                    });
-                    navigate('dashboard-admin');
-                } else {
-                    renderMabaDashboard({
-                        nama: 'Siswa Simulasi',
-                        nik: '35000000000',
-                        jalur: 'Reguler',
-                        prodi: 'S1 Sistem Informasi',
-                        statusBayar: 'Belum Bayar'
-                    });
-                    navigate('dashboard-maba');
-                }
+                btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
             }
         }
 
-        // Render Dashboards
         function renderMabaDashboard(data) {
             document.getElementById('maba-nama').innerText = data.nama;
             document.getElementById('maba-nik').innerText = data.nik;
             document.getElementById('maba-jalur').innerText = data.jalur;
             document.getElementById('maba-prodi').innerText = data.prodi;
-            
-            let bStatus = document.getElementById('badge-status-bayar');
-            bStatus.innerText = `Status: ${data.statusBayar}`;
-            if(data.statusBayar === 'Lunas') {
-                bStatus.className = "px-3 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 shadow-sm";
-            } else {
-                bStatus.className = "px-3 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800 shadow-sm";
-            }
-
-            // Find bill based on jalur
-            let jData = appData.jalur.find(j => j.nama === data.jalur);
-            if(jData) {
-                document.getElementById('maba-tagihan').innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(jData.reg);
-            }
         }
 
         function renderAdminDashboard(data) {
             let thead = '';
-            data.headers.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
+            data.maba.headers.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
             document.getElementById('admin-thead').innerHTML = thead;
 
             let tbody = '';
-            data.rows.forEach(row => {
+            data.maba.rows.forEach(row => {
                 tbody += '<tr class="border-b dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
-                row.forEach(cell => {
-                    tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 font-medium">${cell}</td>`;
-                });
+                row.forEach(cell => tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 font-medium">${cell}</td>`);
                 tbody += '</tr>';
             });
             document.getElementById('admin-tbody').innerHTML = tbody;
+        }
+
+        // --- FUNGSI BARU: PENGATURAN VIA DASHBOARD ADMIN ---
+
+        function populateAdminSettingsForm(rawSettingsVals) {
+            let prodiList = [];
+            for(let i=1; i<rawSettingsVals.length; i++) {
+                let row = rawSettingsVals[i];
+                if(row[0] === 'Semester') document.getElementById('set-semester').value = row[1];
+                if(row[0] === 'Gelombang') {
+                    document.getElementById('set-gelombang').value = row[1];
+                    document.getElementById('set-gelombang-tgl').value = row[2];
+                }
+                if(row[0] === 'Jalur' && row[1] === 'Reguler') {
+                    document.getElementById('set-biaya-reg').value = row[3];
+                    document.getElementById('set-biaya-ulang').value = row[4];
+                }
+                if(row[0] === 'Prodi') prodiList.push(row[1]);
+                if(row[0] === 'Admin') {
+                    document.getElementById('set-admin-user').value = row[1];
+                    document.getElementById('set-admin-pass').value = row[2];
+                }
+            }
+            document.getElementById('set-prodi').value = prodiList.join('\n');
+        }
+
+        async function saveAdminSettings(e) {
+            e.preventDefault();
+            let isDark = document.documentElement.classList.contains('dark');
+            let btn = document.getElementById('btn-save-settings');
+            let originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            btn.disabled = true;
+
+            // Membangun ulang array data untuk Spreadsheet
+            let newSettings = [];
+            newSettings.push(['Jalur', 'Reguler', 'Sistem Kuliah: Offline', document.getElementById('set-biaya-reg').value, document.getElementById('set-biaya-ulang').value, 'Aktif']);
+            
+            let prodis = document.getElementById('set-prodi').value.split('\n').filter(p => p.trim() !== '');
+            prodis.forEach(p => newSettings.push(['Prodi', p.trim(), '', '', '', 'Aktif']));
+
+            newSettings.push(['Gelombang', document.getElementById('set-gelombang').value, document.getElementById('set-gelombang-tgl').value, '', '', 'Aktif']);
+            newSettings.push(['Semester', document.getElementById('set-semester').value, '', '', '', 'Aktif']);
+            newSettings.push(['Admin', document.getElementById('set-admin-user').value, document.getElementById('set-admin-pass').value, '', '', 'Aktif']);
+
+            try {
+                const response = await fetch(`${GAS_API_URL}?action=saveSettings`, {
+                    method: 'POST',
+                    body: JSON.stringify({ settings: newSettings })
+                });
+                const res = await response.json();
+                
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                if(res.success) {
+                    Swal.fire({ title: 'Berhasil', text: res.message, icon: 'success', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155' });
+                    loadInitData(); // Muat ulang data ke tampilan depan (beranda) agar langsung sinkron
+                } else {
+                    Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' });
+                }
+            } catch(err) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                Swal.fire({ title: 'Gagal', text: 'Terjadi kesalahan koneksi', icon: 'error' });
+            }
         }
 
     </script>
