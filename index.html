@@ -985,57 +985,66 @@
         async function fetchKecamatanAPI(val) {
             const suggBox = document.getElementById('kec-suggestions');
             try {
-                let res = null;
-                let validDataFound = false;
+                let resData = [];
                 
-                let endpoints = [
-                    `https://kodepos.vercel.app/search?q=${encodeURIComponent(val)}`,
-                    `https://kodepos-api.vercel.app/search?q=${encodeURIComponent(val)}`
-                ];
-
-                // Jika ada API Key, prioritaskan Binderbyte dengan endpoint KODEPOS agar nama wilayah dikembalikan secara utuh (bukan sekadar ID)
-                if (API_KEY_BINDERBYTE && API_KEY_BINDERBYTE.trim() !== "") {
-                    endpoints.unshift(`https://api.binderbyte.com/wilayah/kodepos?api_key=${API_KEY_BINDERBYTE}&kecamatan=${encodeURIComponent(val)}`);
-                }
-
-                for (let url of endpoints) {
-                    try {
-                        const response = await fetch(url);
-                        if (response.ok) {
-                            let tempRes = await response.json();
-                            // Menyesuaikan struktur data karena setiap API bisa berbeda
-                            let dataArr = tempRes.data || tempRes.value || [];
-                            
-                            // VALIDASI EKSTRA: Pastikan API mengembalikan nama Kabupaten & Provinsi, bukan hanya ID
-                            let hasCompleteData = dataArr.some(d => (d.city || d.kabupaten || d.kota) && (d.province || d.provinsi));
-                            
-                            if (dataArr.length > 0 && hasCompleteData) {
-                                res = tempRes;
-                                res.data = dataArr; 
-                                validDataFound = true;
-                                break; // Data valid ditemukan, hentikan pencarian ke server cadangan
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Server API gagal merespon: " + url);
+                // API 1: Kodepos Vercel (Paling direkomendasikan karena outputnya langsung lengkap)
+                try {
+                    const req1 = await fetch(`https://kodepos.vercel.app/search?q=${encodeURIComponent(val)}`);
+                    const json1 = await req1.json();
+                    if (json1 && json1.data && json1.data.length > 0) {
+                        resData = json1.data.map(d => ({ kecamatan: d.subdistrict, kabupaten: d.city, provinsi: d.province }));
                     }
+                } catch(e) { console.warn("API 1 Gagal"); }
+
+                // API 2: OpenStreetMap Nominatim (Server pemetaan global super stabil jika API 1 down)
+                if (resData.length === 0) {
+                    try {
+                        const req2 = await fetch(`https://nominatim.openstreetmap.org/search?q=kecamatan+${encodeURIComponent(val)},indonesia&format=json&addressdetails=1&limit=8`);
+                        const json2 = await req2.json();
+                        if (json2 && json2.length > 0) {
+                            resData = json2.map(d => {
+                                let addr = d.address || {};
+                                return {
+                                    kecamatan: addr.town || addr.village || addr.county || addr.suburb || addr.city_district || val,
+                                    kabupaten: addr.city || addr.state_district || addr.county || '',
+                                    provinsi: addr.state || addr.region || ''
+                                };
+                            }).filter(d => d.kabupaten !== '' && d.provinsi !== '');
+                        }
+                    } catch(e) { console.warn("API 2 Gagal"); }
+                }
+
+                // API 3: Binderbyte (Hanya sebagai fallback terakhir karena Binderbyte tidak menampilkan nama Kabupaten/Provinsi secara langsung)
+                if (resData.length === 0 && API_KEY_BINDERBYTE && API_KEY_BINDERBYTE.trim() !== "") {
+                    try {
+                        const req3 = await fetch(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${API_KEY_BINDERBYTE}&nama=${encodeURIComponent(val)}`);
+                        const json3 = await req3.json();
+                        let dataArr = json3.data || json3.value || [];
+                        if (dataArr.length > 0) {
+                            resData = dataArr.map(d => ({
+                                kecamatan: d.nama || val,
+                                kabupaten: d.id_kabupaten ? "ID Kab: " + d.id_kabupaten : "", 
+                                provinsi: "Indonesia"
+                            }));
+                        }
+                    } catch(e) { console.warn("API 3 Gagal"); }
                 }
                 
-                if (validDataFound && res && res.data && res.data.length > 0) {
+                if (resData.length > 0) {
                     let uniqueKec = new Set();
                     let html = '';
                     
-                    res.data.forEach(d => {
-                        let cityStr = d.city || d.kabupaten || d.kota || '';
-                        let subStr = d.subdistrict || d.kecamatan || d.nama || '';
-                        let provStr = d.province || d.provinsi || '';
+                    resData.forEach(d => {
+                        let subStr = d.kecamatan;
+                        let cityStr = d.kabupaten;
+                        let provStr = d.provinsi;
 
                         if(!subStr || !cityStr || !provStr) return;
 
                         // Merapikan string agar seragam
                         if (cityStr.toLowerCase().startsWith('kabupaten ')) {
                             cityStr = cityStr.replace(/kabupaten /i, 'Kab. ');
-                        } else if (!cityStr.toLowerCase().startsWith('kota ') && !cityStr.toLowerCase().startsWith('kab. ')) {
+                        } else if (!cityStr.toLowerCase().startsWith('kota ') && !cityStr.toLowerCase().startsWith('kab. ') && !cityStr.startsWith('ID Kab:')) {
                             cityStr = 'Kab. ' + cityStr;
                         }
 
@@ -1054,7 +1063,7 @@
                         suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Data wilayah tidak lengkap. Silakan ketik manual.</li>';
                     }
                 } else {
-                    suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Kecamatan tidak ditemukan atau server limit. Silakan ketik manual.</li>';
+                    suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Kecamatan tidak ditemukan. Silakan ketik manual.</li>';
                 }
             } catch (error) {
                 console.error("Gagal mengambil data kecamatan", error);
