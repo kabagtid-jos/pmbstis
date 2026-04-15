@@ -347,6 +347,27 @@
         </div>
     </footer>
 
+    <!-- Hidden element for PDF Generation -->
+    <div id="print-area" class="hidden bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif;">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+            <h2 style="margin:0; color: #1e3a8a;">STIS ABU ZAIRI</h2>
+            <p style="margin:0;">FORMULIR PENDAFTARAN MAHASISWA BARU</p>
+        </div>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px; width: 35%;"><strong>No Pendaftaran</strong></td><td>: <span id="print-no"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Nama Lengkap</strong></td><td>: <span id="print-nama"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>NIK</strong></td><td>: <span id="print-nik"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Jalur / Prodi</strong></td><td>: <span id="print-jalur"></span> / <span id="print-prodi"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr>
+        </table>
+        <div style="margin-top: 40px; text-align: right;">
+            <p>Panitia PMB</p>
+            <br><br><br>
+            <p>(................................)</p>
+        </div>
+    </div>
+
     <!-- JS Logic -->
     <script>
         // MASUKKAN URL APPS SCRIPT ANDA DI SINI
@@ -412,7 +433,6 @@
             setTimeout(() => { navigate('home'); location.reload(); }, 1500);
         }
 
-        // Logic Tab Admin
         function switchAdminTab(tabName) {
             document.getElementById('admin-content-maba').classList.add('hidden');
             document.getElementById('admin-content-settings').classList.add('hidden');
@@ -430,63 +450,111 @@
         }
 
         async function loadInitData() {
-            if (GAS_API_URL.includes('AKfycb...')) {
-                console.warn("URL API default.");
-                Swal.fire({
-                    icon: 'warning', title: 'Belum Terhubung Database!',
-                    html: 'Anda belum mengganti <b>GAS_API_URL</b> di kode dengan URL Web App milik Anda.',
-                    confirmButtonColor: '#f59e0b'
-                });
-                let mockData = { semester: "TA Simulasi", gelombang: "Gel. Simulasi", gelombangTgl: "01 Jan - 30 Apr", jalur: [{ nama: "Reguler", sistem: "Offline", reg: 200000, ulang: 1500000 }], prodi: ["S1 Sistem Informasi"] };
-                handleInitDataSuccess(mockData);
-                return;
-            }
-
             try {
-                const response = await fetch(`${GAS_API_URL}?action=getInitData`, { method: 'POST', body: JSON.stringify({}) });
+                const response = await fetch(`${GAS_API_URL}?action=getInitData`, { 
+                    method: 'POST', 
+                    body: JSON.stringify({}) 
+                });
+                
                 const data = await response.json();
-                if(data.success) handleInitDataSuccess(data);
+                
+                if (data.success) {
+                    handleInitDataSuccess(data);
+                } else {
+                    throw new Error(data.message || "Respon dari server gagal atau tidak valid.");
+                }
             } catch (err) {
-                console.warn("Koneksi gagal/belum diset. Menggunakan data simulasi.");
+                console.error("Koneksi gagal:", err);
+                
+                let errMsg = err.message;
+                if (errMsg.includes('Failed to fetch')) {
+                    errMsg = "Terjadi masalah CORS (Izin Akses).<br><br><b>Solusi:</b> Buka Google Apps Script Anda, lakukan Deploy ulang (New deployment), lalu pastikan:<br>1. Execute as: <b>Me</b><br>2. Who has access: <b>Anyone</b>";
+                }
+
+                // Ganti spinner dengan blok peringatan jelas
+                const pmbContainer = document.getElementById('pmb-info-container');
+                if(pmbContainer) {
+                    pmbContainer.innerHTML = `
+                        <div class="glass-card rounded-3xl p-6 md:p-8 text-center border border-red-200 dark:border-red-900/50 shadow-lg">
+                            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-exclamation-triangle"></i></div>
+                            <h3 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-3">Koneksi Database Terputus</h3>
+                            <p class="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">${errMsg}</p>
+                            <button onclick="loadInitData()" class="px-6 py-2 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl transition shadow-md">
+                                <i class="fas fa-sync-alt mr-2"></i> Coba Muat Ulang
+                            </button>
+                        </div>
+                    `;
+                }
             }
         }
 
         function handleInitDataSuccess(data) {
             appData = data;
-            document.getElementById('info-semester').innerHTML = `<i class="fas fa-calendar-alt text-secondary mr-1 md:mr-2"></i><span class="hidden sm:inline">Tahun Akademik: </span><span class="sm:hidden">TA: </span><b>${data.semester}</b>`;
-            let gelombangTextDesktop = data.gelombangTgl ? `${data.gelombang} (${data.gelombangTgl})` : data.gelombang;
-            document.getElementById('info-gelombang').innerHTML = `<i class="fas fa-water text-secondary mr-1 md:mr-2"></i><span class="hidden sm:inline"><b>${gelombangTextDesktop}</b></span><span class="sm:hidden"><b>${data.gelombang}</b></span>`;
+            
+            // Render Info di Navbar Aman
+            const infoSemester = document.getElementById('info-semester');
+            if(infoSemester) infoSemester.innerHTML = `<i class="fas fa-calendar-alt text-secondary mr-1 md:mr-2"></i><span class="hidden sm:inline">Tahun Akademik: </span><span class="sm:hidden">TA: </span><b>${data.semester || '-'}</b>`;
+            
+            const infoGelombang = document.getElementById('info-gelombang');
+            if(infoGelombang) {
+                let gelombangTextDesktop = data.gelombangTgl ? `${data.gelombang} (${data.gelombangTgl})` : data.gelombang;
+                infoGelombang.innerHTML = `<i class="fas fa-water text-secondary mr-1 md:mr-2"></i><span class="hidden sm:inline"><b>${gelombangTextDesktop}</b></span><span class="sm:hidden"><b>${data.gelombang || '-'}</b></span>`;
+            }
             
             let primaryJalur = data.jalur && data.jalur.length > 0 ? data.jalur[0] : { nama: "Reguler", sistem: "Offline", reg: 0, ulang: 0 };
             selectedJalur = primaryJalur;
-            document.getElementById('form-jalur-label').innerText = primaryJalur.nama;
+            
+            const formJalurLabel = document.getElementById('form-jalur-label');
+            if(formJalurLabel) formJalurLabel.innerText = primaryJalur.nama || '-';
 
+            // Masukkan HTML ke Kontainer Utama
+            let homeCardHtml = `
+                <div class="glass-card rounded-3xl p-6 md:p-10 text-center flex flex-col items-center transition-colors relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 dark:bg-secondary/5 rounded-full blur-2xl -z-10 group-hover:bg-secondary/20 transition duration-500"></div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-50 dark:bg-slate-800/80 text-primary rounded-full flex items-center justify-center text-2xl md:text-3xl mb-5 md:mb-6 shadow-inner border border-primary/10"><i class="fas fa-user-plus"></i></div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-slate-900 dark:text-white transition-colors tracking-tight">Pendaftaran Mahasiswa Baru</h2>
+                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6 md:mb-8 max-w-lg mx-auto transition-colors leading-relaxed">Mari bergabung dan kembangkan potensi terbaik Anda. Silakan klik tombol di bawah ini untuk melihat rincian biaya dan melanjutkan ke pengisian formulir pendaftaran.</p>
+                    <button onclick="showInformasiPendaftaran()" class="w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/40 flex items-center justify-center gap-2 text-base md:text-lg tracking-wide hover:-translate-y-1">
+                        <i class="fas fa-hand-pointer"></i> Daftar Sekarang
+                    </button>
+                </div>
+            `;
+            const pmbInfoContainer = document.getElementById('pmb-info-container');
+            if(pmbInfoContainer) pmbInfoContainer.innerHTML = homeCardHtml;
+
+            // Render Pilihan Prodi Aman
             let prodiHtml = '<option value="">-- Pilih Program Studi --</option>';
-            data.prodi.forEach(p => { prodiHtml += `<option value="${p}">${p}</option>`; });
-            document.getElementById('inp-prodi').innerHTML = prodiHtml;
+            if(data.prodi && Array.isArray(data.prodi)) {
+                data.prodi.forEach(p => { prodiHtml += `<option value="${p}">${p}</option>`; });
+            }
+            const inpProdi = document.getElementById('inp-prodi');
+            if(inpProdi) inpProdi.innerHTML = prodiHtml;
         }
 
         function showInformasiPendaftaran() {
-            let primaryJalur = selectedJalur;
-            let regFee = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(primaryJalur.reg);
-            let ulangFee = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(primaryJalur.ulang);
+            let primaryJalur = selectedJalur || {};
+            let regFee = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(primaryJalur.reg || 0);
+            let ulangFee = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(primaryJalur.ulang || 0);
             let isDark = document.documentElement.classList.contains('dark');
 
             let infoHtml = `
                 <div class="text-left text-[11px] md:text-xs space-y-1.5 md:space-y-2 mt-2 md:mt-3 text-slate-700 dark:text-slate-300">
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Tahun Akademik</span> <strong class="dark:text-white">${appData.semester}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Gelombang</span> <strong class="dark:text-white">${appData.gelombang}</strong></div>
+                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Tahun Akademik</span> <strong class="dark:text-white">${appData.semester || '-'}</strong></div>
+                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Gelombang</span> <strong class="dark:text-white">${appData.gelombang || '-'}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Periode</span> <strong class="dark:text-white">${appData.gelombangTgl || '-'}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Jalur</span> <strong class="dark:text-white">${primaryJalur.nama}</strong></div>
+                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Jalur</span> <strong class="dark:text-white">${primaryJalur.nama || '-'}</strong></div>
+                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Sistem</span> <strong class="dark:text-white">${primaryJalur.sistem || '-'}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Registrasi</span> <strong class="text-primary dark:text-blue-400">${regFee}</strong></div>
                     <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Daftar Ulang</span> <strong class="text-secondary">${ulangFee}</strong></div>
                 </div>
+                <div class="text-[9px] md:text-[10px] text-slate-400 dark:text-slate-500 mt-2 md:mt-3 text-right italic">*Biaya daftar ulang sudah termasuk Almamater</div>
             `;
 
             Swal.fire({
                 title: '<span class="dark:text-white font-bold tracking-tight">Rincian Pendaftaran</span>',
                 html: infoHtml, icon: 'info', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
-                showCancelButton: true, confirmButtonColor: '#1e3a8a', confirmButtonText: 'Lanjutkan Formulir', cancelButtonText: 'Batal'
+                showCancelButton: true, confirmButtonColor: '#1e3a8a', cancelButtonColor: '#64748b', confirmButtonText: '<i class="fas fa-edit mr-1"></i> Lanjutkan Formulir', cancelButtonText: 'Batal',
+                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
             }).then((result) => { if (result.isConfirmed) navigate('form'); });
         }
 
@@ -494,14 +562,17 @@
             let num1 = Math.floor(Math.random() * 10) + 1;
             let num2 = Math.floor(Math.random() * 10) + 1;
             captchaAnswer = num1 + num2;
-            document.getElementById('captcha-question').innerText = `${num1} + ${num2} =`;
-            document.getElementById('inp-captcha').value = '';
+            const capQ = document.getElementById('captcha-question');
+            if(capQ) capQ.innerText = `${num1} + ${num2} =`;
+            const inpCap = document.getElementById('inp-captcha');
+            if(inpCap) inpCap.value = '';
         }
 
         async function submitForm(e) {
             e.preventDefault();
+            let isDark = document.documentElement.classList.contains('dark');
             if(parseInt(document.getElementById('inp-captcha').value) !== captchaAnswer) {
-                Swal.fire({ title: 'Gagal', text: 'Captcha salah!', icon: 'error' });
+                Swal.fire({ title: 'Verifikasi Gagal', text: 'Hasil hitungan keamanan salah!', icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155', confirmButtonColor: '#1e3a8a' });
                 generateCaptcha(); return;
             }
 
@@ -517,29 +588,62 @@
             };
             submittedData = data; 
 
-            if (GAS_API_URL.includes('AKfycb...')) {
-                setTimeout(() => { btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false; showSuccessPopup(); }, 1000); return;
-            }
-
             try {
                 const response = await fetch(`${GAS_API_URL}?action=register`, { method: 'POST', body: JSON.stringify(data) });
                 const res = await response.json();
-                btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false;
-                if(res.success) { document.getElementById('form-pmb').reset(); showSuccessPopup(); } 
-                else Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' });
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false;
+                
+                if(res.success) { 
+                    document.getElementById('form-pmb').reset(); 
+                    showSuccessPopup(); 
+                } else { 
+                    Swal.fire({ title: 'Pendaftaran Gagal', text: res.message, icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155', confirmButtonColor: '#1e3a8a' });
+                }
             } catch (err) {
-                btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false;
+                Swal.fire({ title: 'Koneksi Terputus', text: 'Gagal mengirim data ke server. Pastikan URL Apps Script benar.', icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155', confirmButtonColor: '#1e3a8a' });
             }
         }
 
         function showSuccessPopup() {
+            let isDark = document.documentElement.classList.contains('dark');
+            let userHtml = `
+                <div class="bg-blue-50/50 dark:bg-blue-900/20 p-2.5 md:p-3 rounded-lg mt-2.5 text-left border border-blue-100 dark:border-blue-800/50 transition-colors">
+                    <p class="text-[11px] md:text-xs mb-1.5 text-primary dark:text-blue-300 font-semibold">Harap simpan informasi akun ini:</p>
+                    <table class="w-full text-[11px] md:text-xs dark:text-slate-200">
+                        <tr><td class="font-medium w-1/3 py-0.5">Username</td><td class="py-0.5">: <span class="font-bold">${submittedData.hp}</span></td></tr>
+                        <tr><td class="font-medium py-0.5">Password</td><td class="py-0.5">: <span class="font-bold">${submittedData.tglLahir}</span></td></tr>
+                    </table>
+                    <p class="text-[9px] md:text-[10px] text-slate-500 dark:text-slate-400 mt-2 border-t border-blue-100 dark:border-slate-700 pt-1.5 leading-tight">*Instruksi login dan verifikasi juga telah dikirimkan ke email <b>${submittedData.email}</b></p>
+                </div>
+            `;
+
             Swal.fire({
-                icon: 'success', title: 'Pendaftaran Berhasil!',
-                html: `Username: <b>${submittedData.hp}</b><br>Password: <b>${submittedData.tglLahir}</b>`,
-                showDenyButton: true, confirmButtonText: 'Login Sekarang', denyButtonText: 'Tutup'
+                icon: 'success', title: '<span class="text-base md:text-lg font-bold dark:text-white tracking-tight">Pendaftaran Berhasil!</span>',
+                html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Data Anda telah tersimpan dengan aman di sistem.</div>` + userHtml,
+                background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
+                showDenyButton: true, confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login Sekarang', denyButtonText: '<i class="fas fa-print"></i> Cetak Formulir',
+                confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', allowOutsideClick: false,
+                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
             }).then((result) => {
                 if (result.isConfirmed) { document.getElementById('login-user').value = submittedData.hp; navigate('login'); }
+                else if (result.isDenied) { cetakFormulir(); setTimeout(showSuccessPopup, 1000); }
             });
+        }
+
+        function cetakFormulir() {
+            document.getElementById('print-no').innerText = "PMB-" + Math.floor(Math.random() * 1000000);
+            document.getElementById('print-nama').innerText = submittedData.nama;
+            document.getElementById('print-nik').innerText = submittedData.nik;
+            document.getElementById('print-jalur').innerText = submittedData.jalur;
+            document.getElementById('print-prodi').innerText = submittedData.prodi;
+            document.getElementById('print-user').innerText = submittedData.hp;
+            document.getElementById('print-pass').innerText = submittedData.tglLahir;
+
+            let element = document.getElementById('print-area');
+            element.classList.remove('hidden');
+            let opt = { margin: 1, filename: `Formulir_PMB_${submittedData.nama}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+            html2pdf().set(opt).from(element).save().then(() => { element.classList.add('hidden'); });
         }
 
         async function doLogin(e) {
@@ -547,16 +651,9 @@
             let user = document.getElementById('login-user').value;
             let pass = document.getElementById('login-pass').value;
             let btn = document.getElementById('btn-login');
+            let isDark = document.documentElement.classList.contains('dark');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifikasi...';
             btn.disabled = true;
-
-            if (GAS_API_URL.includes('AKfycb...')) {
-                setTimeout(() => {
-                    btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
-                    if (user === 'admin') navigate('dashboard-admin'); else navigate('dashboard-maba');
-                }, 1000);
-                return;
-            }
 
             try {
                 const response = await fetch(`${GAS_API_URL}?action=login`, { method: 'POST', body: JSON.stringify({ username: user, password: pass }) });
@@ -566,63 +663,83 @@
                 if(res.success) {
                     if(res.role === 'admin') {
                         renderAdminDashboard(res.data);
-                        populateAdminSettingsForm(res.data.settings); // Isi form settings saat login
+                        populateAdminSettingsForm(res.data.settings); 
                         navigate('dashboard-admin');
                     } else {
                         renderMabaDashboard(res.data);
                         navigate('dashboard-maba');
                     }
                 } else {
-                    Swal.fire({ title: 'Login Gagal', text: res.message, icon: 'error' });
+                    Swal.fire({ title: '<span class="font-bold tracking-tight">Login Gagal</span>', text: res.message, icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155', confirmButtonColor: '#1e3a8a', customClass: { popup: 'rounded-2xl shadow-2xl' } });
                 }
             } catch(err) {
                 btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
+                Swal.fire({ title: '<span class="font-bold tracking-tight">Koneksi Gagal</span>', text: 'Tidak dapat terhubung ke server untuk verifikasi login.', icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155', confirmButtonColor: '#1e3a8a', customClass: { popup: 'rounded-2xl shadow-2xl' } });
             }
         }
 
         function renderMabaDashboard(data) {
-            document.getElementById('maba-nama').innerText = data.nama;
-            document.getElementById('maba-nik').innerText = data.nik;
-            document.getElementById('maba-jalur').innerText = data.jalur;
-            document.getElementById('maba-prodi').innerText = data.prodi;
+            document.getElementById('maba-nama').innerText = data.nama || '-';
+            document.getElementById('maba-nik').innerText = data.nik || '-';
+            document.getElementById('maba-jalur').innerText = data.jalur || '-';
+            document.getElementById('maba-prodi').innerText = data.prodi || '-';
+            
+            let bStatus = document.getElementById('badge-status-bayar');
+            if(bStatus) {
+                bStatus.innerText = `Status: ${data.statusBayar}`;
+                if(data.statusBayar === 'Lunas') {
+                    bStatus.className = "px-3 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm bg-green-100 text-green-700 border border-green-200 shadow-sm";
+                } else {
+                    bStatus.className = "px-3 py-1.5 md:px-5 md:py-2 rounded-full font-bold text-xs md:text-sm bg-yellow-100 text-yellow-700 border border-yellow-200 shadow-sm";
+                }
+            }
+
+            let jData = appData && appData.jalur ? appData.jalur.find(j => j.nama === data.jalur) : null;
+            let tagihanEl = document.getElementById('maba-tagihan');
+            if(jData && tagihanEl) tagihanEl.innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(jData.reg);
         }
 
         function renderAdminDashboard(data) {
             let thead = '';
-            data.maba.headers.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
-            document.getElementById('admin-thead').innerHTML = thead;
+            if(data && data.maba && data.maba.headers) {
+                data.maba.headers.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
+            }
+            const adminThead = document.getElementById('admin-thead');
+            if(adminThead) adminThead.innerHTML = thead;
 
             let tbody = '';
-            data.maba.rows.forEach(row => {
-                tbody += '<tr class="border-b dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
-                row.forEach(cell => tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 font-medium">${cell}</td>`);
-                tbody += '</tr>';
-            });
-            document.getElementById('admin-tbody').innerHTML = tbody;
+            if(data && data.maba && data.maba.rows) {
+                data.maba.rows.forEach(row => {
+                    tbody += '<tr class="border-b dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
+                    row.forEach(cell => tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 font-medium">${cell}</td>`);
+                    tbody += '</tr>';
+                });
+            }
+            const adminTbody = document.getElementById('admin-tbody');
+            if(adminTbody) adminTbody.innerHTML = tbody;
         }
-
-        // --- FUNGSI BARU: PENGATURAN VIA DASHBOARD ADMIN ---
 
         function populateAdminSettingsForm(rawSettingsVals) {
             let prodiList = [];
             for(let i=1; i<rawSettingsVals.length; i++) {
                 let row = rawSettingsVals[i];
-                if(row[0] === 'Semester') document.getElementById('set-semester').value = row[1];
+                if(row[0] === 'Semester') { const el = document.getElementById('set-semester'); if(el) el.value = row[1]; }
                 if(row[0] === 'Gelombang') {
-                    document.getElementById('set-gelombang').value = row[1];
-                    document.getElementById('set-gelombang-tgl').value = row[2];
+                    const elG = document.getElementById('set-gelombang'); if(elG) elG.value = row[1];
+                    const elGT = document.getElementById('set-gelombang-tgl'); if(elGT) elGT.value = row[2];
                 }
                 if(row[0] === 'Jalur' && row[1] === 'Reguler') {
-                    document.getElementById('set-biaya-reg').value = row[3];
-                    document.getElementById('set-biaya-ulang').value = row[4];
+                    const elR = document.getElementById('set-biaya-reg'); if(elR) elR.value = row[3];
+                    const elU = document.getElementById('set-biaya-ulang'); if(elU) elU.value = row[4];
                 }
                 if(row[0] === 'Prodi') prodiList.push(row[1]);
                 if(row[0] === 'Admin') {
-                    document.getElementById('set-admin-user').value = row[1];
-                    document.getElementById('set-admin-pass').value = row[2];
+                    const elU = document.getElementById('set-admin-user'); if(elU) elU.value = row[1];
+                    const elP = document.getElementById('set-admin-pass'); if(elP) elP.value = row[2];
                 }
             }
-            document.getElementById('set-prodi').value = prodiList.join('\n');
+            const elProdi = document.getElementById('set-prodi');
+            if(elProdi) elProdi.value = prodiList.join('\n');
         }
 
         async function saveAdminSettings(e) {
@@ -633,7 +750,6 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
             btn.disabled = true;
 
-            // Membangun ulang array data untuk Spreadsheet
             let newSettings = [];
             newSettings.push(['Jalur', 'Reguler', 'Sistem Kuliah: Offline', document.getElementById('set-biaya-reg').value, document.getElementById('set-biaya-ulang').value, 'Aktif']);
             
@@ -645,25 +761,20 @@
             newSettings.push(['Admin', document.getElementById('set-admin-user').value, document.getElementById('set-admin-pass').value, '', '', 'Aktif']);
 
             try {
-                const response = await fetch(`${GAS_API_URL}?action=saveSettings`, {
-                    method: 'POST',
-                    body: JSON.stringify({ settings: newSettings })
-                });
+                const response = await fetch(`${GAS_API_URL}?action=saveSettings`, { method: 'POST', body: JSON.stringify({ settings: newSettings }) });
                 const res = await response.json();
                 
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                btn.innerHTML = originalText; btn.disabled = false;
                 
                 if(res.success) {
                     Swal.fire({ title: 'Berhasil', text: res.message, icon: 'success', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155' });
-                    loadInitData(); // Muat ulang data ke tampilan depan (beranda) agar langsung sinkron
+                    loadInitData(); 
                 } else {
-                    Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' });
+                    Swal.fire({ title: 'Gagal', text: res.message, icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155' });
                 }
             } catch(err) {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                Swal.fire({ title: 'Gagal', text: 'Terjadi kesalahan koneksi', icon: 'error' });
+                btn.innerHTML = originalText; btn.disabled = false;
+                Swal.fire({ title: 'Gagal', text: 'Terjadi kesalahan koneksi (CORS/Network)', icon: 'error', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155' });
             }
         }
 
