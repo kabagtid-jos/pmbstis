@@ -333,17 +333,27 @@
                             </div>
                             <div class="col-span-full mt-2"><button type="submit" id="btn-save-settings" class="w-full md:w-auto px-8 bg-secondary text-white font-bold py-3 rounded-xl"><i class="fas fa-save"></i> Simpan Pengaturan</button></div>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-    </main>
+        <div style="margin-top: 40px; text-align: right;">
+            <p>Panitia PMB</p>
+            <br><br><br>
+            <p>(................................)</p>
+        </div>
+    </div>
 
     <!-- JS Logic -->
     <script>
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzLxaNNbhxVpkbKhDjmci_JydSmiYQ2wTMFPgPJP917aORqgGvOzdpHJjLw-Rt7hRle/exec'; 
         
+        // --- FUNGSI HELPER API (Mencegah Error CORS) ---
+        async function fetchAPI(action, payload = {}) {
+            const response = await fetch(`${GAS_API_URL}?action=${action}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            return await response.json();
+        }
+
         let appData = null; let selectedJalur = null; let captchaAnswer = 0; let submittedData = null;
         let prodiChartInstance = null; let lastAdminData = null; let currentMabaData = null; let adminCreds = {user: '', pass: ''};
 
@@ -390,10 +400,23 @@
 
         async function loadInitData() {
             try {
-                const response = await fetch(`${GAS_API_URL}?action=getInitData`, { method: 'POST', body: JSON.stringify({}) });
-                const data = await response.json();
+                const data = await fetchAPI('getInitData');
                 if (data.success) handleInitDataSuccess(data);
-            } catch (err) {}
+                else throw new Error("Gagal mengambil data dari server");
+            } catch (err) {
+                console.error(err);
+                const container = document.getElementById('pmb-info-container');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="glass-card rounded-3xl p-6 md:p-10 text-center border border-red-200">
+                            <i class="fas fa-exclamation-triangle text-4xl md:text-5xl text-red-500 mb-4"></i>
+                            <h3 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-2">Koneksi ke Server Ditolak</h3>
+                            <p class="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">Penyebab paling umum adalah pengaturan izin API belum diset dengan benar.<br>Silakan buka Google Apps Script, lakukan <b>Deploy Baru (New deployment)</b>, pastikan "Who has access" diset ke <b>Anyone</b>.</p>
+                            <button onclick="location.reload()" class="px-6 py-2.5 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md"><i class="fas fa-sync-alt mr-2"></i> Muat Ulang Halaman</button>
+                        </div>
+                    `;
+                }
+            }
         }
 
         function handleInitDataSuccess(data) {
@@ -419,11 +442,13 @@
             let data = { nik: document.getElementById('inp-nik').value, nama: document.getElementById('inp-nama').value, tempatLahir: document.getElementById('inp-tempat').value, tglLahir: document.getElementById('inp-tgl').value, jk: document.getElementById('inp-jk').value, hp: document.getElementById('inp-hp').value, email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama };
             submittedData = data; 
             try {
-                const response = await fetch(`${GAS_API_URL}?action=register`, { method: 'POST', body: JSON.stringify(data) });
-                const res = await response.json();
+                const res = await fetchAPI('register', data);
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false;
                 if(res.success) { document.getElementById('form-pmb').reset(); showSuccessPopup(); } else { Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' }); }
-            } catch (err) { btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false; }
+            } catch (err) { 
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false; 
+                Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database. Pastikan Deploy sudah diset "Anyone".', icon: 'error' }); 
+            }
         }
 
         function showSuccessPopup() {
@@ -436,14 +461,16 @@
             let user = document.getElementById('login-user').value; let pass = document.getElementById('login-pass').value;
             let btn = document.getElementById('btn-login'); btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifikasi...'; btn.disabled = true;
             try {
-                const response = await fetch(`${GAS_API_URL}?action=login`, { method: 'POST', body: JSON.stringify({ username: user, password: pass }) });
-                const res = await response.json();
+                const res = await fetchAPI('login', { username: user, password: pass });
                 btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false;
                 if(res.success) {
                     if(res.role === 'admin') { adminCreds = {user: user, pass: pass}; lastAdminData = res.data; switchAdminTab('ringkasan'); renderAdminDashboard(res.data); populateAdminSettingsForm(res.data.settings); navigate('dashboard-admin'); } 
                     else { renderMabaDashboard(res.data); navigate('dashboard-maba'); }
                 } else { Swal.fire({ title: 'Login Gagal', text: res.message, icon: 'error' }); }
-            } catch(err) { btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false; }
+            } catch(err) { 
+                btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false; 
+                Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database. Pastikan Deploy menggunakan "Anyone".', icon: 'error' }); 
+            }
         }
 
         function renderMabaDashboard(data) {
@@ -486,7 +513,7 @@
                 if (res.isConfirmed) {
                     Swal.showLoading();
                     try {
-                        let response = await fetch(`${GAS_API_URL}?action=updateStatus`, { method: 'POST', body: JSON.stringify({ nik: currentMabaData.nik, type: 'berkas', value: 'Berkas Lengkap' }) }).then(r=>r.json());
+                        let response = await fetchAPI('updateStatus', { nik: currentMabaData.nik, type: 'berkas', value: 'Berkas Lengkap' });
                         if(response.success) { currentMabaData.statusVerifikasi = 'Berkas Lengkap'; renderMabaDashboard(currentMabaData); Swal.fire('Berhasil', 'Berkas disimpan. Silakan bayar tagihan.', 'success'); }
                     } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi', 'error'); }
                 }
@@ -498,7 +525,7 @@
                 if (res.isConfirmed) {
                     Swal.showLoading();
                     try {
-                        let response = await fetch(`${GAS_API_URL}?action=updateStatus`, { method: 'POST', body: JSON.stringify({ nik: currentMabaData.nik, type: 'bayar', value: 'Menunggu Verifikasi' }) }).then(r=>r.json());
+                        let response = await fetchAPI('updateStatus', { nik: currentMabaData.nik, type: 'bayar', value: 'Menunggu Verifikasi' });
                         if(response.success) { currentMabaData.statusBayar = 'Menunggu Verifikasi'; renderMabaDashboard(currentMabaData); Swal.fire('Terkirim!', 'Menunggu verifikasi Admin.', 'success'); }
                     } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan', 'error'); }
                 }
@@ -563,10 +590,9 @@
                 if (res.isConfirmed) {
                     Swal.showLoading();
                     try {
-                        let response = await fetch(`${GAS_API_URL}?action=verifyMaba`, { method: 'POST', body: JSON.stringify({ nik: nik }) }).then(r=>r.json());
+                        let response = await fetchAPI('verifyMaba', { nik: nik });
                         if(response.success) {
-                            // Reload Data Admin secara diam diam agar tabel terupdate
-                            let loginRes = await fetch(`${GAS_API_URL}?action=login`, { method: 'POST', body: JSON.stringify({ username: adminCreds.user, password: adminCreds.pass }) }).then(r=>r.json());
+                            let loginRes = await fetchAPI('login', { username: adminCreds.user, password: adminCreds.pass });
                             if(loginRes.success) { lastAdminData = loginRes.data; renderAdminDashboard(loginRes.data); }
                             Swal.fire('Terverifikasi!', 'Mahasiswa resmi terdaftar.', 'success');
                         }
@@ -601,7 +627,7 @@
             newSettings.push(['Admin', document.getElementById('set-admin-user').value, document.getElementById('set-admin-pass').value, '', '', 'Aktif']);
 
             try {
-                const response = await fetch(`${GAS_API_URL}?action=saveSettings`, { method: 'POST', body: JSON.stringify({ settings: newSettings }) }).then(r=>r.json());
+                const response = await fetchAPI('saveSettings', { settings: newSettings });
                 btn.innerHTML = originalText; btn.disabled = false;
                 if(response.success) { Swal.fire('Berhasil', response.message, 'success'); loadInitData(); } else { Swal.fire('Gagal', response.message, 'error'); }
             } catch(err) { btn.innerHTML = originalText; btn.disabled = false; Swal.fire('Gagal', 'Koneksi error', 'error'); }
