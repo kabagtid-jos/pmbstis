@@ -34,6 +34,10 @@
         div.swal2-html-container { font-size: 0.85rem !important; margin: 0.5em 0 0 0 !important; }
         .swal2-actions { margin-top: 1.25rem !important; gap: 0.5rem !important; }
         button.swal2-styled { padding: 0.5rem 1rem !important; font-size: 0.85rem !important; border-radius: 0.5rem !important; margin: 0 !important; }
+        
+        /* Memperbaiki warna kalender bawaan browser agar menyesuaikan tema web */
+        input[type="date"] { color-scheme: light; }
+        .dark input[type="date"] { color-scheme: dark; }
     </style>
 </head>
 <body class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 min-h-screen flex flex-col transition-colors duration-300">
@@ -84,37 +88,38 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">NIK *</label>
-                            <input type="number" id="inp-nik" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            <input type="number" id="inp-nik" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">Nama Lengkap *</label>
-                            <input type="text" id="inp-nama" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            <input type="text" id="inp-nama" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs md:text-sm font-semibold mb-1">Tempat Lahir *</label>
-                            <input type="text" id="inp-tempat" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            <input type="text" id="inp-tempat" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs md:text-sm font-semibold mb-1">Tanggal Lahir *</label>
-                            <input type="date" id="inp-tgl" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none" style="color-scheme: dark light;">
+                            <!-- Inline style color-scheme dihapus agar diatur oleh CSS di atas -->
+                            <input type="date" id="inp-tgl" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs md:text-sm font-semibold mb-1">Jenis Kelamin *</label>
-                            <select id="inp-jk" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            <select id="inp-jk" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                                 <option value="">-- Pilih --</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs md:text-sm font-semibold mb-1">Nomor HP/WA *</label>
-                            <input type="number" id="inp-hp" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            <input type="number" id="inp-hp" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">E-mail *</label>
-                            <input type="email" id="inp-email" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                            <input type="email" id="inp-email" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors">
                         </div>
                         <div class="col-span-full md:col-span-1">
                             <label class="block text-xs md:text-sm font-semibold mb-1">Program Studi Pilihan *</label>
-                            <select id="inp-prodi" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-primary outline-none"><option value="">Loading...</option></select>
+                            <select id="inp-prodi" required class="w-full px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-colors"><option value="">Loading...</option></select>
                         </div>
                         
                         <div class="col-span-full bg-blue-50/50 dark:bg-slate-800/50 p-3 rounded-xl border border-blue-100 dark:border-slate-700 mt-2">
@@ -146,14 +151,14 @@
                         <label class="block text-xs font-semibold mb-1">Username</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fas fa-phone"></i></span>
-                            <input type="text" id="login-user" required class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                            <input type="text" id="login-user" required class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white outline-none transition-colors">
                         </div>
                     </div>
                     <div class="mb-5">
                         <label class="block text-xs font-semibold mb-1">Password</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fas fa-lock"></i></span>
-                            <input type="password" id="login-pass" required class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                            <input type="password" id="login-pass" required class="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white outline-none transition-colors">
                         </div>
                     </div>
                     <button type="submit" id="btn-login" class="w-full bg-primary hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg shadow-lg">Masuk Dashboard</button>
