@@ -365,7 +365,7 @@
     <!-- JS Logic -->
     <script>
         // MASUKKAN URL APPS SCRIPT ANDA DI SINI
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycb.../exec'; // GANTI DENGAN URL DEPLOY ANDA
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbx-HEdnO9w6dDeOlFbSOAY3U2oWjliWYbsmp1s6oJ5ZqYt70CIsr7mtm6aWiJ6kTjW5/exec'; // GANTI DENGAN URL DEPLOY ANDA
         
         // State
         let appData = null;
@@ -436,6 +436,17 @@
         async function loadInitData() {
             if (GAS_API_URL.includes('AKfycb...')) {
                 console.warn("URL API masih default. Menggunakan data simulasi.");
+                
+                // Peringatan jika belum mengganti URL
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Belum Terhubung Database!',
+                    html: 'Anda belum mengganti <b>GAS_API_URL</b> di dalam kode (baris ~854) dengan URL Web App milik Anda.<br><br>Data yang tampil saat ini adalah <b>Data Simulasi</b> dan tidak akan sinkron dengan Spreadsheet.',
+                    confirmButtonColor: '#f59e0b',
+                    background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#334155'
+                });
+
                 let mockData = {
                     semester: "Ganjil 2026/2027",
                     gelombang: "Gelombang I",
