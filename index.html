@@ -46,7 +46,7 @@
         
         .step-icon { position: relative; z-index: 10; display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: 0.5rem; font-size: 1rem; background-color: #f1f5f9; color: #94a3b8; transition: all 0.3s; }
         .dark .step-icon { background-color: #1e293b; color: #64748b; }
-        .step-item.active .step-icon { background-color: #ef4444; color: white; border-radius: 9999px; } /* Warna merah seperti referensi */
+        .step-item.active .step-icon { background-color: #ef4444; color: white; border-radius: 9999px; }
         .step-item.completed .step-icon { background-color: #10b981; color: white; border-radius: 9999px; }
         .step-title { font-size: 0.65rem; margin-top: 0.5rem; text-transform: uppercase; color: #64748b; }
         @media (min-width: 768px) { .step-title { font-size: 0.75rem; } }
@@ -198,7 +198,7 @@
                             <button onclick="switchMabaTab('foto')" id="maba-btn-foto" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-camera w-5 text-center"></i> Upload Foto Profil</button>
                             <button onclick="switchMabaTab('prodi')" id="maba-btn-prodi" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-list-alt w-5 text-center"></i> Program Studi</button>
                             <button onclick="switchMabaTab('berkas')" id="maba-btn-berkas" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-file-upload w-5 text-center"></i> Upload Berkas</button>
-                            <button onclick="switchMabaTab('bayar')" id="maba-btn-bayar" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-wallet w-5 text-center"></i> Pembayaran</button>
+                            <button onclick="switchMabaTab('bayar')" id="maba-btn-bayar" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary dark:hover:text-white rounded-xl transition-colors text-left"><i class="fas fa-file-invoice-dollar w-5 text-center"></i> Pembayaran</button>
                         </div>
                     </div>
                 </aside>
@@ -304,6 +304,7 @@
                                         <div class="relative">
                                             <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kewarganegaraan <span class="text-red-500">*</span></label>
                                             <input type="text" id="bio-kwn" required placeholder="Mulai ketik nama negara..." autocomplete="off" oninput="handleKwnInput(this.value)" onfocus="handleKwnInput(this.value)" onblur="setTimeout(()=>document.getElementById('kwn-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition">
+                                            <!-- Kotak Rekomendasi Pencarian Negara -->
                                             <ul id="kwn-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300">
                                             </ul>
                                         </div>
@@ -315,17 +316,47 @@
                                             <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">RT <span class="text-red-500">*</span></label><input type="text" id="bio-rt" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
                                             <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">RW <span class="text-red-500">*</span></label><input type="text" id="bio-rw" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
                                         </div>
-                                        <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kelurahan / Desa <span class="text-red-500">*</span></label><input type="text" id="bio-kel" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
                                         
-                                        <!-- Perubahan Input Kecamatan dengan Custom Autocomplete API Wilayah -->
-                                        <div class="relative">
-                                            <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kecamatan <span class="text-red-500">*</span></label>
-                                            <input type="text" id="bio-kec" required placeholder="Mulai ketik kecamatan..." autocomplete="off" oninput="debounceKecInput(this.value)" onfocus="if(this.value.length >= 3) debounceKecInput(this.value)" onblur="setTimeout(()=>document.getElementById('kec-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition">
-                                            <!-- Kotak Rekomendasi Pencarian Kecamatan -->
-                                            <ul id="kec-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300">
-                                            </ul>
+                                        <!-- AREA WILAYAH BINDERBYTE (PROV -> KAB -> KEC -> KEL) -->
+                                        <div id="box-saved-wilayah" class="col-span-full bg-blue-50 dark:bg-slate-700/50 p-4 rounded-xl border border-blue-100 dark:border-slate-600 hidden">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <label class="block text-[10px] font-bold mb-1 text-slate-500 uppercase tracking-wider">Wilayah Tempat Tinggal</label>
+                                                    <p id="txt-saved-wilayah" class="text-sm font-bold text-primary dark:text-blue-300"></p>
+                                                </div>
+                                                <button type="button" onclick="enableEditWilayah()" class="text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 px-3 py-1.5 rounded shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors font-bold"><i class="fas fa-edit mr-1"></i>Ubah</button>
+                                            </div>
                                         </div>
-                                        
+
+                                        <div id="box-edit-wilayah" class="col-span-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-6">
+                                            <div class="col-span-full mb-[-10px]"><p class="text-xs font-bold text-secondary border-b border-slate-200 dark:border-slate-700 pb-1">Isi Data Wilayah Tempat Tinggal</p></div>
+                                            
+                                            <div class="relative">
+                                                <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Provinsi <span class="text-red-500">*</span></label>
+                                                <input type="text" id="bio-prov" required placeholder="Ketik Provinsi..." autocomplete="off" oninput="filterWilayah('prov', this.value)" onfocus="filterWilayah('prov', this.value)" onblur="setTimeout(()=>document.getElementById('prov-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition">
+                                                <ul id="prov-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300"></ul>
+                                            </div>
+
+                                            <div class="relative">
+                                                <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kabupaten / Kota <span class="text-red-500">*</span></label>
+                                                <input type="text" id="bio-kab" required placeholder="Ketik Kabupaten..." autocomplete="off" oninput="filterWilayah('kab', this.value)" onfocus="filterWilayah('kab', this.value)" onblur="setTimeout(()=>document.getElementById('kab-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition" disabled>
+                                                <ul id="kab-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300"></ul>
+                                            </div>
+
+                                            <div class="relative">
+                                                <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kecamatan <span class="text-red-500">*</span></label>
+                                                <input type="text" id="bio-kec" required placeholder="Ketik Kecamatan..." autocomplete="off" oninput="filterWilayah('kec', this.value)" onfocus="filterWilayah('kec', this.value)" onblur="setTimeout(()=>document.getElementById('kec-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition" disabled>
+                                                <ul id="kec-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300"></ul>
+                                            </div>
+
+                                            <div class="relative">
+                                                <label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kelurahan / Desa <span class="text-red-500">*</span></label>
+                                                <input type="text" id="bio-kel" required placeholder="Ketik Kelurahan..." autocomplete="off" oninput="filterWilayah('kel', this.value)" onfocus="filterWilayah('kel', this.value)" onblur="setTimeout(()=>document.getElementById('kel-suggestions').classList.add('hidden'), 200)" class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition" disabled>
+                                                <ul id="kel-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg max-h-40 overflow-y-auto text-sm text-slate-700 dark:text-slate-300"></ul>
+                                            </div>
+                                        </div>
+                                        <!-- END AREA WILAYAH BINDERBYTE -->
+
                                         <div><label class="block text-xs font-bold mb-1 text-slate-800 dark:text-slate-200">Kodepos <span class="text-red-500">*</span></label><input type="text" id="bio-pos" required class="w-full border-b border-slate-300 dark:border-slate-600 bg-transparent py-1.5 text-sm outline-none focus:border-primary dark:text-white transition"></div>
                                         
                                         <!-- Kontak dll -->
@@ -725,7 +756,7 @@
             </div>
         </section>
 
-        <!-- ==================== 5. DASHBOARD ADMIN (Sama seperti sebelumnya) ==================== -->
+        <!-- ==================== 5. DASHBOARD ADMIN ==================== -->
         <section id="view-dashboard-admin" class="view-section py-8 md:py-12 px-4 pb-24 md:pb-12">
             <div class="max-w-7xl mx-auto">
                 
@@ -913,12 +944,14 @@
         let prodiChartInstance = null; let lastAdminData = null; let currentMabaData = null; let adminCreds = {user: '', pass: ''};
         let adminAllRows = []; let adminHeaders = []; 
         let globalCountries = []; // Variabel untuk menyimpan list negara dari API
+        let wilayahData = { prov: [], kab: [], kec: [], kel: [] }; // Data wilayah Binderbyte
 
         document.addEventListener('DOMContentLoaded', () => { 
             initTheme(); 
             loadInitData(); 
             generateCaptcha(); 
-            fetchCountriesAPI(); // Memanggil API negara saat halaman dimuat
+            fetchCountriesAPI();
+            initWilayah(); // Memuat data provinsi saat halaman pertama dibuka
         });
 
         // --- FUNGSI FETCH API NEGARA & AUTOCOMPLETE ---
@@ -945,8 +978,8 @@
             if (filtered.length > 0) {
                 let html = '';
                 filtered.forEach(c => {
-                    let safeName = c.replace(/'/g, "\\'"); // Hindari error pada nama negara dengan tanda petik
-                    html += `<li class="px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors" onmousedown="selectKwn('${safeName}')">${c}</li>`;
+                    let safeName = c.replace(/'/g, "\\'"); 
+                    html += `<li class="px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b border-slate-100 dark:border-slate-600 last:border-0" onmousedown="selectKwn('${safeName}')">${c}</li>`;
                 });
                 suggBox.innerHTML = html;
                 suggBox.classList.remove('hidden');
@@ -961,119 +994,106 @@
             document.getElementById('kwn-suggestions').classList.add('hidden');
         }
 
-        // --- FUNGSI FETCH API KECAMATAN & AUTOCOMPLETE ---
-        let kecTimeout = null;
-        function debounceKecInput(val) {
-            clearTimeout(kecTimeout);
-            const suggBox = document.getElementById('kec-suggestions');
-            
-            // Mulai mencari jika input minimal 3 karakter
-            if (!val || val.length < 3) {
-                suggBox.classList.add('hidden');
+        // --- FUNGSI CASCADING AUTOCOMPLETE WILAYAH (BINDERBYTE) ---
+        async function initWilayah() {
+            if(!API_KEY_BINDERBYTE) return;
+            try {
+                let res = await fetch(`https://api.binderbyte.com/wilayah/provinsi?api_key=${API_KEY_BINDERBYTE}`);
+                let json = await res.json();
+                if(json.value) wilayahData.prov = json.value;
+            } catch(e) { console.error("Gagal meload provinsi"); }
+        }
+
+        function filterWilayah(level, val) {
+            const suggBox = document.getElementById(`${level}-suggestions`);
+            if (!wilayahData[level] || wilayahData[level].length === 0) {
+                suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Data belum siap atau API limit.</li>';
+                suggBox.classList.remove('hidden');
                 return;
             }
             
-            suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs"><i class="fas fa-spinner fa-spin mr-2"></i>Mencari data wilayah...</li>';
+            let filtered = wilayahData[level];
+            if (val) {
+                filtered = filtered.filter(item => item.name.toLowerCase().includes(val.toLowerCase())).slice(0, 15);
+            } else {
+                filtered = filtered.slice(0, 15); // Tampilkan 15 data awal jika belum mengetik
+            }
+
+            if (filtered.length > 0) {
+                let html = '';
+                filtered.forEach(item => {
+                    let safeName = item.name.replace(/'/g, "\\'");
+                    html += `<li class="px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b border-slate-100 dark:border-slate-600 last:border-0" onmousedown="selectWilayah('${level}', '${item.id}', '${safeName}')">${item.name}</li>`;
+                });
+                suggBox.innerHTML = html;
+            } else {
+                suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Tidak ditemukan</li>';
+            }
             suggBox.classList.remove('hidden');
-            
-            // Beri jeda 500ms setelah user selesai mengetik agar tidak spam server API
-            kecTimeout = setTimeout(() => {
-                fetchKecamatanAPI(val);
-            }, 500); 
         }
 
-        async function fetchKecamatanAPI(val) {
-            const suggBox = document.getElementById('kec-suggestions');
-            try {
-                let resData = [];
+        async function selectWilayah(level, id, name) {
+            document.getElementById(`bio-${level}`).value = name;
+            document.getElementById(`${level}-suggestions`).classList.add('hidden');
+            
+            if (level === 'prov') {
+                document.getElementById('bio-kab').value = ''; document.getElementById('bio-kec').value = ''; document.getElementById('bio-kel').value = '';
+                document.getElementById('bio-kab').disabled = true; document.getElementById('bio-kec').disabled = true; document.getElementById('bio-kel').disabled = true;
+                wilayahData.kab = []; wilayahData.kec = []; wilayahData.kel = [];
                 
-                // API 1: Kodepos Vercel (Paling direkomendasikan karena outputnya langsung lengkap)
+                document.getElementById('bio-kab').placeholder = 'Memuat data Kabupaten...';
                 try {
-                    const req1 = await fetch(`https://kodepos.vercel.app/search?q=${encodeURIComponent(val)}`);
-                    const json1 = await req1.json();
-                    if (json1 && json1.data && json1.data.length > 0) {
-                        resData = json1.data.map(d => ({ kecamatan: d.subdistrict, kabupaten: d.city, provinsi: d.province }));
-                    }
-                } catch(e) { console.warn("API 1 Gagal"); }
-
-                // API 2: OpenStreetMap Nominatim (Server pemetaan global super stabil jika API 1 down)
-                if (resData.length === 0) {
-                    try {
-                        const req2 = await fetch(`https://nominatim.openstreetmap.org/search?q=kecamatan+${encodeURIComponent(val)},indonesia&format=json&addressdetails=1&limit=8`);
-                        const json2 = await req2.json();
-                        if (json2 && json2.length > 0) {
-                            resData = json2.map(d => {
-                                let addr = d.address || {};
-                                return {
-                                    kecamatan: addr.town || addr.village || addr.county || addr.suburb || addr.city_district || val,
-                                    kabupaten: addr.city || addr.state_district || addr.county || '',
-                                    provinsi: addr.state || addr.region || ''
-                                };
-                            }).filter(d => d.kabupaten !== '' && d.provinsi !== '');
-                        }
-                    } catch(e) { console.warn("API 2 Gagal"); }
-                }
-
-                // API 3: Binderbyte (Hanya sebagai fallback terakhir karena Binderbyte tidak menampilkan nama Kabupaten/Provinsi secara langsung)
-                if (resData.length === 0 && API_KEY_BINDERBYTE && API_KEY_BINDERBYTE.trim() !== "") {
-                    try {
-                        const req3 = await fetch(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${API_KEY_BINDERBYTE}&nama=${encodeURIComponent(val)}`);
-                        const json3 = await req3.json();
-                        let dataArr = json3.data || json3.value || [];
-                        if (dataArr.length > 0) {
-                            resData = dataArr.map(d => ({
-                                kecamatan: d.nama || val,
-                                kabupaten: d.id_kabupaten ? "ID Kab: " + d.id_kabupaten : "", 
-                                provinsi: "Indonesia"
-                            }));
-                        }
-                    } catch(e) { console.warn("API 3 Gagal"); }
-                }
+                    let res = await fetch(`https://api.binderbyte.com/wilayah/kabupaten?api_key=${API_KEY_BINDERBYTE}&id_provinsi=${id}`);
+                    let json = await res.json();
+                    if(json.value) wilayahData.kab = json.value;
+                    document.getElementById('bio-kab').disabled = false;
+                    document.getElementById('bio-kab').placeholder = 'Ketik Kabupaten...';
+                    document.getElementById('bio-kab').focus();
+                } catch(e) {}
+            }
+            else if (level === 'kab') {
+                document.getElementById('bio-kec').value = ''; document.getElementById('bio-kel').value = '';
+                document.getElementById('bio-kec').disabled = true; document.getElementById('bio-kel').disabled = true;
+                wilayahData.kec = []; wilayahData.kel = [];
                 
-                if (resData.length > 0) {
-                    let uniqueKec = new Set();
-                    let html = '';
-                    
-                    resData.forEach(d => {
-                        let subStr = d.kecamatan;
-                        let cityStr = d.kabupaten;
-                        let provStr = d.provinsi;
-
-                        if(!subStr || !cityStr || !provStr) return;
-
-                        // Merapikan string agar seragam
-                        if (cityStr.toLowerCase().startsWith('kabupaten ')) {
-                            cityStr = cityStr.replace(/kabupaten /i, 'Kab. ');
-                        } else if (!cityStr.toLowerCase().startsWith('kota ') && !cityStr.toLowerCase().startsWith('kab. ') && !cityStr.startsWith('ID Kab:')) {
-                            cityStr = 'Kab. ' + cityStr;
-                        }
-
-                        let formatStr = `Kec. ${subStr} - ${cityStr} - Prov. ${provStr}`;
-                        
-                        if (!uniqueKec.has(formatStr)) {
-                            uniqueKec.add(formatStr);
-                            let safeName = formatStr.replace(/'/g, "\\'"); 
-                            html += `<li class="px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b border-slate-100 dark:border-slate-600 last:border-0" onmousedown="selectKec('${safeName}')">${formatStr}</li>`;
-                        }
-                    });
-                    
-                    if(html !== '') {
-                        suggBox.innerHTML = html;
-                    } else {
-                        suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Data wilayah tidak lengkap. Silakan ketik manual.</li>';
-                    }
-                } else {
-                    suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Kecamatan tidak ditemukan. Silakan ketik manual.</li>';
-                }
-            } catch (error) {
-                console.error("Gagal mengambil data kecamatan", error);
-                suggBox.innerHTML = '<li class="px-3 py-2 text-slate-400 italic text-xs">Server API sedang sibuk. Ketik kecamatan secara manual.</li>';
+                document.getElementById('bio-kec').placeholder = 'Memuat data Kecamatan...';
+                try {
+                    let res = await fetch(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${API_KEY_BINDERBYTE}&id_kabupaten=${id}`);
+                    let json = await res.json();
+                    if(json.value) wilayahData.kec = json.value;
+                    document.getElementById('bio-kec').disabled = false;
+                    document.getElementById('bio-kec').placeholder = 'Ketik Kecamatan...';
+                    document.getElementById('bio-kec').focus();
+                } catch(e) {}
+            }
+            else if (level === 'kec') {
+                document.getElementById('bio-kel').value = '';
+                document.getElementById('bio-kel').disabled = true;
+                wilayahData.kel = [];
+                
+                document.getElementById('bio-kel').placeholder = 'Memuat data Kelurahan...';
+                try {
+                    let res = await fetch(`https://api.binderbyte.com/wilayah/kelurahan?api_key=${API_KEY_BINDERBYTE}&id_kecamatan=${id}`);
+                    let json = await res.json();
+                    if(json.value) wilayahData.kel = json.value;
+                    document.getElementById('bio-kel').disabled = false;
+                    document.getElementById('bio-kel').placeholder = 'Ketik Kelurahan...';
+                    document.getElementById('bio-kel').focus();
+                } catch(e) {}
             }
         }
 
-        function selectKec(val) {
-            document.getElementById('bio-kec').value = val;
-            document.getElementById('kec-suggestions').classList.add('hidden');
+        function enableEditWilayah() {
+            document.getElementById('box-saved-wilayah').classList.add('hidden');
+            document.getElementById('box-edit-wilayah').classList.remove('hidden');
+            document.getElementById('bio-prov').value = '';
+            document.getElementById('bio-kab').value = '';
+            document.getElementById('bio-kec').value = '';
+            document.getElementById('bio-kel').value = '';
+            document.getElementById('bio-kab').disabled = true;
+            document.getElementById('bio-kec').disabled = true;
+            document.getElementById('bio-kel').disabled = true;
+            document.getElementById('bio-prov').focus();
         }
 
         function initTheme() {
@@ -1324,7 +1344,28 @@
             document.getElementById('bio-npwp').value = data['NPWP'] || ''; document.getElementById('bio-kwn').value = data['Kewarganegaraan'] || '';
             document.getElementById('bio-jalan').value = data['Jalan'] || ''; document.getElementById('bio-dusun').value = data['Dusun'] || '';
             document.getElementById('bio-rt').value = data['RT'] || ''; document.getElementById('bio-rw').value = data['RW'] || '';
-            document.getElementById('bio-kel').value = data['Kelurahan'] || ''; document.getElementById('bio-kec').value = data['Kecamatan'] || '';
+            
+            // Logika menampilkan data wilayah jika sudah tersimpan di database
+            let combinedKec = data['Kecamatan'] || '';
+            if (combinedKec.includes('Desa: ') && combinedKec.includes('Prov: ')) {
+                document.getElementById('box-saved-wilayah').classList.remove('hidden');
+                document.getElementById('box-edit-wilayah').classList.add('hidden');
+                document.getElementById('txt-saved-wilayah').innerText = combinedKec.replace(/Desa: |Kec: |Kab: |Prov: /g, '');
+                
+                // Hapus required pada dropdown agar form bisa disubmit jika user tidak ingin mengubah
+                document.getElementById('bio-prov').required = false;
+                document.getElementById('bio-kab').required = false;
+                document.getElementById('bio-kec').required = false;
+                document.getElementById('bio-kel').required = false;
+            } else {
+                document.getElementById('box-saved-wilayah').classList.add('hidden');
+                document.getElementById('box-edit-wilayah').classList.remove('hidden');
+                document.getElementById('bio-prov').required = true;
+                document.getElementById('bio-kab').required = true;
+                document.getElementById('bio-kec').required = true;
+                document.getElementById('bio-kel').required = true;
+            }
+
             document.getElementById('bio-pos').value = data['Kodepos'] || ''; document.getElementById('bio-telp').value = data['Telepon'] || '';
             document.getElementById('bio-tinggal').value = data['Jenis Tinggal'] || ''; document.getElementById('bio-sekolah').value = data['Asal SMA/SMK'] || '';
 
@@ -1509,12 +1550,32 @@
             e.preventDefault();
             Swal.fire({ title: 'Menyimpan Biodata...', html: 'Mohon tunggu...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
+            // Menggabungkan wilayah Provinsi, Kabupaten, Kecamatan, dan Kelurahan menjadi 1 data string
+            let gabunganWilayah = currentMabaData['Kecamatan'] || ''; // Gunakan yang lama jika tidak diedit
+            
+            // Jika mode edit wilayah aktif, ambil dari 4 input teks
+            if (!document.getElementById('box-edit-wilayah').classList.contains('hidden')) {
+                let provVal = document.getElementById('bio-prov').value.trim();
+                let kabVal = document.getElementById('bio-kab').value.trim();
+                let kecVal = document.getElementById('bio-kec').value.trim();
+                let kelVal = document.getElementById('bio-kel').value.trim();
+                
+                if (provVal && kabVal && kecVal && kelVal) {
+                    gabunganWilayah = `Desa: ${kelVal}, Kec: ${kecVal}, Kab: ${kabVal}, Prov: ${provVal}`;
+                } else {
+                    Swal.fire('Peringatan', 'Silakan lengkapi isian Provinsi, Kabupaten, Kecamatan, dan Kelurahan Anda!', 'warning');
+                    return;
+                }
+            }
+
             let payload = {
                 nik: currentMabaData.nik,
                 agama: document.getElementById('bio-agama').value, nisn: document.getElementById('bio-nisn').value, npwp: document.getElementById('bio-npwp').value,
                 kewarganegaraan: document.getElementById('bio-kwn').value, jalan: document.getElementById('bio-jalan').value, dusun: document.getElementById('bio-dusun').value,
-                rt: document.getElementById('bio-rt').value, rw: document.getElementById('bio-rw').value, kelurahan: document.getElementById('bio-kel').value,
-                kecamatan: document.getElementById('bio-kec').value, kodepos: document.getElementById('bio-pos').value, telepon: document.getElementById('bio-telp').value,
+                rt: document.getElementById('bio-rt').value, rw: document.getElementById('bio-rw').value, 
+                kelurahan: "-", // Dikirim sebagai strip karena datanya dilebur dengan kecamatan
+                kecamatan: gabunganWilayah, // Data gabungan yang akan disetor ke Database
+                kodepos: document.getElementById('bio-pos').value, telepon: document.getElementById('bio-telp').value,
                 jenisTinggal: document.getElementById('bio-tinggal').value, asalSma: document.getElementById('bio-sekolah').value,
                 
                 nikAyah: document.getElementById('ortu-nik-ayah').value, namaAyah: document.getElementById('ortu-nama-ayah').value, tglAyah: document.getElementById('ortu-tgl-ayah').value, pendAyah: document.getElementById('ortu-pend-ayah').value, pekAyah: document.getElementById('ortu-pek-ayah').value, pengAyah: document.getElementById('ortu-peng-ayah').value,
@@ -1699,7 +1760,6 @@
         }
 
         // ==================== LOGIKA ADMIN ====================
-        // (Sama persis seperti sebelumnya)
         function renderAdminDashboard(data) {
             if(!data || !data.maba) return;
             adminAllRows = data.maba.rows || [];
