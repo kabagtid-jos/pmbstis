@@ -174,17 +174,13 @@
                     </div>
                 </div>
 
-                <!-- ALERTS AREA -->
                 <div id="maba-alert-container" class="mb-4 md:mb-6"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                    <!-- FASE 1: BERKAS -->
                     <div class="md:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 relative">
-                        <!-- Overlay Lock Berkas -->
                         <div id="maba-berkas-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
                             <div id="maba-berkas-overlay-msg" class="bg-white dark:bg-slate-700 p-3 md:p-4 rounded-xl shadow-lg font-bold text-green-600 dark:text-green-400 border border-green-100 dark:border-green-800 text-sm md:text-base"><i class="fas fa-check-circle mr-2 text-xl"></i> Berkas Sudah Lengkap</div>
                         </div>
-
                         <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-6 border-b border-slate-200 dark:border-slate-700 pb-3 dark:text-white flex items-center"><i class="fas fa-folder-open text-primary mr-3 text-2xl"></i> Step 1: Upload Berkas</h3>
                         <p class="text-[10px] md:text-xs text-slate-500 mb-4 md:mb-6">Wajib melengkapi dokumen di bawah ini agar dapat melangkah ke tahap pembayaran.</p>
                         
@@ -198,21 +194,17 @@
                                 <button class="px-3 py-1.5 bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 rounded-lg text-xs font-medium shadow-sm"><i class="fas fa-upload"></i> Pilih File</button>
                             </div>
                         </div>
-
                         <div id="berkas-action" class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-700">
                             <button onclick="mabaSubmitBerkas()" class="w-full bg-primary hover:bg-blue-800 text-white py-3 rounded-xl font-bold text-sm shadow-md transition-colors"><i class="fas fa-save mr-2"></i> Simpan Berkas & Lanjut</button>
                         </div>
                     </div>
 
-                    <!-- FASE 2: TAGIHAN BIAYA -->
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 md:p-8 flex flex-col relative">
-                        <!-- Overlay Lock Bayar -->
                         <div id="maba-bayar-overlay" class="hidden absolute inset-0 bg-white/70 dark:bg-slate-800/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-2xl p-4 text-center">
                             <i class="fas fa-lock text-4xl text-slate-400 mb-3"></i>
                             <p class="font-bold text-slate-700 dark:text-slate-300 text-sm">Tahap Terkunci</p>
                             <p class="text-[10px] text-slate-500 mt-1" id="maba-bayar-overlay-msg">Selesaikan kelengkapan berkas terlebih dahulu.</p>
                         </div>
-
                         <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-6 border-b border-slate-200 dark:border-slate-700 pb-3 dark:text-white flex items-center"><i class="fas fa-file-invoice-dollar text-secondary mr-3 text-2xl"></i> Step 2: Tagihan</h3>
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-700 dark:to-slate-600 p-4 rounded-xl border border-blue-200 text-center mb-4">
                             <p class="text-xs text-slate-600 dark:text-slate-300">Biaya Registrasi Pendaftaran</p>
@@ -223,7 +215,6 @@
                             <strong class="text-lg text-primary dark:text-secondary">BSI - 1234567890</strong><br>
                             <span class="text-[10px] text-slate-500">a.n STIS Abu Zairi</span>
                         </div>
-                        
                         <div id="bayar-action" class="mt-auto border-t border-slate-200 dark:border-slate-700 pt-4">
                             <label class="block text-[10px] font-semibold mb-2">Upload Bukti Transfer (JPG/PNG):</label>
                             <input type="file" class="w-full text-xs mb-3 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-blue-50 file:text-primary hover:file:bg-blue-100">
@@ -251,18 +242,11 @@
                 </div>
 
                 <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 shadow-[0_-5px_15px_-3px_rgba(0,0,0,0.1)] dark:shadow-[0_-5px_15px_-3px_rgba(0,0,0,0.5)] z-50 flex justify-around items-center px-2 py-3 border-t border-slate-200 dark:border-slate-800 transition-colors" id="mobile-admin-tabs">
-                    <button onclick="switchAdminTab('ringkasan')" id="tab-mob-ringkasan" class="flex flex-col items-center text-primary dark:text-secondary w-1/3 transition-colors">
-                        <i class="fas fa-chart-pie text-xl mb-1"></i><span class="text-[10px] font-bold">Ringkasan</span>
-                    </button>
-                    <button onclick="switchAdminTab('maba')" id="tab-mob-maba" class="flex flex-col items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-1/3 transition-colors">
-                        <i class="fas fa-users text-xl mb-1"></i><span class="text-[10px] font-medium">Pendaftar</span>
-                    </button>
-                    <button onclick="switchAdminTab('settings')" id="tab-mob-settings" class="flex flex-col items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-1/3 transition-colors">
-                        <i class="fas fa-cogs text-xl mb-1"></i><span class="text-[10px] font-medium">Pengaturan</span>
-                    </button>
+                    <button onclick="switchAdminTab('ringkasan')" id="tab-mob-ringkasan" class="flex flex-col items-center text-primary dark:text-secondary w-1/3 transition-colors"><i class="fas fa-chart-pie text-xl mb-1"></i><span class="text-[10px] font-bold">Ringkasan</span></button>
+                    <button onclick="switchAdminTab('maba')" id="tab-mob-maba" class="flex flex-col items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-1/3 transition-colors"><i class="fas fa-users text-xl mb-1"></i><span class="text-[10px] font-medium">Pendaftar</span></button>
+                    <button onclick="switchAdminTab('settings')" id="tab-mob-settings" class="flex flex-col items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-1/3 transition-colors"><i class="fas fa-cogs text-xl mb-1"></i><span class="text-[10px] font-medium">Pengaturan</span></button>
                 </div>
 
-                <!-- ADMIN RINGKASAN -->
                 <div id="admin-content-ringkasan" class="transition-colors">
                     <div class="grid grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 mb-4 md:mb-6">
                         <div class="bg-white dark:bg-slate-800 p-3 md:p-5 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
@@ -295,7 +279,6 @@
                     </div>
                 </div>
 
-                <!-- ADMIN DATA MABA -->
                 <div id="admin-content-maba" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 p-5 overflow-x-auto">
                     <h3 class="font-bold mb-4 border-b border-slate-100 pb-3">Tabel Data Mahasiswa Baru</h3>
                     <table class="w-full text-left border-collapse" id="admin-table">
@@ -304,7 +287,7 @@
                     </table>
                 </div>
 
-                <!-- ADMIN PENGATURAN -->
+                <!-- ADMIN PENGATURAN (DENGAN FONNTE) -->
                 <div id="admin-content-settings" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 p-5">
                     <h3 class="font-bold mb-4 border-b border-slate-100 pb-3"><i class="fas fa-cogs mr-2 text-secondary"></i> Pengaturan Aplikasi</h3>
                     <form id="form-settings" onsubmit="saveAdminSettings(event)">
@@ -323,6 +306,30 @@
                                 </div>
                                 <div><label class="block text-xs font-semibold mb-1">Daftar Prodi (Pisahkan baris / Enter)</label><textarea id="set-prodi" rows="3" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></textarea></div>
                             </div>
+                            
+                            <!-- Setting Fonnte -->
+                            <div class="col-span-full space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <h4 class="font-bold text-green-600 border-b border-slate-200 pb-2"><i class="fab fa-whatsapp mr-2"></i>Integrasi WhatsApp (Fonnte)</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1">Status Fonnte</label>
+                                        <select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none">
+                                            <option value="Nonaktif">Nonaktif</option>
+                                            <option value="Aktif">Aktif</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1">Token API Fonnte</label>
+                                        <input type="text" id="set-fonnte-token" placeholder="Masukkan Token API" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold mb-1">No WA Admin Target</label>
+                                        <input type="text" id="set-fonnte-target" placeholder="Contoh: 08123456789" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none">
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2">*Dapatkan token di <a href="https://md.fonnte.com" target="_blank" class="text-blue-500 underline">md.fonnte.com</a>. Jika Aktif, sistem otomatis mengirim pesan ke Nomor WA Admin setiap ada pendaftar baru masuk ke database.</p>
+                            </div>
+
                             <div class="col-span-full space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                                 <h4 class="font-bold text-red-600 border-b border-slate-200 pb-2"><i class="fas fa-lock mr-2"></i>Kredensial Admin</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -330,8 +337,34 @@
                                     <div><label class="block text-xs font-semibold mb-1">Password Admin</label><input type="text" id="set-admin-pass" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
                                 </div>
                             </div>
-                            <div class="col-span-full mt-2"><button type="submit" id="btn-save-settings" class="w-full md:w-auto px-8 bg-secondary text-white font-bold py-3 rounded-xl"><i class="fas fa-save"></i> Simpan Pengaturan</button></div>
+                            <div class="col-span-full mt-2"><button type="submit" id="btn-save-settings" class="w-full md:w-auto px-8 bg-secondary hover:bg-amber-600 transition-colors text-white font-bold py-3 rounded-xl"><i class="fas fa-save mr-2"></i> Simpan Pengaturan</button></div>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 mt-auto transition-colors mb-16 md:mb-0">
+        <div class="text-center text-slate-500 dark:text-slate-500 text-xs md:text-sm font-medium">
+            &copy; 2026 PMB STIS Abu Zairi. All rights reserved.
+        </div>
+    </footer>
+
+    <div id="print-area" class="hidden bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif;">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+            <h2 style="margin:0; color: #1e3a8a;">STIS ABU ZAIRI</h2>
+            <p style="margin:0;">FORMULIR PENDAFTARAN MAHASISWA BARU</p>
+        </div>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px; width: 35%;"><strong>No Pendaftaran</strong></td><td>: <span id="print-no"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Nama Lengkap</strong></td><td>: <span id="print-nama"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>NIK</strong></td><td>: <span id="print-nik"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Jalur / Prodi</strong></td><td>: <span id="print-jalur"></span> / <span id="print-prodi"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr>
+        </table>
         <div style="margin-top: 40px; text-align: right;">
             <p>Panitia PMB</p>
             <br><br><br>
@@ -341,14 +374,11 @@
 
     <!-- JS Logic -->
     <script>
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzLxaNNbhxVpkbKhDjmci_JydSmiYQ2wTMFPgPJP917aORqgGvOzdpHJjLw-Rt7hRle/exec'; 
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzBMoW9i_S6wDdBSgVtwyjCBRNS7SzsAdQe_2LbdgysxiCRxrhxr9F-__-6Dp4K9MfQ/exec'; 
         
-        // --- FUNGSI HELPER API (Mencegah Error CORS) ---
         async function fetchAPI(action, payload = {}) {
             const response = await fetch(`${GAS_API_URL}?action=${action}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
+                method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload)
             });
             return await response.json();
         }
@@ -360,14 +390,9 @@
 
         function initTheme() {
             try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark'); document.getElementById('theme-icon').className = 'fas fa-sun text-secondary';
-                } else {
-                    document.documentElement.classList.remove('dark'); document.getElementById('theme-icon').className = 'fas fa-moon';
-                }
-            } catch(e) {
-                console.warn('Browser memblokir localStorage, mengabaikan pengaturan tema.');
-            }
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); document.getElementById('theme-icon').className = 'fas fa-sun text-secondary'; } 
+                else { document.documentElement.classList.remove('dark'); document.getElementById('theme-icon').className = 'fas fa-moon'; }
+            } catch(e) {}
         }
 
         function toggleTheme() {
@@ -405,20 +430,10 @@
             try {
                 const data = await fetchAPI('getInitData');
                 if (data.success) handleInitDataSuccess(data);
-                else throw new Error("Gagal mengambil data dari server");
+                else throw new Error("Gagal mengambil data");
             } catch (err) {
-                console.error(err);
                 const container = document.getElementById('pmb-info-container');
-                if (container) {
-                    container.innerHTML = `
-                        <div class="glass-card rounded-3xl p-6 md:p-10 text-center border border-red-200">
-                            <i class="fas fa-exclamation-triangle text-4xl md:text-5xl text-red-500 mb-4"></i>
-                            <h3 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-2">Koneksi ke Server Ditolak</h3>
-                            <p class="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">Penyebab paling umum adalah pengaturan izin API belum diset dengan benar.<br>Silakan buka Google Apps Script, lakukan <b>Deploy Baru (New deployment)</b>, pastikan "Who has access" diset ke <b>Anyone</b>.</p>
-                            <button onclick="location.reload()" class="px-6 py-2.5 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md"><i class="fas fa-sync-alt mr-2"></i> Muat Ulang Halaman</button>
-                        </div>
-                    `;
-                }
+                if (container) container.innerHTML = `<div class="glass-card rounded-3xl p-6 md:p-10 text-center border border-red-200"><i class="fas fa-exclamation-triangle text-4xl md:text-5xl text-red-500 mb-4"></i><h3 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-2">Koneksi ke Server Ditolak</h3><button onclick="location.reload()" class="px-6 py-2.5 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md"><i class="fas fa-sync-alt mr-2"></i> Muat Ulang Halaman</button></div>`;
             }
         }
 
@@ -431,21 +446,9 @@
             selectedJalur = primaryJalur;
             document.getElementById('form-jalur-label').innerText = primaryJalur.nama || '-';
             
-            // --- BAGIAN YANG DIPERBAIKI (MENGHILANGKAN LOADING SPINNER) ---
-            let homeCardHtml = `
-                <div class="glass-card rounded-3xl p-6 md:p-10 text-center flex flex-col items-center transition-colors relative overflow-hidden group">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 dark:bg-secondary/5 rounded-full blur-2xl -z-10 group-hover:bg-secondary/20 transition duration-500"></div>
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-50 dark:bg-slate-800/80 text-primary rounded-full flex items-center justify-center text-2xl md:text-3xl mb-5 md:mb-6 shadow-inner border border-primary/10"><i class="fas fa-user-plus"></i></div>
-                    <h2 class="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-slate-900 dark:text-white transition-colors tracking-tight">Pendaftaran Mahasiswa Baru</h2>
-                    <p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6 md:mb-8 max-w-lg mx-auto transition-colors leading-relaxed">Mari bergabung dan kembangkan potensi terbaik Anda. Silakan klik tombol di bawah ini untuk melihat rincian biaya dan melanjutkan ke pengisian formulir pendaftaran.</p>
-                    <button onclick="showInformasiPendaftaran()" class="w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/40 flex items-center justify-center gap-2 text-base md:text-lg tracking-wide hover:-translate-y-1">
-                        <i class="fas fa-hand-pointer"></i> Daftar Sekarang
-                    </button>
-                </div>
-            `;
+            let homeCardHtml = `<div class="glass-card rounded-3xl p-6 md:p-10 text-center flex flex-col items-center transition-colors relative overflow-hidden group"><div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/10 dark:bg-secondary/5 rounded-full blur-2xl -z-10 group-hover:bg-secondary/20 transition duration-500"></div><div class="w-16 h-16 md:w-20 md:h-20 bg-blue-50 dark:bg-slate-800/80 text-primary rounded-full flex items-center justify-center text-2xl md:text-3xl mb-5 md:mb-6 shadow-inner border border-primary/10"><i class="fas fa-user-plus"></i></div><h2 class="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-slate-900 dark:text-white transition-colors tracking-tight">Pendaftaran Mahasiswa Baru</h2><p class="text-sm md:text-base text-slate-500 dark:text-slate-400 mb-6 md:mb-8 max-w-lg mx-auto transition-colors leading-relaxed">Mari bergabung dan kembangkan potensi terbaik Anda. Silakan klik tombol di bawah ini untuk melihat rincian biaya dan melanjutkan ke pengisian formulir pendaftaran.</p><button onclick="showInformasiPendaftaran()" class="w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-primary/40 flex items-center justify-center gap-2 text-base md:text-lg tracking-wide hover:-translate-y-1"><i class="fas fa-hand-pointer"></i> Daftar Sekarang</button></div>`;
             const pmbInfoContainer = document.getElementById('pmb-info-container');
             if(pmbInfoContainer) pmbInfoContainer.innerHTML = homeCardHtml;
-            // --------------------------------------------------------------
 
             let prodiHtml = '<option value="">-- Pilih Program Studi --</option>';
             if(data.prodi) data.prodi.forEach(p => { prodiHtml += `<option value="${p}">${p}</option>`; });
@@ -458,25 +461,9 @@
             let ulangFee = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(primaryJalur.ulang || 0);
             let isDark = document.documentElement.classList.contains('dark');
 
-            let infoHtml = `
-                <div class="text-left text-[11px] md:text-xs space-y-1.5 md:space-y-2 mt-2 md:mt-3 text-slate-700 dark:text-slate-300">
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Tahun Akademik</span> <strong class="dark:text-white">${appData.semester || '-'}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Gelombang</span> <strong class="dark:text-white">${appData.gelombang || '-'}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Periode</span> <strong class="dark:text-white">${appData.gelombangTgl || '-'}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Jalur</span> <strong class="dark:text-white">${primaryJalur.nama || '-'}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Sistem</span> <strong class="dark:text-white">${primaryJalur.sistem || '-'}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Registrasi</span> <strong class="text-primary dark:text-blue-400">${regFee}</strong></div>
-                    <div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Daftar Ulang</span> <strong class="text-secondary">${ulangFee}</strong></div>
-                </div>
-                <div class="text-[9px] md:text-[10px] text-slate-400 dark:text-slate-500 mt-2 md:mt-3 text-right italic">*Biaya daftar ulang sudah termasuk Almamater</div>
-            `;
+            let infoHtml = `<div class="text-left text-[11px] md:text-xs space-y-1.5 md:space-y-2 mt-2 md:mt-3 text-slate-700 dark:text-slate-300"><div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Tahun Akademik</span> <strong class="dark:text-white">${appData.semester || '-'}</strong></div><div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Gelombang</span> <strong class="dark:text-white">${appData.gelombang || '-'}</strong></div><div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Periode</span> <strong class="dark:text-white">${appData.gelombangTgl || '-'}</strong></div><div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Jalur</span> <strong class="dark:text-white">${primaryJalur.nama || '-'}</strong></div><div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Registrasi</span> <strong class="text-primary dark:text-blue-400">${regFee}</strong></div><div class="flex justify-between border-b pb-1 md:pb-1.5 border-slate-100 dark:border-slate-700/50"><span>Biaya Daftar Ulang</span> <strong class="text-secondary">${ulangFee}</strong></div></div><div class="text-[9px] md:text-[10px] text-slate-400 dark:text-slate-500 mt-2 md:mt-3 text-right italic">*Biaya daftar ulang sudah termasuk Almamater</div>`;
 
-            Swal.fire({
-                title: '<span class="dark:text-white font-bold tracking-tight">Rincian Pendaftaran</span>',
-                html: infoHtml, icon: 'info', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
-                showCancelButton: true, confirmButtonColor: '#1e3a8a', cancelButtonColor: '#64748b', confirmButtonText: '<i class="fas fa-edit mr-1"></i> Lanjutkan Formulir', cancelButtonText: 'Batal',
-                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
-            }).then((result) => { if (result.isConfirmed) navigate('form'); });
+            Swal.fire({ title: '<span class="dark:text-white font-bold tracking-tight">Rincian Pendaftaran</span>', html: infoHtml, icon: 'info', background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155', showCancelButton: true, confirmButtonColor: '#1e3a8a', cancelButtonColor: '#64748b', confirmButtonText: '<i class="fas fa-edit mr-1"></i> Lanjutkan Formulir', cancelButtonText: 'Batal', customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' } }).then((result) => { if (result.isConfirmed) navigate('form'); });
         }
         
         function generateCaptcha() { let num1 = Math.floor(Math.random() * 10) + 1; let num2 = Math.floor(Math.random() * 10) + 1; captchaAnswer = num1 + num2; document.getElementById('captcha-question').innerText = `${num1} + ${num2} =`; document.getElementById('inp-captcha').value = ''; }
@@ -490,15 +477,26 @@
             try {
                 const res = await fetchAPI('register', data);
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false;
-                if(res.success) { document.getElementById('form-pmb').reset(); showSuccessPopup(); } else { Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' }); }
+                if(res.success) { document.getElementById('form-pmb').reset(); showSuccessPopup(); } else { Swal.fire({ title: 'Gagal', text: res.message, icon: 'error' }); generateCaptcha(); }
             } catch (err) { 
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false; 
-                Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database. Pastikan Deploy sudah diset "Anyone".', icon: 'error' }); 
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Daftar Sekarang'; btn.disabled = false; Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database.', icon: 'error' }); 
             }
         }
 
         function showSuccessPopup() {
-            Swal.fire({ icon: 'success', title: 'Pendaftaran Berhasil!', html: `Username: <b>${submittedData.hp}</b><br>Password: <b>${submittedData.tglLahir}</b>`, confirmButtonText: 'Login Sekarang'}).then((res) => { if(res.isConfirmed){ document.getElementById('login-user').value = submittedData.hp; navigate('login'); } });
+            let isDark = document.documentElement.classList.contains('dark');
+            let userHtml = `<div class="bg-blue-50/50 dark:bg-blue-900/20 p-2.5 md:p-3 rounded-lg mt-2.5 text-left border border-blue-100 dark:border-blue-800/50 transition-colors"><p class="text-[11px] md:text-xs mb-1.5 text-primary dark:text-blue-300 font-semibold">Harap simpan informasi akun ini:</p><table class="w-full text-[11px] md:text-xs dark:text-slate-200"><tr><td class="font-medium w-1/3 py-0.5">Username</td><td class="py-0.5">: <span class="font-bold">${submittedData.hp}</span></td></tr><tr><td class="font-medium py-0.5">Password</td><td class="py-0.5">: <span class="font-bold">${submittedData.tglLahir}</span></td></tr></table></div>`;
+            Swal.fire({
+                icon: 'success', title: '<span class="text-base md:text-lg font-bold dark:text-white tracking-tight">Pendaftaran Berhasil!</span>',
+                html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Data Anda telah tersimpan dengan aman di sistem.</div>` + userHtml,
+                background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
+                showDenyButton: true, confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login', denyButtonText: '<i class="fas fa-print"></i> Cetak',
+                confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', allowOutsideClick: false,
+                customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700' }
+            }).then((result) => {
+                if (result.isConfirmed) { document.getElementById('login-user').value = submittedData.hp; navigate('login'); }
+                else if (result.isDenied) { cetakFormulir(); setTimeout(showSuccessPopup, 1000); }
+            });
         }
 
         // ==================== LOGIKA ALUR MABA ====================
@@ -513,26 +511,17 @@
                     if(res.role === 'admin') { adminCreds = {user: user, pass: pass}; lastAdminData = res.data; switchAdminTab('ringkasan'); renderAdminDashboard(res.data); populateAdminSettingsForm(res.data.settings); navigate('dashboard-admin'); } 
                     else { renderMabaDashboard(res.data); navigate('dashboard-maba'); }
                 } else { Swal.fire({ title: 'Login Gagal', text: res.message, icon: 'error' }); }
-            } catch(err) { 
-                btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false; 
-                Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database. Pastikan Deploy menggunakan "Anyone".', icon: 'error' }); 
-            }
+            } catch(err) { btn.innerHTML = 'Masuk Dashboard'; btn.disabled = false; Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database.', icon: 'error' }); }
         }
 
         function renderMabaDashboard(data) {
             currentMabaData = data;
             document.getElementById('maba-nama').innerText = data.nama || '-'; document.getElementById('maba-nik').innerText = data.nik || '-';
             document.getElementById('maba-jalur').innerText = data.jalur || '-'; document.getElementById('maba-prodi').innerText = data.prodi || '-';
-            
             let jData = appData && appData.jalur ? appData.jalur.find(j => j.nama === data.jalur) : null;
             if(jData) document.getElementById('maba-tagihan').innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(jData.reg);
 
-            const alertC = document.getElementById('maba-alert-container');
-            const berkasOvl = document.getElementById('maba-berkas-overlay');
-            const bayarOvl = document.getElementById('maba-bayar-overlay');
-            const berkasAct = document.getElementById('berkas-action');
-            const bayarAct = document.getElementById('bayar-action');
-            
+            const alertC = document.getElementById('maba-alert-container'); const berkasOvl = document.getElementById('maba-berkas-overlay'); const bayarOvl = document.getElementById('maba-bayar-overlay'); const berkasAct = document.getElementById('berkas-action'); const bayarAct = document.getElementById('bayar-action');
             alertC.innerHTML = ''; berkasOvl.classList.add('hidden'); bayarOvl.classList.add('hidden'); berkasAct.classList.remove('hidden'); bayarAct.classList.remove('hidden');
 
             if (data.statusBayar === 'Lunas' || data.statusVerifikasi === 'Terverifikasi') {
@@ -546,12 +535,8 @@
                 berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); bayarAct.classList.add('hidden');
                 document.getElementById('maba-bayar-overlay').innerHTML = `<div class="bg-white p-4 rounded-xl shadow-lg font-bold text-blue-600 border border-blue-100 text-center"><i class="fas fa-clock text-3xl mb-2 text-blue-400"></i><br>Sedang Dievaluasi</div>`;
             }
-            else if (data.statusVerifikasi === 'Berkas Lengkap') {
-                berkasOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); // Kunci berkas, Buka Tagihan
-            }
-            else {
-                bayarOvl.classList.remove('hidden'); bayarAct.classList.add('hidden'); // Kunci bayar, Buka berkas
-            }
+            else if (data.statusVerifikasi === 'Berkas Lengkap') { berkasOvl.classList.remove('hidden'); berkasAct.classList.add('hidden'); }
+            else { bayarOvl.classList.remove('hidden'); bayarAct.classList.add('hidden'); }
         }
 
         async function mabaSubmitBerkas() {
@@ -606,7 +591,7 @@
             }
             document.getElementById('log-list').innerHTML = logsHtml;
 
-            // Tabel Admin (Dengan Tombol Aksi)
+            // Tabel Admin
             let thead = ''; headers.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 font-semibold text-primary whitespace-nowrap">${h}</th>`);
             document.getElementById('admin-thead').innerHTML = thead;
 
@@ -617,16 +602,10 @@
             rows.forEach(r => {
                 tbody += '<tr class="border-b border-slate-100 hover:bg-blue-50">';
                 r.forEach(cell => { tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 text-xs md:text-sm">${cell}</td>`; });
-                
-                // Tambah Kolom Aksi
                 let aksiBtn = '-';
-                if (r[statusIdx] === 'Menunggu Verifikasi') {
-                    aksiBtn = `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded shadow text-xs font-bold transition"><i class="fas fa-check mr-1"></i> Verifikasi</button>`;
-                } else if (r[statusIdx] === 'Lunas') {
-                    aksiBtn = `<span class="text-green-600 font-bold text-xs"><i class="fas fa-check-circle"></i> Selesai</span>`;
-                }
-                tbody += `<td class="p-3 md:p-4 whitespace-nowrap">${aksiBtn}</td>`;
-                tbody += '</tr>';
+                if (r[statusIdx] === 'Menunggu Verifikasi') aksiBtn = `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded shadow text-xs font-bold transition"><i class="fas fa-check mr-1"></i> Verifikasi</button>`;
+                else if (r[statusIdx] === 'Lunas') aksiBtn = `<span class="text-green-600 font-bold text-xs"><i class="fas fa-check-circle"></i> Selesai</span>`;
+                tbody += `<td class="p-3 md:p-4 whitespace-nowrap">${aksiBtn}</td></tr>`;
             });
             document.getElementById('admin-tbody').innerHTML = tbody;
         }
@@ -650,6 +629,10 @@
         // Pengaturan Form
         function populateAdminSettingsForm(rawSettingsVals) {
             let prodiList = [];
+            
+            // Set Default
+            const elStatus = document.getElementById('set-fonnte-status'); if(elStatus) elStatus.value = 'Nonaktif';
+            
             for(let i=1; i<rawSettingsVals.length; i++) {
                 let row = rawSettingsVals[i];
                 if(row[0] === 'Semester') { document.getElementById('set-semester').value = row[1]; }
@@ -657,6 +640,13 @@
                 if(row[0] === 'Jalur' && row[1] === 'Reguler') { document.getElementById('set-biaya-reg').value = row[3]; document.getElementById('set-biaya-ulang').value = row[4]; }
                 if(row[0] === 'Prodi') prodiList.push(row[1]);
                 if(row[0] === 'Admin') { document.getElementById('set-admin-user').value = row[1]; document.getElementById('set-admin-pass').value = row[2]; }
+                
+                // Parse Fonnte Settings
+                if(row[0] === 'Fonnte') {
+                    if(row[1] === 'Status') { const el = document.getElementById('set-fonnte-status'); if(el) el.value = row[2] || 'Nonaktif'; }
+                    if(row[1] === 'Token') { const el = document.getElementById('set-fonnte-token'); if(el) el.value = row[2]; }
+                    if(row[1] === 'Target') { const el = document.getElementById('set-fonnte-target'); if(el) el.value = row[2]; }
+                }
             }
             document.getElementById('set-prodi').value = prodiList.join('\n');
         }
@@ -664,13 +654,21 @@
         async function saveAdminSettings(e) {
             e.preventDefault();
             let btn = document.getElementById('btn-save-settings'); let originalText = btn.innerHTML; btn.innerHTML = 'Menyimpan...'; btn.disabled = true;
+            
             let newSettings = [];
             newSettings.push(['Jalur', 'Reguler', 'Sistem Kuliah: Offline', document.getElementById('set-biaya-reg').value, document.getElementById('set-biaya-ulang').value, 'Aktif']);
+            
             let prodis = document.getElementById('set-prodi').value.split('\n').filter(p => p.trim() !== '');
             prodis.forEach(p => newSettings.push(['Prodi', p.trim(), '', '', '', 'Aktif']));
+            
             newSettings.push(['Gelombang', document.getElementById('set-gelombang').value, document.getElementById('set-gelombang-tgl').value, '', '', 'Aktif']);
             newSettings.push(['Semester', document.getElementById('set-semester').value, '', '', '', 'Aktif']);
             newSettings.push(['Admin', document.getElementById('set-admin-user').value, document.getElementById('set-admin-pass').value, '', '', 'Aktif']);
+
+            // Push Fonnte Settings
+            newSettings.push(['Fonnte', 'Status', document.getElementById('set-fonnte-status').value, '', '', 'Aktif']);
+            newSettings.push(['Fonnte', 'Token', document.getElementById('set-fonnte-token').value, '', '', 'Aktif']);
+            newSettings.push(['Fonnte', 'Target', document.getElementById('set-fonnte-target').value, '', '', 'Aktif']);
 
             try {
                 const response = await fetchAPI('saveSettings', { settings: newSettings });
