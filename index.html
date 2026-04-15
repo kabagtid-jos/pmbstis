@@ -368,9 +368,8 @@
         <div style="margin-top: 50px; float: right; text-align: center; width: 250px; font-size: 14px;">
             <p style="margin: 0;">Bondowoso, <span id="print-tanggal"></span></p>
             <p style="margin: 0;">Hormat Kami,</p>
-            <p style="margin: 0;">Panitia PMB STIS Abu Zairi</p>
             <br><br><br><br>
-            <p style="margin: 0;">(........................................)</p>
+            <p style="margin: 0;"><strong>Panitia PMB STIS Abu Zairi</strong></p>
         </div>
         <div style="clear: both;"></div>
     </div>
@@ -507,19 +506,13 @@
                 icon: 'success', title: '<span class="text-base md:text-lg font-bold dark:text-white tracking-tight">Pendaftaran Berhasil!</span>',
                 html: `<div class="text-[11px] md:text-xs dark:text-slate-300">Terima kasih <b>${submittedData.nama}</b>.<br>Data Anda telah tersimpan dengan aman di sistem.</div>` + userHtml,
                 background: isDark ? '#0f172a' : '#ffffff', color: isDark ? '#f8fafc' : '#334155',
-                showDenyButton: true, showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login', denyButtonText: '<i class="fas fa-print"></i> Cetak', cancelButtonText: '<i class="fab fa-whatsapp"></i> Info ke WA',
-                confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', cancelButtonColor: '#25D366', allowOutsideClick: false,
+                showDenyButton: true, showCancelButton: false,
+                confirmButtonText: '<i class="fas fa-sign-in-alt"></i> Login', denyButtonText: '<i class="fas fa-print"></i> Cetak',
+                confirmButtonColor: '#1e3a8a', denyButtonColor: '#f59e0b', allowOutsideClick: false,
                 customClass: { popup: 'rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700', actions: 'flex-wrap' }
             }).then((result) => {
                 if (result.isConfirmed) { document.getElementById('login-user').value = submittedData.hp; navigate('login'); }
                 else if (result.isDenied) { cetakFormulir(); setTimeout(showSuccessPopup, 1000); }
-                else if (result.dismiss === Swal.DismissReason.cancel) {
-                    let nomorAdmin = "6281234567890"; 
-                    let pesanWA = `Halo Admin, saya mahasiswa baru telah berhasil mendaftar di PMB STIS Abu Zairi.%0A%0A*Nama:* ${submittedData.nama}%0A*NIK:* ${submittedData.nik}%0A*Prodi:* ${submittedData.prodi}%0A%0AMohon instruksi selanjutnya.`;
-                    window.open(`https://wa.me/${nomorAdmin}?text=${pesanWA}`, '_blank');
-                    setTimeout(showSuccessPopup, 500);
-                }
             });
         }
 
