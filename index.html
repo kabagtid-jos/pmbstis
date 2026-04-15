@@ -228,14 +228,8 @@
         <!-- ==================== 5. DASHBOARD ADMIN ==================== -->
         <section id="view-dashboard-admin" class="view-section py-8 md:py-12 px-4 pb-24 md:pb-12">
             <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
-                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight"><i class="fas fa-user-shield text-primary mr-2 md:mr-3"></i>Dashboard Admin</h2>
-                    <a href="https://docs.google.com/spreadsheets" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-medium shadow-md transition-colors flex items-center">
-                        <i class="fas fa-table mr-2"></i>Buka Spreadsheet
-                    </a>
-                </div>
-
-                <div class="hidden md:flex gap-6 mb-6 border-b border-slate-200 dark:border-slate-700 pb-1" id="desktop-admin-tabs">
+                
+                <div class="hidden md:flex gap-6 mb-6 border-b border-slate-200 dark:border-slate-700 pb-1 mt-4" id="desktop-admin-tabs">
                     <button onclick="switchAdminTab('ringkasan')" id="tab-desk-ringkasan" class="font-bold text-primary dark:text-secondary border-b-2 border-primary dark:border-secondary px-4 py-2 text-base transition-colors">Ringkasan</button>
                     <button onclick="switchAdminTab('maba')" id="tab-desk-maba" class="font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-4 py-2 text-base transition-colors border-b-2 border-transparent">Data Pendaftar</button>
                     <button onclick="switchAdminTab('settings')" id="tab-desk-settings" class="font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-4 py-2 text-base transition-colors border-b-2 border-transparent">Pengaturan Web</button>
@@ -248,93 +242,109 @@
                 </div>
 
                 <div id="admin-content-ringkasan" class="transition-colors">
-                    <div class="grid grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 mb-4 md:mb-6">
-                        <div class="bg-white dark:bg-slate-800 p-3 md:p-5 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-                            <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-blue-50 text-primary flex items-center justify-center text-sm md:text-xl mb-1.5 md:mb-3"><i class="fas fa-user-graduate"></i></div>
-                            <h3 class="text-[10px] md:text-sm text-slate-500 font-medium">Pendaftar</h3>
-                            <p class="text-base md:text-3xl font-bold mt-0.5 md:mt-1" id="card-total-maba">0</p>
+                    
+                    <!-- FILTER DASHBOARD -->
+                    <div class="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6">
+                        <div class="w-full sm:w-1/2 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-calendar-alt"></i></div>
+                            <select id="filter-ta" onchange="applyAdminFilters()" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm transition-colors cursor-pointer appearance-none">
+                                <option value="all">Semua Tahun Akademik</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-xs"></i></div>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-3 md:p-5 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-                            <div class="w-8 h-8 md:w-12 md:h-12 rounded-full bg-amber-50 text-secondary flex items-center justify-center text-sm md:text-xl mb-1.5 md:mb-3"><i class="fas fa-book-open"></i></div>
-                            <h3 class="text-[10px] md:text-sm text-slate-500 font-medium">Prodi</h3>
-                            <p class="text-base md:text-3xl font-bold mt-0.5 md:mt-1" id="card-total-prodi">0</p>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-3 md:p-5 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center lg:col-span-2 overflow-hidden">
-                             <div class="w-8 h-8 md:hidden rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-1.5"><i class="fas fa-calendar-check"></i></div>
-                             <h3 class="hidden md:block text-sm font-bold mb-2">Tahun Akademik Aktif</h3>
-                             <h3 class="md:hidden text-[10px] text-slate-500 font-medium">TA Aktif</h3>
-                             <p class="text-sm md:text-lg font-bold md:font-medium text-primary mt-0.5 md:mt-0 w-full truncate px-1" id="card-ta-aktif">-</p>
-                             <p class="text-[9px] md:text-xs text-slate-500 mt-0.5 md:mt-1 w-full truncate px-1" id="card-gel-aktif">-</p>
+                        <div class="w-full sm:w-1/2 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-graduation-cap"></i></div>
+                            <select id="filter-prodi" onchange="applyAdminFilters()" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm transition-colors cursor-pointer appearance-none">
+                                <option value="all">Semua Program Studi</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fas fa-chevron-down text-xs"></i></div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 p-5">
-                            <h3 class="font-bold mb-4 border-b border-slate-100 pb-2">Pendaftar per Prodi</h3>
-                            <div class="relative h-64 w-full"><canvas id="prodiChart"></canvas></div>
+
+                    <!-- CARDS RINGKASAN -->
+                    <div class="grid grid-cols-2 gap-4 md:gap-6 mb-5 md:mb-6">
+                        <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl shadow-md flex flex-col items-center justify-center text-center transition-colors">
+                            <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-400 flex items-center justify-center text-lg md:text-2xl mb-2 md:mb-3"><i class="fas fa-user-graduate"></i></div>
+                            <h3 class="text-[10px] md:text-sm text-slate-500 dark:text-slate-400 font-medium">Total Pendaftar</h3>
+                            <p class="text-xl md:text-4xl font-bold text-slate-900 dark:text-white mt-1" id="card-total-maba">0</p>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col">
-                            <h3 class="font-bold mb-2 border-b border-slate-100 pb-2">Pendaftar Terbaru</h3>
-                            <ul id="log-list" class="flex-grow overflow-y-auto pr-2 space-y-1"></ul>
+                        <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-2xl shadow-md flex flex-col items-center justify-center text-center transition-colors">
+                            <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-amber-50 dark:bg-amber-900/30 text-secondary flex items-center justify-center text-lg md:text-2xl mb-2 md:mb-3"><i class="fas fa-book-open"></i></div>
+                            <h3 class="text-[10px] md:text-sm text-slate-500 dark:text-slate-400 font-medium">Total Prodi Terpilih</h3>
+                            <p class="text-xl md:text-4xl font-bold text-slate-900 dark:text-white mt-1" id="card-total-prodi">0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-6 transition-colors">
+                            <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4"><i class="fas fa-chart-pie text-primary mr-2"></i>Pendaftar per Prodi</h3>
+                            <div class="relative h-64 w-full flex items-center justify-center" id="prodiChartContainer">
+                                <canvas id="prodiChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-6 flex flex-col transition-colors">
+                            <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-4"><i class="fas fa-history text-secondary mr-2"></i>Pendaftar Terbaru</h3>
+                            <ul id="log-list" class="flex-grow overflow-y-auto pr-1 space-y-3"></ul>
                         </div>
                     </div>
                 </div>
 
-                <div id="admin-content-maba" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 p-5 overflow-x-auto">
-                    <h3 class="font-bold mb-4 border-b border-slate-100 pb-3">Tabel Data Mahasiswa Baru</h3>
+                <div id="admin-content-maba" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 overflow-x-auto">
+                    <h3 class="font-bold mb-4 border-b border-slate-100 dark:border-slate-700 pb-3 dark:text-white">Tabel Data Mahasiswa Baru</h3>
                     <table class="w-full text-left border-collapse" id="admin-table">
-                        <thead><tr class="bg-slate-50 text-slate-600 text-xs md:text-sm" id="admin-thead"></tr></thead>
+                        <thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-xs md:text-sm transition-colors" id="admin-thead"></tr></thead>
                         <tbody class="text-xs md:text-sm" id="admin-tbody"></tbody>
                     </table>
                 </div>
 
                 <!-- ADMIN PENGATURAN (DENGAN FONNTE) -->
-                <div id="admin-content-settings" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 p-5">
-                    <h3 class="font-bold mb-4 border-b border-slate-100 pb-3"><i class="fas fa-cogs mr-2 text-secondary"></i> Pengaturan Aplikasi</h3>
+                <div id="admin-content-settings" class="hidden bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+                    <h3 class="font-bold mb-4 border-b border-slate-100 dark:border-slate-700 pb-3 dark:text-white"><i class="fas fa-cogs mr-2 text-secondary"></i> Pengaturan Aplikasi</h3>
                     <form id="form-settings" onsubmit="saveAdminSettings(event)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <h4 class="font-bold text-primary border-b border-slate-200 pb-2">Informasi Umum</h4>
-                                <div><label class="block text-xs font-semibold mb-1">Tahun Akademik</label><input type="text" id="set-semester" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
-                                <div><label class="block text-xs font-semibold mb-1">Nama Gelombang</label><input type="text" id="set-gelombang" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
-                                <div><label class="block text-xs font-semibold mb-1">Periode (Tanggal)</label><input type="text" id="set-gelombang-tgl" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
+                            <div class="space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
+                                <h4 class="font-bold text-primary dark:text-blue-400 border-b border-slate-200 dark:border-slate-600 pb-2">Informasi Umum</h4>
+                                <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Tahun Akademik</label><input type="text" id="set-semester" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
+                                <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Nama Gelombang</label><input type="text" id="set-gelombang" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
+                                <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Periode (Tanggal)</label><input type="text" id="set-gelombang-tgl" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
                             </div>
-                            <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <h4 class="font-bold text-primary border-b border-slate-200 pb-2">Biaya & Prodi</h4>
+                            <div class="space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
+                                <h4 class="font-bold text-primary dark:text-blue-400 border-b border-slate-200 dark:border-slate-600 pb-2">Biaya & Prodi</h4>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <div><label class="block text-xs font-semibold mb-1">Biaya Registrasi</label><input type="number" id="set-biaya-reg" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
-                                    <div><label class="block text-xs font-semibold mb-1">Biaya Daftar Ulang</label><input type="number" id="set-biaya-ulang" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Biaya Registrasi</label><input type="number" id="set-biaya-reg" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Biaya Daftar Ulang</label><input type="number" id="set-biaya-ulang" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
                                 </div>
-                                <div><label class="block text-xs font-semibold mb-1">Daftar Prodi (Pisahkan baris / Enter)</label><textarea id="set-prodi" rows="3" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></textarea></div>
+                                <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Daftar Prodi (Pisahkan baris / Enter)</label><textarea id="set-prodi" rows="3" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></textarea></div>
                             </div>
                             
                             <!-- Setting Fonnte -->
-                            <div class="col-span-full space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <h4 class="font-bold text-green-600 border-b border-slate-200 pb-2"><i class="fab fa-whatsapp mr-2"></i>Integrasi WhatsApp (Fonnte)</h4>
+                            <div class="col-span-full space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
+                                <h4 class="font-bold text-green-600 dark:text-green-400 border-b border-slate-200 dark:border-slate-600 pb-2"><i class="fab fa-whatsapp mr-2"></i>Integrasi WhatsApp (Fonnte)</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label class="block text-xs font-semibold mb-1">Status Fonnte</label>
-                                        <select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none">
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Status Fonnte</label>
+                                        <select id="set-fonnte-status" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary">
                                             <option value="Nonaktif">Nonaktif</option>
                                             <option value="Aktif">Aktif</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold mb-1">Token API Fonnte</label>
-                                        <input type="text" id="set-fonnte-token" placeholder="Masukkan Token API" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none">
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">Token API Fonnte</label>
+                                        <input type="text" id="set-fonnte-token" placeholder="Masukkan Token API" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold mb-1">No WA Admin Target</label>
-                                        <input type="text" id="set-fonnte-target" placeholder="Contoh: 08123456789" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none">
+                                        <label class="block text-xs font-semibold mb-1 dark:text-slate-300">No WA Admin Target</label>
+                                        <input type="text" id="set-fonnte-target" placeholder="Contoh: 08123456789" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary">
                                     </div>
                                 </div>
-                                <p class="text-[10px] text-slate-500 mt-2">*Dapatkan token di <a href="https://md.fonnte.com" target="_blank" class="text-blue-500 underline">md.fonnte.com</a>. Jika Aktif, sistem otomatis mengirim pesan ke Nomor WA Admin setiap ada pendaftar baru masuk ke database.</p>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-2">*Dapatkan token di <a href="https://md.fonnte.com" target="_blank" class="text-blue-500 underline">md.fonnte.com</a>. Jika Aktif, sistem otomatis mengirim pesan ke Nomor WA Admin setiap ada pendaftar baru masuk ke database.</p>
                             </div>
 
-                            <div class="col-span-full space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <h4 class="font-bold text-red-600 border-b border-slate-200 pb-2"><i class="fas fa-lock mr-2"></i>Kredensial Admin</h4>
+                            <div class="col-span-full space-y-4 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-600 transition-colors">
+                                <h4 class="font-bold text-red-600 dark:text-red-400 border-b border-slate-200 dark:border-slate-600 pb-2"><i class="fas fa-lock mr-2"></i>Kredensial Admin</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div><label class="block text-xs font-semibold mb-1">Username Admin</label><input type="text" id="set-admin-user" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
-                                    <div><label class="block text-xs font-semibold mb-1">Password Admin</label><input type="text" id="set-admin-pass" class="w-full px-3 py-2 rounded-lg border border-slate-300 outline-none"></div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Username Admin</label><input type="text" id="set-admin-user" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
+                                    <div><label class="block text-xs font-semibold mb-1 dark:text-slate-300">Password Admin</label><input type="text" id="set-admin-pass" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-primary"></div>
                                 </div>
                             </div>
                             <div class="col-span-full mt-2"><button type="submit" id="btn-save-settings" class="w-full md:w-auto px-8 bg-secondary hover:bg-amber-600 transition-colors text-white font-bold py-3 rounded-xl"><i class="fas fa-save mr-2"></i> Simpan Pengaturan</button></div>
@@ -385,6 +395,7 @@
 
         let appData = null; let selectedJalur = null; let captchaAnswer = 0; let submittedData = null;
         let prodiChartInstance = null; let lastAdminData = null; let currentMabaData = null; let adminCreds = {user: '', pass: ''};
+        let adminAllRows = []; let adminHeaders = []; // Variabel filter admin
 
         document.addEventListener('DOMContentLoaded', () => { initTheme(); loadInitData(); generateCaptcha(); });
 
@@ -393,6 +404,14 @@
                 if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); document.getElementById('theme-icon').className = 'fas fa-sun text-secondary'; } 
                 else { document.documentElement.classList.remove('dark'); document.getElementById('theme-icon').className = 'fas fa-moon'; }
             } catch(e) {}
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) { html.classList.remove('dark'); localStorage.theme = 'light'; document.getElementById('theme-icon').className = 'fas fa-moon text-slate-600'; } 
+            else { html.classList.add('dark'); localStorage.theme = 'dark'; document.getElementById('theme-icon').className = 'fas fa-sun text-secondary'; }
+            
+            if(prodiChartInstance && lastAdminData) applyAdminFilters(); // Re-render grafik agar warna sesuai tema
         }
 
         function toggleTheme() {
@@ -418,11 +437,11 @@
         function switchAdminTab(tabName) {
             ['ringkasan', 'maba', 'settings'].forEach(t => {
                 document.getElementById(`admin-content-${t}`).classList.add('hidden');
-                let btnD = document.getElementById(`tab-desk-${t}`); if(btnD) btnD.className = "font-medium text-slate-500 hover:text-primary px-4 py-2 text-base transition-colors border-b-2 border-transparent";
-                let btnM = document.getElementById(`tab-mob-${t}`); if(btnM) { btnM.className = "flex flex-col items-center text-slate-400 w-1/3 transition-colors"; btnM.querySelector('span').className = "text-[10px] font-medium"; }
+                let btnD = document.getElementById(`tab-desk-${t}`); if(btnD) btnD.className = "font-medium text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white px-4 py-2 text-base transition-colors border-b-2 border-transparent";
+                let btnM = document.getElementById(`tab-mob-${t}`); if(btnM) { btnM.className = "flex flex-col items-center text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 w-1/3 transition-colors"; btnM.querySelector('span').className = "text-[10px] font-medium"; }
             });
             document.getElementById(`admin-content-${tabName}`).classList.remove('hidden');
-            let activeBtnD = document.getElementById(`tab-desk-${tabName}`); if(activeBtnD) activeBtnD.className = "font-bold text-primary dark:text-secondary border-b-2 border-primary px-4 py-2 text-base transition-colors";
+            let activeBtnD = document.getElementById(`tab-desk-${tabName}`); if(activeBtnD) activeBtnD.className = "font-bold text-primary dark:text-secondary border-b-2 border-primary dark:border-secondary px-4 py-2 text-base transition-colors";
             let activeBtnM = document.getElementById(`tab-mob-${tabName}`); if(activeBtnM) { activeBtnM.className = "flex flex-col items-center text-primary dark:text-secondary w-1/3 transition-colors"; activeBtnM.querySelector('span').className = "text-[10px] font-bold"; }
         }
 
@@ -566,45 +585,134 @@
         // ==================== LOGIKA ADMIN ALUR VERIFIKASI ====================
         function renderAdminDashboard(data) {
             if(!data || !data.maba) return;
-            let rows = data.maba.rows || []; let headers = [...data.maba.headers, "Aksi"]; 
+            adminAllRows = data.maba.rows || [];
+            adminHeaders = [...data.maba.headers, "Aksi"]; 
+
+            // 1. Populate Dropdown Filters Options
+            let taSet = new Set();
+            let prodiSet = new Set();
             
+            let prodiIndex = data.maba.headers.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
+            let timeIndex = data.maba.headers.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
+
+            adminAllRows.forEach(r => {
+                if(r[prodiIndex]) prodiSet.add(r[prodiIndex]);
+                let d = new Date(r[timeIndex]);
+                if(!isNaN(d.getTime())) taSet.add(d.getFullYear().toString());
+            });
+
+            let taHtml = '<option value="all">Semua Tahun Akademik</option>';
+            Array.from(taSet).sort().reverse().forEach(y => taHtml += `<option value="${y}">Tahun ${y}</option>`);
+            document.getElementById('filter-ta').innerHTML = taHtml;
+
+            let prodiHtml = '<option value="all">Semua Program Studi</option>';
+            Array.from(prodiSet).sort().forEach(p => prodiHtml += `<option value="${p}">${p}</option>`);
+            document.getElementById('filter-prodi').innerHTML = prodiHtml;
+
+            // 2. Terapkan filter pertama kali (menampilkan semua data bawaan)
+            applyAdminFilters();
+        }
+
+        function applyAdminFilters() {
+            let fTa = document.getElementById('filter-ta').value;
+            let fProdi = document.getElementById('filter-prodi').value;
+            
+            let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
+            let timeIndex = adminHeaders.indexOf('Timestamp'); if(timeIndex===-1) timeIndex = 0;
+
+            // Proses penyaringan (filtering)
+            let filteredRows = adminAllRows.filter(r => {
+                let matchProdi = (fProdi === 'all' || r[prodiIndex] === fProdi);
+                let matchTa = true;
+                if(fTa !== 'all') {
+                    let d = new Date(r[timeIndex]);
+                    if(!isNaN(d.getTime())) matchTa = (d.getFullYear().toString() === fTa);
+                    else matchTa = false;
+                }
+                return matchProdi && matchTa;
+            });
+
+            renderFilteredDashboard(filteredRows);
+        }
+
+        function renderFilteredDashboard(rows) {
+            // Update Cards
             document.getElementById('card-total-maba').innerText = rows.length;
-            document.getElementById('card-total-prodi').innerText = appData && appData.prodi ? appData.prodi.length : 0;
-            document.getElementById('card-ta-aktif').innerText = appData ? appData.semester : '-'; document.getElementById('card-gel-aktif').innerText = appData ? appData.gelombang : '-';
-
-            // Grafik
-            let prodiCounts = {}; let prodiIndex = data.maba.headers.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
+            
+            let prodiCounts = {}; let prodiIndex = adminHeaders.indexOf('Program Studi'); if(prodiIndex===-1) prodiIndex = 8;
             rows.forEach(r => { let prodi = r[prodiIndex]; if(prodiCounts[prodi] !== undefined) prodiCounts[prodi]++; else prodiCounts[prodi] = 1; });
-            if(prodiChartInstance) prodiChartInstance.destroy();
-            prodiChartInstance = new Chart(document.getElementById('prodiChart').getContext('2d'), { type: 'doughnut', data: { labels: Object.keys(prodiCounts), datasets: [{ data: Object.values(prodiCounts), backgroundColor: ['#1e3a8a', '#f59e0b', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } });
+            document.getElementById('card-total-prodi').innerText = Object.keys(prodiCounts).length;
 
-            // Logs
-            let logsHtml = ''; let recentRows = [...rows].reverse().slice(0, 7);
-            if(recentRows.length === 0) { logsHtml = '<li class="text-sm py-3 text-center">Belum ada maba.</li>'; } 
+            // Update Chart
+            let chartContainer = document.getElementById('prodiChartContainer');
+            if(prodiChartInstance) prodiChartInstance.destroy();
+            
+            if(Object.keys(prodiCounts).length > 0) {
+                chartContainer.innerHTML = '<canvas id="prodiChart"></canvas>';
+                prodiChartInstance = new Chart(document.getElementById('prodiChart').getContext('2d'), { 
+                    type: 'doughnut', 
+                    data: { 
+                        labels: Object.keys(prodiCounts), 
+                        datasets: [{ 
+                            data: Object.values(prodiCounts), 
+                            backgroundColor: ['#1e3a8a', '#f59e0b', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899'], 
+                            borderWidth: document.documentElement.classList.contains('dark') ? 0 : 3, 
+                            borderColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff',
+                            hoverOffset: 4
+                        }] 
+                    }, 
+                    options: { 
+                        responsive: true, maintainAspectRatio: false, cutout: '65%',
+                        plugins: { legend: { display: true, position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { family: 'Bahnschrift', size: 12 }, color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569' } } } 
+                    } 
+                });
+            } else {
+                chartContainer.innerHTML = '<p class="text-slate-400 dark:text-slate-500 text-sm">Tidak ada data untuk grafik.</p>';
+            }
+
+            // Update Logs Terbaru
+            let logsHtml = ''; let recentRows = [...rows].reverse().slice(0, 5);
+            if(recentRows.length === 0) { logsHtml = '<li class="text-sm py-3 text-center dark:text-slate-400">Belum ada data pendaftar.</li>'; } 
             else {
-                let namaIndex = data.maba.headers.indexOf('Nama Lengkap') !== -1 ? data.maba.headers.indexOf('Nama Lengkap') : 2;
-                let timeIndex = data.maba.headers.indexOf('Timestamp') !== -1 ? data.maba.headers.indexOf('Timestamp') : 0;
+                let namaIndex = adminHeaders.indexOf('Nama Lengkap') !== -1 ? adminHeaders.indexOf('Nama Lengkap') : 2;
+                let timeIndex = adminHeaders.indexOf('Timestamp') !== -1 ? adminHeaders.indexOf('Timestamp') : 0;
                 recentRows.forEach(r => {
                     let d = new Date(r[timeIndex]); let timeStr = !isNaN(d.getTime()) ? d.toLocaleDateString('id-ID', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : r[timeIndex];
-                    logsHtml += `<li class="border-b border-slate-100 py-2.5 flex justify-between items-center"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-blue-100 text-primary flex justify-center items-center font-bold text-xs">${String(r[namaIndex]).charAt(0).toUpperCase()}</div><div><p class="font-semibold text-xs text-slate-800 line-clamp-1">${r[namaIndex]}</p><p class="text-[10px] text-slate-500">${r[prodiIndex]}</p></div></div><span class="text-[9px] text-slate-400 ml-2">${timeStr}</span></li>`;
+                    logsHtml += `
+                        <li class="bg-slate-50 dark:bg-slate-700/40 rounded-xl p-3 flex justify-between items-center transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 text-primary dark:text-blue-400 flex justify-center items-center font-bold text-sm shadow-sm border border-slate-100 dark:border-slate-600">
+                                    ${String(r[namaIndex]).charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-200 line-clamp-1">${r[namaIndex]}</p>
+                                    <p class="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium">${r[prodiIndex]}</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 dark:text-slate-500 ml-2 whitespace-nowrap">${timeStr}</span>
+                        </li>
+                    `;
                 });
             }
             document.getElementById('log-list').innerHTML = logsHtml;
 
-            // Tabel Admin
-            let thead = ''; headers.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 font-semibold text-primary whitespace-nowrap">${h}</th>`);
+            // Update Tabel Maba Admin
+            let thead = ''; adminHeaders.forEach(h => thead += `<th class="p-3 md:p-4 border-b-2 border-slate-200 dark:border-slate-600 font-semibold text-primary dark:text-secondary whitespace-nowrap">${h}</th>`);
             document.getElementById('admin-thead').innerHTML = thead;
 
             let tbody = '';
-            let nikIdx = data.maba.headers.indexOf('NIK');
-            let statusIdx = data.maba.headers.indexOf('Status Pembayaran');
+            let nikIdx = adminHeaders.indexOf('NIK');
+            let statusIdx = adminHeaders.indexOf('Status Pembayaran');
 
             rows.forEach(r => {
-                tbody += '<tr class="border-b border-slate-100 hover:bg-blue-50">';
-                r.forEach(cell => { tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 text-xs md:text-sm">${cell}</td>`; });
+                tbody += '<tr class="border-b border-slate-100 dark:border-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">';
+                // Render cells without the "Aksi" column first
+                for(let i=0; i<r.length; i++) { tbody += `<td class="p-3 md:p-4 whitespace-nowrap text-slate-700 dark:text-slate-300 text-xs md:text-sm">${r[i]}</td>`; }
+                
                 let aksiBtn = '-';
                 if (r[statusIdx] === 'Menunggu Verifikasi') aksiBtn = `<button onclick="adminVerify('${r[nikIdx]}')" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded shadow text-xs font-bold transition"><i class="fas fa-check mr-1"></i> Verifikasi</button>`;
-                else if (r[statusIdx] === 'Lunas') aksiBtn = `<span class="text-green-600 font-bold text-xs"><i class="fas fa-check-circle"></i> Selesai</span>`;
+                else if (r[statusIdx] === 'Lunas') aksiBtn = `<span class="text-green-600 dark:text-green-400 font-bold text-xs"><i class="fas fa-check-circle"></i> Selesai</span>`;
+                
                 tbody += `<td class="p-3 md:p-4 whitespace-nowrap">${aksiBtn}</td></tr>`;
             });
             document.getElementById('admin-tbody').innerHTML = tbody;
