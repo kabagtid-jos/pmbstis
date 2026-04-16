@@ -1477,8 +1477,19 @@
             document.getElementById('sum-prodi').innerText = data.prodi || '-';
 
             // TAGIHAN BAYAR
-            let jData = appData && appData.jalur ? appData.jalur.find(j => j.nama === data.jalur) : null;
-            if(jData) document.getElementById('maba-tagihan').innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(jData.reg);
+            let jData = null;
+            if (appData && appData.jalur && appData.jalur.length > 0) {
+                // Cari berdasarkan nama jalur dengan toleransi huruf besar/kecil dan spasi
+                jData = appData.jalur.find(j => String(j.nama).trim().toLowerCase() === String(data.jalur).trim().toLowerCase());
+                // Jika tidak ditemukan kecocokan, gunakan biaya registrasi default (urutan pertama)
+                if (!jData) jData = appData.jalur[0]; 
+            }
+
+            if (jData && jData.reg) {
+                document.getElementById('maba-tagihan').innerText = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(jData.reg);
+            } else {
+                document.getElementById('maba-tagihan').innerText = "Belum Diatur";
+            }
 
             // BANK RENDER
             let bankHtml = '<p class="text-[10px] text-blue-200 mb-3 uppercase tracking-widest font-bold"><i class="fas fa-university mr-1"></i> Pilihan Rekening Pembayaran:</p>';
