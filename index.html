@@ -1005,6 +1005,9 @@
         
         const API_KEY_BINDERBYTE = "d31787ec5773340c9fa0948b106438c1695aa817d9d26efcbf95c167ec5c96d3"; 
         
+        let currentMabaTab = 'status';
+        let mabaMaxStep = 1;
+
         async function fetchAPI(action, payload = {}) {
             try {
                 const response = await fetch(`${GAS_API_URL}?action=${action}`, { 
@@ -1228,6 +1231,34 @@
             let activeBtnM = document.getElementById(`tab-mob-${tabName}`); if(activeBtnM) { activeBtnM.className = "flex flex-col items-center text-primary dark:text-blue-400 w-1/3 bg-blue-50 dark:bg-slate-800 transition-all duration-300 py-2 rounded-xl shadow-sm"; activeBtnM.querySelector('span').className = "text-[10px] font-bold"; }
         }
 
+        function updateStepperVisuals(tabName) {
+            currentMabaTab = tabName;
+            let tabToStep = { 'biodata': 1, 'foto': 2, 'prodi': 3, 'berkas': 4, 'bayar': 5, 'status': 0 };
+            let visualStep = tabToStep[tabName];
+            
+            if (visualStep === 0) visualStep = mabaMaxStep > 5 ? 5 : mabaMaxStep;
+            
+            let titles = ["Biodata Pendaftar", "Upload Foto", "Program Studi", "Upload Berkas", "Pembayaran Registrasi"];
+            let stepTitle = titles[visualStep - 1] || "Status Pendaftaran";
+
+            for(let i=1; i<=5; i++) {
+                let stepEl = document.getElementById(`step-${i}`);
+                if(!stepEl) continue;
+                if (i < visualStep) stepEl.className = "step-item completed";
+                else if (i === visualStep) stepEl.className = "step-item active";
+                else {
+                    if (mabaMaxStep > i) stepEl.className = "step-item completed";
+                    else stepEl.className = "step-item";
+                }
+            }
+
+            let mobPct = Math.round((visualStep / 5) * 100);
+            let elMobSub = document.getElementById('mob-step-subtitle'); if(elMobSub) elMobSub.innerText = `Tahap ${visualStep} dari 5`;
+            let elMobTitle = document.getElementById('mob-step-title'); if(elMobTitle) elMobTitle.innerText = stepTitle;
+            let elMobPct = document.getElementById('mob-step-pct'); if(elMobPct) elMobPct.innerText = `${mobPct}%`;
+            let elMobBar = document.getElementById('mob-step-bar'); if(elMobBar) elMobBar.style.width = `${mobPct}%`;
+        }
+
         function switchMabaTab(tabName) {
             ['status', 'biodata', 'foto', 'prodi', 'berkas', 'bayar'].forEach(t => {
                 document.getElementById(`maba-content-${t}`).classList.add('hidden');
@@ -1257,7 +1288,9 @@
                 let spanActiveM = activeBtnM.querySelector('span'); if(spanActiveM) spanActiveM.className = "text-[9px] font-bold truncate w-full text-center";
             }
             
-            if(window.innerWidth < 1024) { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            if(window.innerWidth < 1024 && tabName !== currentMabaTab) { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            
+            updateStepperVisuals(tabName);
         }
 
         function switchFormBioTab(tab) {
@@ -1414,12 +1447,12 @@
                 btn.innerHTML = 'Masuk Dashboard <i class="fas fa-arrow-right ml-1"></i>'; btn.disabled = false;
                 if(res.success) {
                     if(res.role === 'admin') { adminCreds = {user: user, pass: pass}; lastAdminData = res.data; switchAdminTab('ringkasan'); renderAdminDashboard(res.data); populateAdminSettingsForm(res.data.settings); navigate('dashboard-admin'); } 
-                    else { renderMabaDashboard(res.data); navigate('dashboard-maba'); }
+                    else { renderMabaDashboard(res.data, true); navigate('dashboard-maba'); }
                 } else { Swal.fire({ title: 'Login Gagal', text: res.message, icon: 'error' }); }
             } catch(err) { btn.innerHTML = 'Masuk Dashboard <i class="fas fa-arrow-right ml-1"></i>'; btn.disabled = false; Swal.fire({ title: 'Koneksi Gagal', text: 'Gagal terhubung ke database.', icon: 'error' }); }
         }
 
-        function renderMabaDashboard(data) {
+        function renderMabaDashboard(data, autoNavigate = true) {
             currentMabaData = data;
             
             // SIDEBAR
@@ -1536,28 +1569,81 @@
             const sumBayar = document.getElementById('sum-stat-bayar');
             const sumBerkas = document.getElementById('sum-stat-berkas');
 
-            // Variabel Progress Mobile
-            let mobStep = 1; let mobTitle = "Biodata Pendaftar";
-
-            // Reset Stepper Elements
-            for(let i=1; i<=5; i++) document.getElementById(`step-${i}`).className = "step-item";
-
             let isBiodataLengkap = data['NISN'] ? true : false; 
             let isFotoLengkap = data['Foto Profil'] ? true : false;
+            let isBerkasValid = (data.statusVerifikasi === 'Berkas Lengkap' || data.statusVerifikasi === 'Terverifikasi');
             
             let alertFinalisasiHtml = `<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-5 rounded-2xl text-red-700 dark:text-red-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-exclamation-circle mr-1"></i> Tahap pendaftaran Anda belum selesai.</h4><p class="text-xs">Setelah melengkapi biodata diri, foto profil, dan upload dokumen berkas, Anda diwajibkan untuk menyelesaikan tahap <span class="font-bold">pembayaran</span> agar proses pendaftaran dapat dilanjutkan ke tahap seleksi.</p></div>`;
             
+            let targetTab = 'status';
+
+            if (!isBiodataLengkap) {
+                mabaMaxStep = 1;
+                targetTab = 'biodata';
+                alertC.innerHTML = alertFinalisasiHtml;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diunggah</span>';
+                document.getElementById('maba-prodi-overlay-msg').innerText = "Silakan lengkapi Biodata & Foto terlebih dahulu.";
+                document.getElementById('maba-berkas-overlay-msg').innerText = "Silakan lengkapi Biodata Pendaftar terlebih dahulu.";
+            } 
+            else if (!isFotoLengkap) {
+                mabaMaxStep = 2;
+                targetTab = 'foto';
+                alertC.innerHTML = alertFinalisasiHtml;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diunggah</span>';
+                document.getElementById('maba-prodi-overlay-msg').innerText = "Silakan unggah Foto Profil Anda terlebih dahulu.";
+                document.getElementById('maba-berkas-overlay-msg').innerText = "Silakan unggah Foto Profil Anda terlebih dahulu.";
+            }
+            else if (data.statusVerifikasi === 'Belum Verifikasi') {
+                mabaMaxStep = 4;
+                targetTab = 'berkas';
+                alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-file-upload mr-1"></i> Upload Berkas Scan.</h4><p class="text-xs">Biodata dan Foto tersimpan. Selanjutnya silakan unggah scan Ijazah & KK Anda di menu Upload Berkas.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diseleksi</span>';
+            }
+            else if (data.statusBayar === 'Ditolak' || data.statusVerifikasi === 'Ditolak') {
+                mabaMaxStep = 4;
+                targetTab = 'status';
+                alertC.innerHTML = `<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-5 rounded-2xl text-red-700 dark:text-red-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-times-circle mr-1"></i> Berkas/Pembayaran Ditolak</h4><p class="text-xs">Catatan Admin: <b>${data.keterangan || 'Harap perbaiki dokumen.'}</b></p></div>`;
+                document.getElementById('sum-stat-ket').innerHTML = '<span class="text-brandred font-bold">1 Berkas tidak lolos validasi</span>';
+                sumBayar.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>'; 
+                sumBerkas.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>';
+            }
+            else if (data.statusVerifikasi === 'Berkas Lengkap' && data.statusBayar === 'Belum Bayar') { 
+                mabaMaxStep = 5;
+                targetTab = 'bayar';
+                alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-exclamation-triangle mr-1"></i> Segera Lakukan Pembayaran</h4><p class="text-xs">Berkas valid. Silakan lakukan pembayaran tagihan pendaftaran untuk lanjut ke tahap seleksi.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
+                sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Berkas lengkap & tersimpan</span>';
+            }
+            else if (data.statusBayar === 'Menunggu Verifikasi') {
+                mabaMaxStep = 5;
+                targetTab = 'status';
+                alertC.innerHTML = `<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-5 rounded-2xl text-blue-700 dark:text-blue-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-clock mr-1"></i> Sedang Diproses</h4><p class="text-xs">Bukti pembayaran Anda sedang diverifikasi oleh admin. Mohon tunggu proses validasinya.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-blue-600 dark:text-blue-400 font-bold">Menunggu Verifikasi</span>';
+                sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Berkas lengkap & tersimpan</span>';
+                document.getElementById('maba-bayar-overlay-msg').innerText = "Bukti bayar sedang diverifikasi oleh Tim Keuangan.";
+            }
+            else if (data.statusBayar === 'Lunas' || data.statusVerifikasi === 'Terverifikasi') {
+                mabaMaxStep = 6;
+                targetTab = 'status';
+                alertC.innerHTML = `<div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-5 rounded-2xl text-emerald-700 dark:text-emerald-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-check-circle mr-1"></i> Pendaftaran Berhasil</h4><p class="text-xs">Selamat! Berkas dan pembayaran Anda telah divalidasi. Anda telah resmi terdaftar sebagai calon mahasiswa.</p></div>`;
+                sumBayar.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">LUNAS</span>';
+                sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Terverifikasi Admin</span>';
+            }
+
             let fotoAlertContainer = document.getElementById('maba-foto-alert');
-            if(fotoAlertContainer) fotoAlertContainer.innerHTML = alertFinalisasiHtml;
+            if(fotoAlertContainer) fotoAlertContainer.innerHTML = (mabaMaxStep > 2) ? `<div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-emerald-700 font-medium text-xs mb-5"><i class="fas fa-check-circle mr-1"></i> Foto profil sudah tersimpan. Anda bisa mengubahnya jika diperlukan.</div>` : alertFinalisasiHtml;
             
             let prodiAlertContainer = document.getElementById('maba-prodi-alert');
-            if(prodiAlertContainer) prodiAlertContainer.innerHTML = alertFinalisasiHtml;
+            if(prodiAlertContainer) prodiAlertContainer.innerHTML = (mabaMaxStep > 2) ? `<div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-emerald-700 font-medium text-xs mb-5"><i class="fas fa-check-circle mr-1"></i> Pilihan Prodi saat registrasi awal telah terekam. Anda bisa mengubahnya jika diperlukan.</div>` : alertFinalisasiHtml;
             
             let berkasAlertContainer = document.getElementById('maba-berkas-alert');
-            if(berkasAlertContainer) berkasAlertContainer.innerHTML = alertFinalisasiHtml;
+            if(berkasAlertContainer) berkasAlertContainer.innerHTML = (mabaMaxStep >= 4 && data.statusVerifikasi === 'Belum Verifikasi') ? '' : ((mabaMaxStep < 4) ? alertFinalisasiHtml : '');
 
             // Status Indikator di Tabel Berkas
-            if (data.statusVerifikasi === 'Berkas Lengkap' || data.statusVerifikasi === 'Terverifikasi') {
+            if (isBerkasValid) {
                 for(let i=1; i<=3; i++) {
                     let elStat = document.getElementById(`file-status-${i}`);
                     if(elStat) elStat.innerHTML = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold">Sudah Diunggah</span>';
@@ -1574,111 +1660,16 @@
                 }
             }
 
-            // Pastikan overlay direset hidden di awal
-            if (fotoOvl) fotoOvl.classList.add('hidden');
-            if (prodiOvl) prodiOvl.classList.add('hidden');
-            if (berkasOvl) berkasOvl.classList.add('hidden');
-            if (bayarOvl) bayarOvl.classList.add('hidden');
+            if (fotoOvl) fotoOvl.classList.toggle('hidden', isBiodataLengkap);
+            if (prodiOvl) prodiOvl.classList.toggle('hidden', isBiodataLengkap && isFotoLengkap);
+            if (berkasOvl) berkasOvl.classList.toggle('hidden', isBiodataLengkap && isFotoLengkap);
+            if (bayarOvl) bayarOvl.classList.toggle('hidden', isBerkasValid);
 
-            if (!isBiodataLengkap) {
-                switchMabaTab('status');
-                alertC.innerHTML = alertFinalisasiHtml;
-                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
-                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diunggah</span>';
-                
-                if (fotoOvl) fotoOvl.classList.remove('hidden');
-                if (prodiOvl) prodiOvl.classList.remove('hidden');
-                if (berkasOvl) berkasOvl.classList.remove('hidden'); 
-                if (bayarOvl) bayarOvl.classList.remove('hidden');
-                
-                document.getElementById('maba-prodi-overlay-msg').innerText = "Silakan lengkapi Biodata & Foto terlebih dahulu.";
-                document.getElementById('maba-berkas-overlay-msg').innerText = "Silakan lengkapi Biodata Pendaftar terlebih dahulu.";
-                document.getElementById('step-1').className = "step-item active";
-                mobStep = 1; mobTitle = "Biodata Pendaftar";
-            } 
-            else if (isBiodataLengkap && !isFotoLengkap) {
-                switchMabaTab('foto');
-                alertC.innerHTML = alertFinalisasiHtml;
-                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
-                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diunggah</span>';
-                
-                if (prodiOvl) prodiOvl.classList.remove('hidden');
-                if (berkasOvl) berkasOvl.classList.remove('hidden'); 
-                if (bayarOvl) bayarOvl.classList.remove('hidden');
-                
-                document.getElementById('maba-prodi-overlay-msg').innerText = "Silakan unggah Foto Profil Anda terlebih dahulu.";
-                document.getElementById('maba-berkas-overlay-msg').innerText = "Silakan unggah Foto Profil Anda terlebih dahulu.";
-                document.getElementById('step-1').className = "step-item completed";
-                document.getElementById('step-2').className = "step-item active";
-                mobStep = 2; mobTitle = "Upload Foto Profil";
+            if (autoNavigate) {
+                switchMabaTab(targetTab);
+            } else {
+                updateStepperVisuals(currentMabaTab);
             }
-            else if (isBiodataLengkap && isFotoLengkap && data.statusVerifikasi === 'Belum Verifikasi') {
-                switchMabaTab('berkas');
-                alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-file-upload mr-1"></i> Upload Berkas Scan.</h4><p class="text-xs">Biodata dan Foto tersimpan. Selanjutnya silakan unggah scan Ijazah & KK Anda di menu Upload Berkas.</p></div>`;
-                if(fotoAlertContainer) fotoAlertContainer.innerHTML = `<div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-emerald-700 font-medium text-xs mb-5"><i class="fas fa-check-circle mr-1"></i> Foto profil sudah tersimpan. Anda bisa mengubahnya jika diperlukan.</div>`;
-                if(prodiAlertContainer) prodiAlertContainer.innerHTML = `<div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-emerald-700 font-medium text-xs mb-5"><i class="fas fa-check-circle mr-1"></i> Pilihan Prodi saat registrasi awal telah terekam. Anda bisa mengubahnya jika diperlukan.</div>`;
-                
-                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
-                sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diseleksi</span>';
-                
-                if (bayarOvl) bayarOvl.classList.remove('hidden');
-                
-                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed";
-                document.getElementById('step-4').className = "step-item active";
-                mobStep = 4; mobTitle = "Upload Berkas Scan";
-            }
-            else if (data.statusBayar === 'Ditolak' || data.statusVerifikasi === 'Ditolak') {
-                switchMabaTab('status');
-                alertC.innerHTML = `<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-5 rounded-2xl text-red-700 dark:text-red-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-times-circle mr-1"></i> Berkas/Pembayaran Ditolak</h4><p class="text-xs">Catatan Admin: <b>${data.keterangan || 'Harap perbaiki dokumen.'}</b></p></div>`;
-                document.getElementById('sum-stat-ket').innerHTML = '<span class="text-brandred font-bold">1 Berkas tidak lolos validasi</span>';
-                sumBayar.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>'; sumBerkas.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>';
-                
-                berkasOvl.classList.add('hidden'); bayarOvl.classList.add('hidden');
-                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed";
-                document.getElementById('step-4').className = "step-item active"; document.getElementById('step-5').className = "step-item active";
-                mobStep = 4; mobTitle = "Perbaikan Data & Berkas";
-            }
-            else if (data.statusVerifikasi === 'Berkas Lengkap' && data.statusBayar === 'Belum Bayar') { 
-                switchMabaTab('bayar');
-                alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-exclamation-triangle mr-1"></i> Segera Lakukan Pembayaran</h4><p class="text-xs">Berkas valid. Silakan lakukan pembayaran tagihan pendaftaran untuk lanjut ke tahap seleksi.</p></div>`;
-                sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
-                sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Berkas lengkap & tersimpan</span>';
-                
-                berkasOvl.classList.remove('hidden'); bayarOvl.classList.add('hidden');
-                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed"; document.getElementById('step-4').className = "step-item completed";
-                document.getElementById('step-5').className = "step-item active";
-                mobStep = 5; mobTitle = "Pembayaran Registrasi";
-            }
-            else if (data.statusBayar === 'Menunggu Verifikasi') {
-                switchMabaTab('status');
-                alertC.innerHTML = `<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-5 rounded-2xl text-blue-700 dark:text-blue-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-clock mr-1"></i> Sedang Diproses</h4><p class="text-xs">Bukti pembayaran Anda sedang diverifikasi oleh admin. Mohon tunggu proses validasinya.</p></div>`;
-                sumBayar.innerHTML = '<span class="text-blue-600 dark:text-blue-400 font-bold">Menunggu Verifikasi</span>';
-                sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Berkas lengkap & tersimpan</span>';
-                
-                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden');
-                document.getElementById('maba-bayar-overlay-msg').innerText = "Bukti bayar sedang diverifikasi oleh Tim Keuangan.";
-                
-                document.getElementById('step-1').className = "step-item completed"; document.getElementById('step-2').className = "step-item completed"; document.getElementById('step-3').className = "step-item completed"; document.getElementById('step-4').className = "step-item completed"; document.getElementById('step-5').className = "step-item active";
-                mobStep = 5; mobTitle = "Menunggu Verifikasi Admin";
-            }
-            else if (data.statusBayar === 'Lunas' || data.statusVerifikasi === 'Terverifikasi') {
-                switchMabaTab('status');
-                alertC.innerHTML = `<div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-5 rounded-2xl text-emerald-700 dark:text-emerald-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-check-circle mr-1"></i> Pendaftaran Berhasil</h4><p class="text-xs">Selamat! Berkas dan pembayaran Anda telah divalidasi. Anda telah resmi terdaftar sebagai calon mahasiswa.</p></div>`;
-                sumBayar.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">LUNAS</span>';
-                sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Terverifikasi Admin</span>';
-                
-                berkasOvl.classList.remove('hidden'); bayarOvl.classList.remove('hidden');
-                for(let i=1; i<=5; i++) document.getElementById(`step-${i}`).className = "step-item completed";
-                mobStep = 5; mobTitle = "Pendaftaran Selesai Lunas";
-            }
-            
-            let mobPct = Math.round((mobStep / 5) * 100);
-            setTimeout(() => {
-                let elMobSub = document.getElementById('mob-step-subtitle'); if(elMobSub) elMobSub.innerText = `Tahap ${mobStep} dari 5`;
-                let elMobTitle = document.getElementById('mob-step-title'); if(elMobTitle) elMobTitle.innerText = mobTitle;
-                let elMobPct = document.getElementById('mob-step-pct'); if(elMobPct) elMobPct.innerText = `${mobPct}%`;
-                let elMobBar = document.getElementById('mob-step-bar'); if(elMobBar) elMobBar.style.width = `${mobPct}%`;
-            }, 100);
         }
 
         function parseDateForInput(str) {
@@ -1734,8 +1725,9 @@
                     currentMabaData['NISN'] = payload.nisn;
                     Object.keys(payload).forEach(k => currentMabaData[k] = payload[k]);
                     
-                    renderMabaDashboard(currentMabaData);
-                    Swal.fire('Berhasil!', 'Biodata diri telah disimpan. Silakan lanjutkan ke tahap Upload Berkas.', 'success');
+                    renderMabaDashboard(currentMabaData, false);
+                    Swal.fire('Berhasil!', 'Biodata diri telah disimpan. Silakan lanjutkan ke tahap Upload Foto.', 'success');
+                    switchMabaTab('foto');
                 } else {
                     Swal.fire('Gagal', res.message, 'error');
                 }
@@ -1775,7 +1767,7 @@
 
         async function mabaSubmitFoto() {
             if(!pendingFotoBase64) {
-                if(currentMabaData['Foto Profil']) { renderMabaDashboard(currentMabaData); return; }
+                if(currentMabaData['Foto Profil']) { renderMabaDashboard(currentMabaData, false); return; }
                 Swal.fire('Peringatan', 'Silakan pilih gambar foto profil Anda terlebih dahulu.', 'warning'); return;
             }
             
@@ -1786,7 +1778,7 @@
                 if(res.success) {
                     currentMabaData['Foto Profil'] = pendingFotoBase64;
                     pendingFotoBase64 = null;
-                    renderMabaDashboard(currentMabaData);
+                    renderMabaDashboard(currentMabaData, false);
                     Swal.fire('Berhasil!', 'Foto profil telah disimpan. Silakan lanjutkan ke menu Program Studi.', 'success');
                     switchMabaTab('prodi');
                 } else Swal.fire('Gagal', res.message, 'error');
@@ -1807,7 +1799,7 @@
                 btn.innerHTML = oldHtml; btn.disabled = false;
                 if(res.success) {
                     currentMabaData.prodi = newVal;
-                    renderMabaDashboard(currentMabaData);
+                    renderMabaDashboard(currentMabaData, false);
                     Swal.fire('Berhasil!', 'Program Studi berhasil diperbarui. Silakan lanjutkan ke menu Upload Berkas.', 'success');
                     switchMabaTab('berkas');
                 } else {
@@ -1874,7 +1866,7 @@
                         let response = await fetchAPI('uploadFiles', payload);
                         if(response.success) { 
                             currentMabaData.statusVerifikasi = 'Berkas Lengkap'; 
-                            renderMabaDashboard(currentMabaData); 
+                            renderMabaDashboard(currentMabaData, false); 
                             Swal.fire('Berhasil', 'Semua berkas berhasil diunggah ke sistem.', 'success'); 
                             switchMabaTab('bayar');
                         } 
@@ -1899,8 +1891,9 @@
                         
                         if(response.success) { 
                             currentMabaData.statusBayar = 'Menunggu Verifikasi'; 
-                            renderMabaDashboard(currentMabaData); 
+                            renderMabaDashboard(currentMabaData, false); 
                             Swal.fire('Terkirim!', 'Bukti bayar sedang diverifikasi.', 'success'); 
+                            switchMabaTab('status');
                             
                             fetchAPI('notifFonnte', { 
                                 pesan: `*NOTIFIKASI PMB STIS ABU ZAIRI*\n\nAda bukti pembayaran baru masuk dan menunggu verifikasi:\n\nNama: *${currentMabaData.nama}*\nNIK: *${currentMabaData.nik}*\nProdi: *${currentMabaData.prodi}*\n\nSilakan login ke Dashboard Admin untuk mengecek dan memverifikasi data pendaftar tersebut.` 
