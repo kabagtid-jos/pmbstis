@@ -1668,23 +1668,22 @@
             let berkasAlertContainer = document.getElementById('maba-berkas-alert');
             if(berkasAlertContainer) berkasAlertContainer.innerHTML = (mabaMaxStep >= 4 && data.statusVerifikasi === 'Belum Verifikasi') ? '' : ((mabaMaxStep < 4) ? alertFinalisasiHtml : '');
 
-            // Status Indikator di Tabel Berkas
-            if (isBerkasValid) {
-                for(let i=1; i<=3; i++) {
-                    let elStat = document.getElementById(`file-status-${i}`);
-                    if(elStat) elStat.innerHTML = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold">Sudah Diunggah</span>';
-                }
-            } else if (data.statusVerifikasi === 'Ditolak') {
-                for(let i=1; i<=3; i++) {
-                    let elStat = document.getElementById(`file-status-${i}`);
-                    if(elStat) elStat.innerHTML = '<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold">Ditolak / Perbaiki</span>';
-                }
-            } else {
-                for(let i=1; i<=3; i++) {
-                    let elStat = document.getElementById(`file-status-${i}`);
-                    if(elStat) elStat.innerHTML = '<span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-medium">Belum divalidasi</span>';
-                }
+            // Status Indikator di Tabel Berkas yang Baru (Sistem Validasi Per-Berkas)
+            function getMabaFileStatusBadge(statusText) {
+                if (!statusText || statusText === '' || statusText === 'Belum divalidasi') return '<span class="bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-medium">Belum divalidasi</span>';
+                if (statusText === 'ACC') return '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold"><i class="fas fa-check-circle mr-1"></i>Lolos Validasi</span>';
+                if (statusText === 'Menunggu Verifikasi') return '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-[10px] font-bold"><i class="fas fa-clock mr-1"></i>Sedang Diproses</span>';
+                if (statusText.startsWith('Ditolak')) return `<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold"><i class="fas fa-times-circle mr-1"></i>${statusText}</span>`;
+                return `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-medium">${statusText}</span>`;
             }
+
+            let statIjazah = data['Validasi Ijazah'];
+            let statKK = data['Validasi KK'];
+            let statKIP = data['Validasi KIP'];
+
+            let elStat1 = document.getElementById(`file-status-1`); if(elStat1) elStat1.innerHTML = getMabaFileStatusBadge(statIjazah);
+            let elStat2 = document.getElementById(`file-status-2`); if(elStat2) elStat2.innerHTML = getMabaFileStatusBadge(statKK);
+            let elStat3 = document.getElementById(`file-status-3`); if(elStat3) elStat3.innerHTML = getMabaFileStatusBadge(statKIP);
 
             if (fotoOvl) fotoOvl.classList.toggle('hidden', isBiodataLengkap);
             if (prodiOvl) prodiOvl.classList.toggle('hidden', isBiodataLengkap && isFotoLengkap);
@@ -2212,14 +2211,90 @@
             try {
                 let response = await fetchAPI('getMabaFiles', { nik: nik });
                 if(response.success && response.files && response.files.length > 0) {
-                    let fileHtml = '<div class="space-y-3 mt-4 text-left">';
-                    response.files.forEach(f => {
-                        let icon = f.name.includes('.pdf') ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
-                        fileHtml += `<a href="${f.url}" target="_blank" class="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"><i class="fas ${icon} text-xl w-8 text-center"></i><span class="text-sm font-medium dark:text-slate-200 flex-1 truncate">${f.name}</span><i class="fas fa-external-link-alt text-slate-400 text-xs"></i></a>`;
-                    }); fileHtml += '</div>';
-                    Swal.fire({ title: 'File Ditemukan', html: fileHtml, icon: 'info', showConfirmButton: false, showCloseButton: true });
-                } else { Swal.fire('Kosong', 'Mahasiswa ini belum mengunggah file.', 'info'); }
+                    renderBerkasModal(nik, response.files);
+                } else { Swal.fire('Kosong', 'Mahasiswa ini belum mengunggah file atau ID Drive Anda tidak valid.', 'info'); }
             } catch(e) { Swal.fire('Gagal', 'Terjadi kesalahan koneksi', 'error'); }
+        }
+
+        function renderBerkasModal(nik, files) {
+            let fileHtml = '<div class="space-y-4 mt-4 text-left">';
+            files.forEach(f => {
+                let icon = f.name.includes('.pdf') ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
+                
+                let badgeColor = 'bg-slate-100 text-slate-600';
+                if (f.status === 'ACC') badgeColor = 'bg-emerald-100 text-emerald-700';
+                else if (f.status && f.status.includes('Ditolak')) badgeColor = 'bg-red-100 text-red-700';
+                else if (f.status && f.status.includes('Menunggu')) badgeColor = 'bg-blue-100 text-blue-700';
+                
+                let btnAction = '';
+                if (['Ijazah', 'KK', 'KIP', 'Bayar'].includes(f.type)) {
+                    btnAction = `
+                    <div class="flex gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                        <button onclick="adminVerifFile('${nik}', '${f.type}', 'ACC')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"><i class="fas fa-check mr-1"></i>ACC Valid</button>
+                        <button onclick="adminVerifFile('${nik}', '${f.type}', 'Tolak')" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"><i class="fas fa-times mr-1"></i>Tolak Berkas</button>
+                    </div>`;
+                }
+
+                fileHtml += `
+                <div class="p-4 border border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="flex items-start gap-3 overflow-hidden">
+                            <i class="fas ${icon} text-3xl w-10 text-center shrink-0 mt-1"></i>
+                            <div class="flex flex-col overflow-hidden">
+                                <a href="${f.url}" target="_blank" class="text-sm font-bold text-primary dark:text-blue-400 hover:underline line-clamp-2" title="${f.name}">${f.name} <i class="fas fa-external-link-alt text-[10px] ml-1"></i></a>
+                                <span class="text-[10px] mt-1.5 px-2 py-0.5 rounded font-bold w-max ${badgeColor}">${f.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${btnAction}
+                </div>`;
+            }); 
+            fileHtml += '</div>';
+
+            Swal.fire({ 
+                title: '<span class="text-xl font-extrabold dark:text-white">Verifikasi Berkas Mahasiswa</span>', 
+                html: fileHtml, 
+                showConfirmButton: true, 
+                confirmButtonText: '<i class="fas fa-arrow-left mr-1"></i> Tutup & Kembali',
+                confirmButtonColor: '#64748b',
+                width: '32rem',
+                customClass: { popup: 'rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-700' }
+            }).then((res) => {
+                // Segarkan dashboard admin saat ditutup untuk mengambil status Terverifikasi/Ditolak secara live
+                Swal.fire({ title: 'Menyegarkan Data...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                fetchAPI('login', { username: adminCreds.user, password: adminCreds.pass }).then(loginRes => {
+                    if(loginRes.success) { lastAdminData = loginRes.data; renderAdminDashboard(loginRes.data); Swal.close(); }
+                });
+            });
+        }
+
+        async function adminVerifFile(nik, type, action) {
+            let reason = '';
+            if (action === 'Tolak') {
+                const { value: textReason } = await Swal.fire({ 
+                    title: `<span class="dark:text-white font-bold">Tolak ${type}</span>`, 
+                    input: 'textarea', 
+                    inputLabel: `Sebutkan alasan penolakan ${type}:`, 
+                    inputPlaceholder: 'Misal: Gambar buram, salah dokumen, tidak terbaca...',
+                    showCancelButton: true, confirmButtonText: 'Tolak Berkas', cancelButtonText: 'Batal', confirmButtonColor: '#ef4444',
+                    customClass: { popup: 'rounded-3xl dark:bg-slate-800' }
+                });
+                if (!textReason) return; // Dibatalkan jika kosong
+                reason = textReason;
+            }
+
+            Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            try {
+                let res = await fetchAPI('verifySingleFile', { nik: nik, fileType: type, action: action, reason: reason });
+                if (res.success) {
+                    // Ambil file terbaru lalu segarkan Modal seketika tanpa harus menutup
+                    let filesRes = await fetchAPI('getMabaFiles', { nik: nik });
+                    if(filesRes.success) {
+                        Swal.fire({icon:'success', title:'<span class="dark:text-white font-bold">Berhasil</span>', text:`File ${type} berhasil ${action === 'ACC'?'di-ACC':'ditolak'}.`, timer: 1500, showConfirmButton:false, background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff'});
+                        setTimeout(() => renderBerkasModal(nik, filesRes.files), 1500);
+                    }
+                } else { Swal.fire('Gagal', res.message, 'error'); }
+            } catch(e) { Swal.fire('Error', 'Kesalahan koneksi. Pastikan internet Anda stabil.', 'error'); }
         }
 
         async function adminReject(nik) {
