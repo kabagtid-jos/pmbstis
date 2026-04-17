@@ -1466,6 +1466,19 @@
                 }
             }
             
+            // PERBAIKAN BUG UTAMA: Sesuaikan key/header dari Spreadsheet ke variabel yang digunakan UI
+            data.tempatLahir = data.tempatLahir || data['Tempat Lahir'] || '';
+            data.tglLahir = data.tglLahir || data['Tgl Lahir'] || '';
+            data.jk = data.jk || data['Jenis Kelamin'] || '';
+            data.hp = data.hp || data['HP'] || '';
+            data.email = data.email || data['Email'] || '';
+            data.prodi = data.prodi || data['Program Studi'] || '';
+            data.jalur = data.jalur || data['Jalur'] || '';
+            data.statusVerifikasi = data.statusVerifikasi || data['Status Verifikasi'] || '';
+            data.statusBayar = data.statusBayar || data['Status Pembayaran'] || '';
+            data.keterangan = data.keterangan || data['Keterangan Admin'] || '';
+            data.timestamp = data.timestamp || data['Timestamp'] || new Date();
+
             currentMabaData = data;
             
             // SIDEBAR
@@ -1492,9 +1505,7 @@
             // TAGIHAN BAYAR
             let jData = null;
             if (appData && appData.jalur && appData.jalur.length > 0) {
-                // Cari berdasarkan nama jalur dengan toleransi huruf besar/kecil dan spasi
                 jData = appData.jalur.find(j => String(j.nama).trim().toLowerCase() === String(data.jalur).trim().toLowerCase());
-                // Jika tidak ditemukan kecocokan, gunakan biaya registrasi default (urutan pertama)
                 if (!jData) jData = appData.jalur[0]; 
             }
 
@@ -1534,20 +1545,17 @@
             document.getElementById('bio-jk').value = data.jk || '';
             document.getElementById('bio-hp').value = data.hp || ''; document.getElementById('bio-email').value = data.email || '';
 
-            // Pre-fill editable fields if exists
             document.getElementById('bio-agama').value = data['Agama'] || ''; document.getElementById('bio-nisn').value = data['NISN'] || '';
             document.getElementById('bio-npwp').value = data['NPWP'] || ''; document.getElementById('bio-kwn').value = data['Kewarganegaraan'] || '';
             document.getElementById('bio-jalan').value = data['Jalan'] || ''; document.getElementById('bio-dusun').value = data['Dusun'] || '';
             document.getElementById('bio-rt').value = data['RT'] || ''; document.getElementById('bio-rw').value = data['RW'] || '';
             
-            // Logika menampilkan data wilayah jika sudah tersimpan di database
             let combinedKec = data['Kecamatan'] || '';
             if (combinedKec.includes('Desa: ') && combinedKec.includes('Prov: ')) {
                 document.getElementById('box-saved-wilayah').classList.remove('hidden');
                 document.getElementById('box-edit-wilayah').classList.add('hidden');
                 document.getElementById('txt-saved-wilayah').innerText = combinedKec.replace(/Desa: |Kec: |Kab: |Prov: /g, '');
                 
-                // Hapus required pada dropdown agar form bisa disubmit jika user tidak ingin mengubah
                 document.getElementById('bio-prov').required = false;
                 document.getElementById('bio-kab').required = false;
                 document.getElementById('bio-kec').required = false;
@@ -1575,7 +1583,6 @@
             document.getElementById('ortu-nama-wali').value = data['Nama Wali'] || ''; document.getElementById('ortu-tgl-wali').value = parseDateForInput(data['Tgl Lahir Wali']);
             document.getElementById('ortu-pend-wali').value = data['Pendidikan Wali'] || ''; document.getElementById('ortu-pek-wali').value = data['Pekerjaan Wali'] || ''; document.getElementById('ortu-peng-wali').value = data['Penghasilan Wali'] || '';
 
-            // POPULASI DROPDOWN PRODI
             let selectProdi = document.getElementById('inp-maba-prodi');
             if (selectProdi && appData && appData.prodi) {
                 let phtml = '';
@@ -1627,7 +1634,7 @@
                 sumBayar.innerHTML = '<span class="text-brandred">Biaya pendaftaran belum dibayar</span>';
                 sumBerkas.innerHTML = '<span class="text-brandred">Berkas belum diseleksi</span>';
             }
-            else if (data.statusBayar === 'Ditolak' || data.statusVerifikasi === 'Ditolak') {
+            else if (data.statusBayar === 'Ditolak' || data.statusVerifikasi === 'Ditolak' || data.statusVerifikasi.includes('Ditolak')) {
                 mabaMaxStep = 4;
                 targetTab = 'status';
                 alertC.innerHTML = `<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-5 rounded-2xl text-red-700 dark:text-red-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-times-circle mr-1"></i> Berkas/Pembayaran Ditolak</h4><p class="text-xs">Catatan Admin: <b>${data.keterangan || 'Harap perbaiki dokumen.'}</b></p></div>`;
@@ -1635,8 +1642,7 @@
                 sumBayar.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>'; 
                 sumBerkas.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>';
             }
-            // MEMPERBAIKI KONDISI DATA KOSONG PADA STATUS BAYAR (AGAR TIDAK FALLTHROUGH)
-            else if (data.statusVerifikasi === 'Berkas Lengkap' && (data.statusBayar === 'Belum Bayar' || !data.statusBayar || data.statusBayar.trim() === '')) { 
+            else if (isBerkasValid && (data.statusBayar === 'Belum Bayar' || !data.statusBayar || data.statusBayar.trim() === '')) { 
                 mabaMaxStep = 5;
                 targetTab = 'bayar';
                 alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-exclamation-triangle mr-1"></i> Segera Lakukan Pembayaran</h4><p class="text-xs">Berkas valid. Silakan lakukan pembayaran tagihan pendaftaran untuk lanjut ke tahap seleksi.</p></div>`;
@@ -1649,7 +1655,6 @@
                 alertC.innerHTML = `<div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-5 rounded-2xl text-blue-700 dark:text-blue-400 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-clock mr-1"></i> Sedang Diproses</h4><p class="text-xs">Bukti pembayaran Anda sedang diverifikasi oleh admin. Mohon tunggu proses validasinya.</p></div>`;
                 sumBayar.innerHTML = '<span class="text-blue-600 dark:text-blue-400 font-bold">Menunggu Verifikasi</span>';
                 sumBerkas.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Berkas lengkap & tersimpan</span>';
-                document.getElementById('maba-bayar-overlay-msg').innerText = "Bukti bayar sedang diverifikasi oleh Tim Keuangan.";
             }
             else if (data.statusBayar === 'Lunas' || data.statusVerifikasi === 'Terverifikasi') {
                 mabaMaxStep = 6;
@@ -1688,7 +1693,26 @@
             if (fotoOvl) fotoOvl.classList.toggle('hidden', isBiodataLengkap);
             if (prodiOvl) prodiOvl.classList.toggle('hidden', isBiodataLengkap && isFotoLengkap);
             if (berkasOvl) berkasOvl.classList.toggle('hidden', isBiodataLengkap && isFotoLengkap);
-            if (bayarOvl) bayarOvl.classList.toggle('hidden', isBerkasValid);
+            
+            // PERBAIKAN TAMPILAN LOCK UNTUK TAB PEMBAYARAN
+            if (bayarOvl) {
+                if (!isBerkasValid) {
+                    bayarOvl.classList.remove('hidden');
+                    document.getElementById('maba-bayar-overlay-msg').innerText = "Silakan selesaikan proses Upload Berkas terlebih dahulu untuk membuka menu tagihan ini.";
+                    let iconLck = bayarOvl.querySelector('i'); if(iconLck) iconLck.className = 'fas fa-lock text-4xl text-slate-400';
+                    let titleLck = bayarOvl.querySelector('p.font-extrabold'); if(titleLck) titleLck.innerText = 'Tahap Pembayaran Terkunci';
+                } else if (data.statusBayar === 'Menunggu Verifikasi' || data.statusBayar === 'Lunas') {
+                    bayarOvl.classList.remove('hidden');
+                    let isLunas = data.statusBayar === 'Lunas';
+                    document.getElementById('maba-bayar-overlay-msg').innerHTML = isLunas ? 
+                        '<span class="text-emerald-500 font-bold mt-2 block">Pembayaran telah dikonfirmasi dan pendaftaran selesai.</span>' : 
+                        'Bukti bayar Anda sedang diperiksa oleh admin. Silakan tunggu.';
+                    let iconLck = bayarOvl.querySelector('i'); if(iconLck) iconLck.className = isLunas ? 'fas fa-check-circle text-emerald-500 text-5xl drop-shadow-sm' : 'fas fa-clock text-blue-400 text-5xl drop-shadow-sm';
+                    let titleLck = bayarOvl.querySelector('p.font-extrabold'); if(titleLck) titleLck.innerText = isLunas ? 'Pembayaran Selesai' : 'Sedang Diverifikasi';
+                } else {
+                    bayarOvl.classList.add('hidden'); // Gembok terbuka (Siap upload bayar)
+                }
+            }
 
             if (autoNavigate) {
                 switchMabaTab(targetTab);
@@ -2217,38 +2241,8 @@
         }
 
         function renderBerkasModal(nik, files) {
-            let fileHtml = '<div class="space-y-4 mt-4 text-left">';
-            files.forEach(f => {
-                let icon = f.name.includes('.pdf') ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
-                
-                let badgeColor = 'bg-slate-100 text-slate-600';
-                if (f.status === 'ACC') badgeColor = 'bg-emerald-100 text-emerald-700';
-                else if (f.status && f.status.includes('Ditolak')) badgeColor = 'bg-red-100 text-red-700';
-                else if (f.status && f.status.includes('Menunggu')) badgeColor = 'bg-blue-100 text-blue-700';
-                
-                let btnAction = '';
-                if (['Ijazah', 'KK', 'KIP', 'Bayar'].includes(f.type)) {
-                    btnAction = `
-                    <div class="flex gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                        <button onclick="adminVerifFile('${nik}', '${f.type}', 'ACC')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"><i class="fas fa-check mr-1"></i>ACC Valid</button>
-                        <button onclick="adminVerifFile('${nik}', '${f.type}', 'Tolak')" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"><i class="fas fa-times mr-1"></i>Tolak Berkas</button>
-                    </div>`;
-                }
-
-                fileHtml += `
-                <div class="p-4 border border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition">
-                    <div class="flex justify-between items-start gap-3">
-                        <div class="flex items-start gap-3 overflow-hidden">
-                            <i class="fas ${icon} text-3xl w-10 text-center shrink-0 mt-1"></i>
-                            <div class="flex flex-col overflow-hidden">
-                                <a href="${f.url}" target="_blank" class="text-sm font-bold text-primary dark:text-blue-400 hover:underline line-clamp-2" title="${f.name}">${f.name} <i class="fas fa-external-link-alt text-[10px] ml-1"></i></a>
-                                <span class="text-[10px] mt-1.5 px-2 py-0.5 rounded font-bold w-max ${badgeColor}">${f.status}</span>
-                            </div>
-                        </div>
-                    </div>
-                    ${btnAction}
-                </div>`;
-            }); 
+            let fileHtml = '<div id="berkas-modal-content" class="space-y-4 mt-4 text-left">';
+            fileHtml += generateBerkasListHtml(nik, files);
             fileHtml += '</div>';
 
             Swal.fire({ 
@@ -2268,33 +2262,100 @@
             });
         }
 
+        function generateBerkasListHtml(nik, files) {
+            let html = '';
+            files.forEach(f => {
+                let icon = f.name.includes('.pdf') ? 'fa-file-pdf text-red-500' : 'fa-file-image text-blue-500';
+                
+                let badgeColor = 'bg-slate-100 text-slate-600';
+                if (f.status === 'ACC') badgeColor = 'bg-emerald-100 text-emerald-700';
+                else if (f.status && f.status.includes('Ditolak')) badgeColor = 'bg-red-100 text-red-700';
+                else if (f.status && f.status.includes('Menunggu')) badgeColor = 'bg-blue-100 text-blue-700';
+                
+                let btnAction = '';
+                // Tampilkan tombol aksi jika berkas adalah tipe dokumen seleksi dan belum di-ACC
+                if (['Ijazah', 'KK', 'KIP', 'Bayar'].includes(f.type)) {
+                    btnAction = `
+                    <div id="action-wrapper-${f.type}">
+                        <div class="flex gap-2 mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                            <button onclick="adminVerifFile('${nik}', '${f.type}', 'ACC')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"><i class="fas fa-check mr-1"></i>ACC Valid</button>
+                            <button onclick="showTolakInput('${f.type}')" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-sm"><i class="fas fa-times mr-1"></i>Tolak Berkas</button>
+                        </div>
+                        <div id="tolak-area-${f.type}" class="hidden mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                            <div id="tolak-error-${f.type}" class="text-red-500 text-[10px] hidden mb-1 font-bold"><i class="fas fa-exclamation-triangle"></i> Harap tuliskan alasan penolakan!</div>
+                            <textarea id="reason-${f.type}" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-red-500/20 transition-all" rows="2" placeholder="Tulis alasan penolakan (misal: Gambar buram, tidak sesuai)..."></textarea>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="adminVerifFile('${nik}', '${f.type}', 'Tolak')" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Kirim Penolakan</button>
+                                <button onclick="hideTolakInput('${f.type}')" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Batal</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+
+                html += `
+                <div class="p-4 border border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-800/80 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="flex items-start gap-3 overflow-hidden w-full">
+                            <i class="fas ${icon} text-3xl w-10 text-center shrink-0 mt-1"></i>
+                            <div class="flex flex-col overflow-hidden flex-1">
+                                <a href="${f.url}" target="_blank" class="text-sm font-bold text-primary dark:text-blue-400 hover:underline line-clamp-2" title="${f.name}">${f.name} <i class="fas fa-external-link-alt text-[10px] ml-1"></i></a>
+                                <span class="text-[10px] mt-1.5 px-2 py-0.5 rounded font-bold w-max ${badgeColor}">${f.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${btnAction}
+                </div>`;
+            }); 
+            return html;
+        }
+
+        function showTolakInput(type) {
+            document.getElementById(`tolak-area-${type}`).classList.remove('hidden');
+        }
+
+        function hideTolakInput(type) {
+            document.getElementById(`tolak-area-${type}`).classList.add('hidden');
+            document.getElementById(`reason-${type}`).value = '';
+            document.getElementById(`tolak-error-${type}`).classList.add('hidden');
+        }
+
         async function adminVerifFile(nik, type, action) {
             let reason = '';
             if (action === 'Tolak') {
-                const { value: textReason } = await Swal.fire({ 
-                    title: `<span class="dark:text-white font-bold">Tolak ${type}</span>`, 
-                    input: 'textarea', 
-                    inputLabel: `Sebutkan alasan penolakan ${type}:`, 
-                    inputPlaceholder: 'Misal: Gambar buram, salah dokumen, tidak terbaca...',
-                    showCancelButton: true, confirmButtonText: 'Tolak Berkas', cancelButtonText: 'Batal', confirmButtonColor: '#ef4444',
-                    customClass: { popup: 'rounded-3xl dark:bg-slate-800' }
-                });
-                if (!textReason) return; // Dibatalkan jika kosong
-                reason = textReason;
+                reason = document.getElementById(`reason-${type}`).value.trim();
+                if (!reason) {
+                    document.getElementById(`tolak-error-${type}`).classList.remove('hidden');
+                    document.getElementById(`reason-${type}`).focus();
+                    return;
+                }
             }
 
-            Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            // Menampilkan efek loading langsung di dalam card berkas (tanpa menutup popup)
+            let actionWrapper = document.getElementById(`action-wrapper-${type}`);
+            if (actionWrapper) {
+                actionWrapper.innerHTML = '<div class="text-center py-4 text-primary dark:text-blue-400 text-sm font-bold"><i class="fas fa-spinner fa-spin mr-2"></i> Memproses pembaruan...</div>';
+            }
+
             try {
                 let res = await fetchAPI('verifySingleFile', { nik: nik, fileType: type, action: action, reason: reason });
                 if (res.success) {
-                    // Ambil file terbaru lalu segarkan Modal seketika tanpa harus menutup
+                    // Ambil file terbaru dan perbarui isi modal secara mulus
                     let filesRes = await fetchAPI('getMabaFiles', { nik: nik });
                     if(filesRes.success) {
-                        Swal.fire({icon:'success', title:'<span class="dark:text-white font-bold">Berhasil</span>', text:`File ${type} berhasil ${action === 'ACC'?'di-ACC':'ditolak'}.`, timer: 1500, showConfirmButton:false, background: document.documentElement.classList.contains('dark') ? '#0f172a' : '#fff'});
-                        setTimeout(() => renderBerkasModal(nik, filesRes.files), 1500);
+                        let contentWrapper = document.getElementById('berkas-modal-content');
+                        if (contentWrapper) {
+                            contentWrapper.innerHTML = generateBerkasListHtml(nik, filesRes.files);
+                        }
                     }
-                } else { Swal.fire('Gagal', res.message, 'error'); }
-            } catch(e) { Swal.fire('Error', 'Kesalahan koneksi. Pastikan internet Anda stabil.', 'error'); }
+                } else {
+                    // Refresh tampilan jika gagal diproses (rollback view)
+                    let filesRes = await fetchAPI('getMabaFiles', { nik: nik });
+                    if(filesRes.success) document.getElementById('berkas-modal-content').innerHTML = generateBerkasListHtml(nik, filesRes.files);
+                }
+            } catch(e) { 
+                let filesRes = await fetchAPI('getMabaFiles', { nik: nik });
+                if(filesRes.success) document.getElementById('berkas-modal-content').innerHTML = generateBerkasListHtml(nik, filesRes.files);
+            }
         }
 
         async function adminReject(nik) {
