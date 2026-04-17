@@ -339,7 +339,8 @@
                         </div>
 
                         <div class="p-6 md:p-10">
-                            <form id="form-lengkap-biodata" onsubmit="mabaSubmitBiodata(event)">
+                            <!-- PENAMBAHAN NOVALIDATE PADA FORM -->
+                            <form id="form-lengkap-biodata" novalidate onsubmit="mabaSubmitBiodata(event)">
                                 
                                 <!-- FORM DATA PRIBADI -->
                                 <div id="form-sect-pribadi" class="space-y-8">
@@ -1708,8 +1709,20 @@
 
         async function mabaSubmitBiodata(e) {
             e.preventDefault();
-            Swal.fire({ title: 'Menyimpan Biodata...', html: 'Mohon tunggu...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
             
+            // Manual Validation untuk mencegah bug "Silent HTML5 Validation pada tab yang disembunyikan"
+            const requiredPribadi = ['bio-agama', 'bio-nisn', 'bio-kwn', 'bio-jalan', 'bio-rt', 'bio-rw', 'bio-pos', 'bio-sekolah'];
+            const requiredOrtu = ['ortu-nik-ayah', 'ortu-nama-ayah', 'ortu-nik-ibu', 'ortu-nama-ibu'];
+
+            for (let id of requiredPribadi) {
+                if (!document.getElementById(id).value.trim()) {
+                    switchFormBioTab('pribadi');
+                    Swal.fire('Peringatan', 'Silakan lengkapi data wajib bertanda bintang (*) di tab Data Pribadi.', 'warning');
+                    setTimeout(() => document.getElementById(id).focus(), 100);
+                    return;
+                }
+            }
+
             let gabunganWilayah = currentMabaData['Kecamatan'] || ''; 
             
             if (!document.getElementById('box-edit-wilayah').classList.contains('hidden')) {
@@ -1721,10 +1734,22 @@
                 if (provVal && kabVal && kecVal && kelVal) {
                     gabunganWilayah = `Desa: ${kelVal}, Kec: ${kecVal}, Kab: ${kabVal}, Prov: ${provVal}`;
                 } else {
+                    switchFormBioTab('pribadi');
                     Swal.fire('Peringatan', 'Silakan lengkapi isian Provinsi, Kabupaten, Kecamatan, dan Kelurahan Anda!', 'warning');
                     return;
                 }
             }
+
+            for (let id of requiredOrtu) {
+                if (!document.getElementById(id).value.trim()) {
+                    switchFormBioTab('ortu');
+                    Swal.fire('Peringatan', 'Silakan lengkapi data wajib bertanda bintang (*) di tab Data Orang Tua.', 'warning');
+                    setTimeout(() => document.getElementById(id).focus(), 100);
+                    return;
+                }
+            }
+
+            Swal.fire({ title: 'Menyimpan Biodata...', html: 'Mohon tunggu...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
 
             let payload = {
                 nik: currentMabaData.nik,
