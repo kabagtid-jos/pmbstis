@@ -1388,7 +1388,9 @@
 
             let data = { nik: nikVal, nama: document.getElementById('inp-nama').value, tempatLahir: document.getElementById('inp-tempat').value, tglLahir: tglVal, jk: document.getElementById('inp-jk').value, hp: hpVal, email: document.getElementById('inp-email').value, prodi: document.getElementById('inp-prodi').value, jalur: selectedJalur.nama };
             submittedData = data; 
-            let payloadData = { ...data, nik: "'" + nikVal, hp: "'" + hpVal, tglLahir: "'" + tglVal };
+            
+            // Menghapus injeksi tanda kutip (') agar tidak masuk ke database
+            let payloadData = { ...data, nik: nikVal, hp: hpVal, tglLahir: tglVal };
 
             try {
                 const res = await fetchAPI('register', payloadData);
@@ -1453,6 +1455,13 @@
         }
 
         function renderMabaDashboard(data, autoNavigate = true) {
+            // Bersihkan tanda kutip (') dari sisa data pendaftar lama agar bersih di dashboard
+            for (let key in data) {
+                if (typeof data[key] === 'string' && data[key].startsWith("'")) {
+                    data[key] = data[key].substring(1);
+                }
+            }
+            
             currentMabaData = data;
             
             // SIDEBAR
@@ -1928,7 +1937,13 @@
         // ==================== LOGIKA ADMIN ====================
         function renderAdminDashboard(data) {
             if(!data || !data.maba) return;
-            adminAllRows = data.maba.rows || [];
+            
+            // Bersihkan tanda kutip (') dari semua baris data admin
+            let cleanedRows = (data.maba.rows || []).map(row => 
+                row.map(cell => (typeof cell === 'string' && cell.startsWith("'")) ? cell.substring(1) : cell)
+            );
+            
+            adminAllRows = cleanedRows;
             adminHeaders = [...data.maba.headers, "Aksi"]; 
 
             let taSet = new Set(); let prodiSet = new Set();
