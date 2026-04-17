@@ -1588,6 +1588,7 @@
             
             let targetTab = 'status';
 
+            // PERBAIKAN LOGIKA STEPPER & OVERLAY PEMBAYARAN
             if (!isBiodataLengkap) {
                 mabaMaxStep = 1;
                 targetTab = 'biodata';
@@ -1606,7 +1607,7 @@
                 document.getElementById('maba-prodi-overlay-msg').innerText = "Silakan unggah Foto Profil Anda terlebih dahulu.";
                 document.getElementById('maba-berkas-overlay-msg').innerText = "Silakan unggah Foto Profil Anda terlebih dahulu.";
             }
-            else if (data.statusVerifikasi === 'Belum Verifikasi') {
+            else if (data.statusVerifikasi === 'Belum Verifikasi' || !data.statusVerifikasi || data.statusVerifikasi.trim() === '') {
                 mabaMaxStep = 4;
                 targetTab = 'berkas';
                 alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-file-upload mr-1"></i> Upload Berkas Scan.</h4><p class="text-xs">Biodata dan Foto tersimpan. Selanjutnya silakan unggah scan Ijazah & KK Anda di menu Upload Berkas.</p></div>`;
@@ -1621,7 +1622,8 @@
                 sumBayar.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>'; 
                 sumBerkas.innerHTML = '<span class="text-brandred font-bold">Ditolak</span>';
             }
-            else if (data.statusVerifikasi === 'Berkas Lengkap' && data.statusBayar === 'Belum Bayar') { 
+            // MEMPERBAIKI KONDISI DATA KOSONG PADA STATUS BAYAR (AGAR TIDAK FALLTHROUGH)
+            else if (data.statusVerifikasi === 'Berkas Lengkap' && (data.statusBayar === 'Belum Bayar' || !data.statusBayar || data.statusBayar.trim() === '')) { 
                 mabaMaxStep = 5;
                 targetTab = 'bayar';
                 alertC.innerHTML = `<div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-5 rounded-2xl text-amber-700 dark:text-amber-500 font-medium shadow-sm mb-6"><h4 class="font-extrabold text-sm mb-1"><i class="fas fa-exclamation-triangle mr-1"></i> Segera Lakukan Pembayaran</h4><p class="text-xs">Berkas valid. Silakan lakukan pembayaran tagihan pendaftaran untuk lanjut ke tahap seleksi.</p></div>`;
@@ -1877,6 +1879,12 @@
                         let response = await fetchAPI('uploadFiles', payload);
                         if(response.success) { 
                             currentMabaData.statusVerifikasi = 'Berkas Lengkap'; 
+                            
+                            // MEMPERBAIKI KONDISI DATA BAYAR KOSONG AGAR BISA PINDAH TAB
+                            if (!currentMabaData.statusBayar || currentMabaData.statusBayar.trim() === '') {
+                                currentMabaData.statusBayar = 'Belum Bayar';
+                            }
+
                             renderMabaDashboard(currentMabaData, false); 
                             Swal.fire('Berhasil', 'Semua berkas berhasil diunggah ke sistem.', 'success'); 
                             switchMabaTab('bayar');
