@@ -627,6 +627,8 @@ function renderMabaDashboard(data,autoNavigate=true){
     if(typeof data[k]==='string'&&data[k].startsWith("'"))data[k]=data[k].substring(1);
   }
   
+  data.nik=data.nik||data['NIK']||'';
+  data.nama=data.nama||data['Nama Lengkap']||'';
   data.tempatLahir=data.tempatLahir||data['Tempat Lahir']||'';
   data.tglLahir=data.tglLahir||data['Tgl Lahir']||'';
   data.jk=data.jk||data['Jenis Kelamin']||'';
@@ -1195,186 +1197,7 @@ async function adminVerify(nik){
         if(r.success){
           let lr=await fetchAPI('login',{username:adminCreds.user,password:adminCreds.pass});
           if(lr.success){lastAdminData=lr.data;renderAdminDashboard(lr.data);}
-          Swal.fire('Terverifikasi!','Calon mahasiswa diterima.','success');
-        }else Swal.fire('Gagal',r.message,'error');
-      }catch(e){Swal.fire('Gagal','Error Koneksi','error');}
-    }
-  });
-}
-
-function populateAdminSettingsForm(raw){
-  let pl=[];window.adminBanks=[];
-  for(let i=1;i<raw.length;i++){
-    let r=raw[i];
-    if(r[0]==='Semester')document.getElementById('set-semester').value=r[1];
-    if(r[0]==='Gelombang'){
-      document.getElementById('set-gelombang').value=r[1];
-      document.getElementById('set-gelombang-tgl').value=r[2];
-    }
-    if(r[0]==='Jalur'&&r[1]==='Reguler'){
-      document.getElementById('set-biaya-reg').value=r[3];
-      document.getElementById('set-biaya-ulang').value=r[4];
-    }
-    if(r[0]==='Prodi')pl.push(r[1]);
-    if(r[0]==='Bank')window.adminBanks.push({nama:r[1],rek:r[2],an:r[3],logo:r[4]});
-    if(r[0]==='Admin'){
-      document.getElementById('set-admin-user').value=r[1];
-      document.getElementById('set-admin-pass').value=r[2];
-    }
-    if(r[0]==='Fonnte'){
-      if(r[1]==='Status'){const e=document.getElementById('set-fonnte-status');if(e)e.value=r[2]||'Nonaktif';}
-      if(r[1]==='Token'){const e=document.getElementById('set-fonnte-token');if(e)e.value=r[2];}
-      if(r[1]==='Target'){const e=document.getElementById('set-fonnte-target');if(e)e.value=r[2];}
-    }
-  }
-  document.getElementById('set-prodi').value=pl.join('\n');
-  renderBankSettings();
-}
-
-function renderBankSettings(){
-  let c=document.getElementById('bank-settings-container');
-  let h='';
-  window.adminBanks.forEach((b,i)=>{
-    h+=`<div class="p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl mb-3 flex flex-wrap gap-2 items-center"><input id="bank-nama-${i}" value="${b.nama}" placeholder="Nama Bank" class="flex-1 border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-sm dark:text-white"><input id="bank-rek-${i}" value="${b.rek}" placeholder="No Rekening" class="flex-1 border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-sm dark:text-white"><input id="bank-an-${i}" value="${b.an}" placeholder="Atas Nama" class="flex-1 border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 rounded-lg p-2 text-sm dark:text-white"><button type="button" onclick="removeBankSetting(${i})" class="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-2 rounded-lg font-bold text-sm transition-colors"><i class="fas fa-trash"></i></button></div>`;
-  });
-  c.innerHTML=h;
-}
-
-function addBankSetting(){
-  window.adminBanks.forEach((b,i)=>{
-    let n=document.getElementById(`bank-nama-${i}`);
-    if(n){
-      b.nama=n.value;
-      b.rek=document.getElementById(`bank-rek-${i}`).value;
-      b.an=document.getElementById(`bank-an-${i}`).value;
-    }
-  });
-  window.adminBanks.push({nama:'',rek:'',an:'',logo:''});
-  renderBankSettings();
-}
-
-function removeBankSetting(idx){
-  window.adminBanks.forEach((b,i)=>{
-    let n=document.getElementById(`bank-nama-${i}`);
-    if(n){
-      b.nama=n.value;
-      b.rek=document.getElementById(`bank-rek-${i}`).value;
-      b.an=document.getElementById(`bank-an-${i}`).value;
-    }
-  });
-  window.adminBanks.splice(idx,1);
-  renderBankSettings();
-}
-
-async function saveAdminSettings(e){
-  e.preventDefault();
-  let btn=document.getElementById('btn-save-settings');
-  let old=btn.innerHTML;
-  btn.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
-  btn.disabled=true;
-  
-  let ns=[];
-  ns.push(['Jalur','Reguler','Offline',document.getElementById('set-biaya-reg').value,document.getElementById('set-biaya-ulang').value,'Aktif']);
-  
-  let ps=document.getElementById('set-prodi').value.split('\n').filter(p=>p.trim()!=='');
-  ps.forEach(p=>ns.push(['Prodi',p.trim(),'','','','Aktif']));
-  
-  window.adminBanks.forEach((b,i)=>{
-    let n=document.getElementById(`bank-nama-${i}`).value;
-    let r=document.getElementById(`bank-rek-${i}`).value;
-    let a=document.getElementById(`bank-an-${i}`).value;
-    if(n.trim()!=='')ns.push(['Bank',n,r,a,b.logo||'','Aktif']);
-  });
-  
-  ns.push(['Gelombang',document.getElementById('set-gelombang').value,document.getElementById('set-gelombang-tgl').value,'','','Aktif']);
-  ns.push(['Semester',document.getElementById('set-semester').value,'','','','Aktif']);
-  ns.push(['Admin',document.getElementById('set-admin-user').value,document.getElementById('set-admin-pass').value,'','','Aktif']);
-  ns.push(['Fonnte','Status',document.getElementById('set-fonnte-status').value,'','','Aktif']);
-  ns.push(['Fonnte','Token',document.getElementById('set-fonnte-token').value,'','','Aktif']);
-  ns.push(['Fonnte','Target',document.getElementById('set-fonnte-target').value,'','','Aktif']);
-  
-  try{
-    let r=await fetchAPI('saveSettings',{settings:ns});
-    btn.innerHTML=old;
-    btn.disabled=false;
-    if(r.success)Swal.fire('Sukses','Konfigurasi berhasil disimpan.','success');
-    else Swal.fire('Gagal',r.message,'error');
-  }catch(er){
-    btn.innerHTML=old;
-    btn.disabled=false;
-    Swal.fire('Error','Kesalahan Jaringan','error');
-  }
-}
-
-function exportCSV(){
-  if(adminAllRows.length===0){
-    Swal.fire('Info','Data pendaftar kosong.','info');return;
-  }
-  let c=adminHeaders.join(',')+'\n';
-  adminAllRows.forEach(r=>{
-    c+=r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')+'\n';
-  });
-  let b=new Blob([c],{type:'text/csv;charset=utf-8;'});
-  let l=document.createElement("a");
-  l.href=URL.createObjectURL(b);
-  l.download=`PMB_Data_Export_${new Date().getTime()}.csv`;
-  l.click();
-}
-
-function cekBerkas(nik){
-  let nk=adminHeaders.indexOf('NIK');
-  let nm=adminHeaders.indexOf('Nama Lengkap');
-  let row=adminAllRows.find(r=>r[nk]==nik);
-  let nama=row?row[nm]:'';
-  let h=`<div class="text-left text-sm text-slate-700 dark:text-slate-300"><p class="font-bold text-primary dark:text-blue-400 mb-2">Pendaftar: ${nama}</p><p class="text-xs mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">Gunakan opsi <b>Validasi Spesifik</b> untuk menyetujui atau menolak dokumen satu per satu.</p><div id="berkas-modal-content" class="min-h-[100px] flex justify-center items-center"><i class="fas fa-spinner fa-spin text-2xl text-primary"></i></div></div>`;
-  Swal.fire({title:'Dokumen Pendaftar',html:h,showCloseButton:true,showConfirmButton:false,width:'600px',background:document.documentElement.classList.contains('dark')?'#1e293b':'#fff'});
-  fetchMabaFiles(nik);
-}
-
-async function fetchMabaFiles(nik){
-  try{
-    let r=await fetchAPI('getMabaFiles',{nik:nik});
-    if(r.success)document.getElementById('berkas-modal-content').innerHTML=genBerkasHtml(r.files,nik,r.rowData);
-    else document.getElementById('berkas-modal-content').innerHTML='<p class="text-red-500 text-center font-bold">Gagal memuat berkas.</p>';
-  }catch(e){document.getElementById('berkas-modal-content').innerHTML='<p class="text-red-500 text-center font-bold">Error jaringan saat memuat.</p>';}
-}
-
-function genBerkasHtml(f,nik,rowData){
-  if(!f||f.length===0)return '<p class="text-slate-500 text-center py-4 bg-slate-50 dark:bg-slate-800 rounded-xl">Belum ada berkas yang diunggah pendaftar ini.</p>';
-  let h='<div class="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">';
-  let headerRow=adminHeaders;
-  f.forEach(x=>{
-    if(String(x.name).toLowerCase().includes('foto')||String(x.type).toLowerCase().includes('foto'))return;
-    let validasiColName=x.type.replace('URL','Validasi');
-    let vIdx=headerRow.indexOf(validasiColName);
-    let currentStatus=(rowData&&vIdx!==-1)?rowData[vIdx]:'Belum divalidasi';
-    let statusBadge='';
-    if(currentStatus==='ACC')statusBadge='<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-check mr-1"></i>ACC</span>';
-    else if(currentStatus==='Ditolak')statusBadge='<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-times mr-1"></i>Ditolak</span>';
-    else statusBadge='<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-clock mr-1"></i>Menunggu</span>';
-    h+=`<div class="p-3 border rounded-xl border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-3"><div class="flex-1 overflow-hidden w-full"><div class="flex items-center gap-2 mb-1"><span class="font-bold text-sm text-slate-800 dark:text-white truncate" title="${x.name}">${x.name}</span> ${statusBadge}</div><a href="${x.url}" target="_blank" class="text-primary dark:text-blue-400 hover:underline text-xs font-medium"><i class="fas fa-external-link-alt mr-1"></i> Lihat Dokumen Asli</a></div><div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0"><button onclick="adminVerifyFileParsial('${nik}', '${validasiColName}', 'ACC')" class="flex-1 md:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fas fa-check mr-1"></i> ACC</button><button onclick="adminVerifyFileParsial('${nik}', '${validasiColName}', 'Ditolak')" class="flex-1 md:flex-none bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fas fa-times mr-1"></i> Tolak</button></div></div>`;
-  });
-  h+='</div>';return h;
-}
-
-async function adminVerifyFileParsial(nik,colName,status){
-  Swal.fire({
-    title:status==='ACC'?'Setujui Dokumen?':'Tolak Dokumen?',
-    text:status==='ACC'?'Dokumen ini akan ditandai valid.':'Pendaftar harus mengunggah ulang dokumen ini.',
-    icon:status==='ACC'?'info':'warning',
-    showCancelButton:true,
-    confirmButtonText:'Ya',
-    cancelButtonText:'Batal'
-  }).then(async(res)=>{
-    if(res.isConfirmed){
-      Swal.fire({title:'Memproses...',allowOutsideClick:false,didOpen:()=>{Swal.showLoading()}});
-      try{
-        let r=await fetchAPI('updateFileStatus',{nik:nik,colName:colName,status:status});
-        if(r.success){
-          let lr=await fetchAPI('login',{username:adminCreds.user,password:adminCreds.pass});
-          if(lr.success){lastAdminData=lr.data;renderAdminDashboard(lr.data);}
-          cekBerkas(nik);
-          Swal.fire('Berhasil!',`Dokumen telah ${status}.`,'success');
+          Swal.fire('Berhasil!','Pendaftar telah diterima.','success');
         }else Swal.fire('Gagal',r.message,'error');
       }catch(e){Swal.fire('Error','Kesalahan jaringan','error');}
     }
@@ -1398,10 +1221,168 @@ async function adminReject(nik){
       if(r.success){
         let lr=await fetchAPI('login',{username:adminCreds.user,password:adminCreds.pass});
         if(lr.success){lastAdminData=lr.data;renderAdminDashboard(lr.data);}
-        Swal.fire('Ditolak','Pendaftaran ditolak secara keseluruhan.','success');
-      }else{Swal.fire('Gagal',r.message,'error');}
-    }catch(e){Swal.fire('Error','Koneksi terputus','error');}
+        Swal.fire('Berhasil!','Pendaftar telah ditolak.','success');
+      }else Swal.fire('Gagal',r.message,'error');
+    }catch(e){Swal.fire('Error','Kesalahan jaringan','error');}
   }
+}
+
+async function cekBerkas(nik) {
+  Swal.fire({title:'Memuat data...',allowOutsideClick:false,didOpen:()=>{Swal.showLoading()}});
+  try {
+    let res = await fetchAPI('getMabaFiles', {nik: nik});
+    if(res.success) {
+      let html = `<div class="space-y-4 text-left">`;
+      if(res.files && res.files.length > 0) {
+        res.files.forEach(f => {
+           let viewBtn = f.mimeType==='image' ? `<img src="${f.url}" class="max-w-full h-auto mt-2 rounded border">` : `<a href="${f.url}" target="_blank" class="text-primary font-bold underline"><i class="fas fa-external-link-alt"></i> Buka Dokumen</a>`;
+           html += `<div class="bg-slate-50 dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600">
+             <p class="font-bold text-sm mb-2 text-slate-800 dark:text-white">${f.name}</p>
+             ${viewBtn}
+             <div class="mt-3 flex gap-2">
+               <button onclick="updateDocStatus('${nik}', '${f.type.replace('URL', 'Validasi')}', 'ACC')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded text-xs font-bold transition-colors"><i class="fas fa-check"></i> ACC</button>
+               <button onclick="updateDocStatus('${nik}', '${f.type.replace('URL', 'Validasi')}', 'Ditolak')" class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded text-xs font-bold transition-colors"><i class="fas fa-times"></i> Tolak</button>
+             </div>
+           </div>`;
+        });
+      } else {
+        html += `<p class="text-slate-500 text-center py-4">Belum ada berkas diunggah.</p>`;
+      }
+      html += `</div>`;
+      Swal.fire({title: 'Dokumen Pendaftar', html: html, width: '600px', showConfirmButton: true, confirmButtonText: 'Tutup', customClass: { popup: 'dark:bg-slate-800 dark:text-white' }});
+    } else {
+      Swal.fire('Gagal', res.message, 'error');
+    }
+  } catch(e) { Swal.fire('Error', 'Kesalahan jaringan', 'error'); }
+}
+
+async function updateDocStatus(nik, colName, status) {
+  Swal.fire({title:'Memproses...',allowOutsideClick:false,didOpen:()=>{Swal.showLoading()}});
+  try {
+    let r=await fetchAPI('updateFileStatus',{nik:nik,colName:colName,status:status});
+    if(r.success){
+      let lr=await fetchAPI('login',{username:adminCreds.user,password:adminCreds.pass});
+      if(lr.success){lastAdminData=lr.data;renderAdminDashboard(lr.data);}
+      cekBerkas(nik);
+      Swal.fire('Berhasil!',`Dokumen telah ${status}.`,'success');
+    }else Swal.fire('Gagal',r.message,'error');
+  }catch(e){Swal.fire('Error','Kesalahan jaringan','error');}
+}
+
+function exportCSV() {
+    if(adminAllRows.length === 0) { Swal.fire('Info', 'Tidak ada data untuk diekspor.', 'info'); return; }
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += adminHeaders.filter(h => h !== 'Aksi').join(",") + "\r\n";
+    adminAllRows.forEach(row => {
+        let rowArray = row.slice(0, adminHeaders.length - 1).map(val => {
+            let str = String(val).replace(/"/g, '""');
+            return `"${str}"`;
+        });
+        csvContent += rowArray.join(",") + "\r\n";
+    });
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Data_Pendaftar_PMB.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function populateAdminSettingsForm(settings) {
+    let banks = [];
+    document.getElementById('set-prodi').value = '';
+    settings.forEach(s => {
+        if(s[0] === 'Semester') document.getElementById('set-semester').value = s[1];
+        if(s[0] === 'Gelombang') { document.getElementById('set-gelombang').value = s[1]; document.getElementById('set-gelombang-tgl').value = s[2]; }
+        if(s[0] === 'Jalur' && s[1] === 'Reguler') { document.getElementById('set-biaya-reg').value = s[3] || 0; document.getElementById('set-biaya-ulang').value = s[4] || 0; }
+        if(s[0] === 'Prodi') { let existing = document.getElementById('set-prodi').value; document.getElementById('set-prodi').value = existing ? existing + '\n' + s[1] : s[1]; }
+        if(s[0] === 'Fonnte') {
+            if(s[1] === 'Status') document.getElementById('set-fonnte-status').value = s[2];
+            if(s[1] === 'Token') document.getElementById('set-fonnte-token').value = s[2];
+            if(s[1] === 'Target') document.getElementById('set-fonnte-target').value = s[2];
+        }
+        if(s[0] === 'Admin') { document.getElementById('set-admin-user').value = s[1]; document.getElementById('set-admin-pass').value = s[2]; }
+        if(s[0] === 'Bank') { banks.push({nama: s[1], rek: s[2], an: s[3], logo: s[4]}); }
+    });
+    
+    document.getElementById('bank-settings-container').innerHTML = '';
+    banks.forEach(b => addBankSetting(b));
+    if(banks.length === 0) addBankSetting();
+}
+
+function addBankSetting(data = {nama:'', rek:'', an:'', logo:''}) {
+    const container = document.getElementById('bank-settings-container');
+    const div = document.createElement('div');
+    div.className = 'grid grid-cols-1 sm:grid-cols-12 gap-3 items-end bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 relative';
+    div.innerHTML = `
+        <div class="sm:col-span-3">
+            <label class="block text-[10px] font-bold mb-1 text-slate-500">Nama Bank</label>
+            <input type="text" class="bank-nama w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:text-white" value="${data.nama}" placeholder="BSI / BRI">
+        </div>
+        <div class="sm:col-span-3">
+            <label class="block text-[10px] font-bold mb-1 text-slate-500">No Rekening</label>
+            <input type="text" class="bank-rek w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:text-white" value="${data.rek}" placeholder="123456789">
+        </div>
+        <div class="sm:col-span-3">
+            <label class="block text-[10px] font-bold mb-1 text-slate-500">Atas Nama</label>
+            <input type="text" class="bank-an w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:text-white" value="${data.an}" placeholder="PMB STIS">
+        </div>
+        <div class="sm:col-span-2">
+            <label class="block text-[10px] font-bold mb-1 text-slate-500">URL Logo</label>
+            <input type="text" class="bank-logo w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-sm outline-none focus:ring-2 focus:ring-primary/20 dark:text-white" value="${data.logo}" placeholder="https://...">
+        </div>
+        <div class="sm:col-span-1 flex justify-end">
+            <button type="button" onclick="this.parentElement.parentElement.remove()" class="w-8 h-8 bg-red-100 hover:bg-red-500 text-red-600 hover:text-white rounded-lg flex items-center justify-center transition-colors"><i class="fas fa-trash"></i></button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+async function saveAdminSettings(e) {
+    e.preventDefault();
+    let btn = document.getElementById('btn-save-settings');
+    let oldHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+    btn.disabled = true;
+
+    let setArr = [];
+    setArr.push(["Semester", document.getElementById('set-semester').value, "", "", "", ""]);
+    setArr.push(["Gelombang", document.getElementById('set-gelombang').value, document.getElementById('set-gelombang-tgl').value, "", "", ""]);
+    setArr.push(["Jalur", "Reguler", "", document.getElementById('set-biaya-reg').value, document.getElementById('set-biaya-ulang').value, ""]);
+    
+    let prodis = document.getElementById('set-prodi').value.split('\n').filter(p => p.trim() !== '');
+    prodis.forEach(p => setArr.push(["Prodi", p.trim(), "", "", "", ""]));
+    
+    const bankNodes = document.querySelectorAll('#bank-settings-container > div');
+    bankNodes.forEach(node => {
+        let n = node.querySelector('.bank-nama').value.trim();
+        let r = node.querySelector('.bank-rek').value.trim();
+        let a = node.querySelector('.bank-an').value.trim();
+        let l = node.querySelector('.bank-logo').value.trim();
+        if(n && r) setArr.push(["Bank", n, r, a, l, ""]);
+    });
+
+    setArr.push(["Fonnte", "Status", document.getElementById('set-fonnte-status').value, "", "", ""]);
+    setArr.push(["Fonnte", "Token", document.getElementById('set-fonnte-token').value, "", "", ""]);
+    setArr.push(["Fonnte", "Target", document.getElementById('set-fonnte-target').value, "", "", ""]);
+    
+    setArr.push(["Admin", document.getElementById('set-admin-user').value, document.getElementById('set-admin-pass').value, "", "", ""]);
+
+    try {
+        let res = await fetchAPI('saveSettings', {settings: setArr});
+        btn.innerHTML = oldHtml;
+        btn.disabled = false;
+        if(res.success) {
+            Swal.fire('Berhasil!', res.message, 'success');
+            adminCreds.user = document.getElementById('set-admin-user').value;
+            adminCreds.pass = document.getElementById('set-admin-pass').value;
+        } else Swal.fire('Gagal', res.message, 'error');
+    } catch(err) {
+        btn.innerHTML = oldHtml;
+        btn.disabled = false;
+        Swal.fire('Error', 'Kesalahan jaringan', 'error');
+    }
 }
 </script>
 </body>
