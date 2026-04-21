@@ -677,20 +677,11 @@ function renderMabaDashboard(data,autoNavigate=true){
   }else bankHtml+=`<div class="p-4 bg-white/10 rounded-2xl text-center"><p class="text-sm text-white">Belum ada data bank.</p></div>`;
   document.getElementById('maba-list-bank').innerHTML=bankHtml;
   
+  document.getElementById('bio-email').value=data.email||'';
+
+  // PERBAIKAN 1 & 2: Membersihkan teks 'Belum divalidasi' yang nyasar ke input
   const cleanBio = (val) => { return (!val || val === 'Belum divalidasi') ? '' : val; };
   
-  document.getElementById('bio-nik').value=data.nik||'';
-  document.getElementById('bio-nama').value=data.nama||'';
-  document.getElementById('bio-tempat').value=data.tempatLahir||'';
-  
-  let tglStr=data.tglLahir;
-  if(tglStr&&tglStr.length===8&&!tglStr.includes('-')){
-    tglStr=`${tglStr.substring(0,2)} ${getMonthName(tglStr.substring(2,4))} ${tglStr.substring(4)}`;
-  }
-  document.getElementById('bio-tgl').value=tglStr||'';
-  document.getElementById('bio-jk').value=data.jk||'';
-  document.getElementById('bio-hp').value=data.hp||'';
-  document.getElementById('bio-email').value=data.email||'';
   document.getElementById('bio-agama').value=cleanBio(data['Agama']);
   document.getElementById('bio-nisn').value=cleanBio(data['NISN']);
   document.getElementById('bio-npwp').value=cleanBio(data['NPWP']);
@@ -744,6 +735,7 @@ function renderMabaDashboard(data,autoNavigate=true){
   const sumBayar=document.getElementById('sum-stat-bayar');
   const sumBerkas=document.getElementById('sum-stat-berkas');
   
+  // PERBAIKAN LOMPAT TAB: Mengecek kembali apakah NISN berisi teks error 
   let isBio=(data['NISN'] && data['NISN'] !== 'Belum divalidasi') ? true : false;
   let isFoto=data['Foto Profil']?true:false;
   let isBerkasValid=(data.statusVerifikasi==='Berkas Lengkap'||data.statusVerifikasi==='Terverifikasi'||data.statusVerifikasi==='Berkas Sesuai');
@@ -971,10 +963,13 @@ async function mabaSubmitFoto(){
   btn.innerHTML='Loading...';btn.disabled=true;
   
   try{
-    let res=await fetchAPI('saveFoto',{nik:currentMabaData.nik,foto:pendingFotoBase64});
+    // PERBAIKAN 3: Membuang prefix 'data:image/...;base64,' agar backend tidak error memecahkan string
+    let base64Murni = pendingFotoBase64.includes(',') ? pendingFotoBase64.split(',')[1] : pendingFotoBase64;
+    
+    let res=await fetchAPI('saveFoto',{nik:currentMabaData.nik,foto:base64Murni});
     btn.innerHTML=oldHtml;btn.disabled=false;
     if(res.success){
-      currentMabaData['Foto Profil']=pendingFotoBase64;
+      currentMabaData['Foto Profil']=res.url || pendingFotoBase64;
       pendingFotoBase64=null;
       renderMabaDashboard(currentMabaData,false);
       Swal.fire('Berhasil!','Foto tersimpan.','success');
