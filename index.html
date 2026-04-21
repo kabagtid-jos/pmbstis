@@ -1270,25 +1270,34 @@ function genBerkasHtml(f, nik, rowData) {
     if(String(x.name).toLowerCase().includes('foto') || String(x.type).toLowerCase().includes('foto')) return;
     
     let validasiColName = x.type.replace('URL', 'Validasi');
+    let statusSuccess = 'ACC';
+    let statusReject = 'Ditolak';
+    
+    // PERBAIKAN: Penanganan khusus untuk bukti bayar karena tidak ada kolom 'Validasi Bukti Bayar' di database
+    if (x.type === 'URL Bukti Bayar') {
+        validasiColName = 'Status Pembayaran';
+        statusSuccess = 'Lunas';
+    }
+    
     let vIdx = headerRow.indexOf(validasiColName);
     let currentStatus = (rowData && vIdx !== -1) ? rowData[vIdx] : 'Belum divalidasi';
     let statusBadge = '';
     let actionButtons = '';
     
     // PERBAIKAN: Menghilangkan tombol ACC/Tolak dan menggantinya dengan informasi jika statusnya sudah dinilai
-    if (currentStatus === 'ACC') {
-        statusBadge = '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-check mr-1"></i>ACC</span>';
-        actionButtons = `<div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0 items-center justify-end"><span class="text-emerald-600 font-bold text-xs bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200"><i class="fas fa-check-circle mr-1"></i> Sudah di-ACC</span></div>`;
+    if (currentStatus === statusSuccess) {
+        statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-check mr-1"></i>${statusSuccess}</span>`;
+        actionButtons = `<div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0 items-center justify-end"><span class="text-emerald-600 font-bold text-xs bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200"><i class="fas fa-check-circle mr-1"></i> Sudah di-${statusSuccess}</span></div>`;
     } 
-    else if (currentStatus === 'Ditolak') {
-        statusBadge = '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-times mr-1"></i>Ditolak</span>';
-        actionButtons = `<div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0 items-center justify-end"><span class="text-red-600 font-bold text-xs bg-red-50 px-3 py-1.5 rounded-lg border border-red-200"><i class="fas fa-times-circle mr-1"></i> Sudah Ditolak</span></div>`;
+    else if (currentStatus === statusReject) {
+        statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-times mr-1"></i>${statusReject}</span>`;
+        actionButtons = `<div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0 items-center justify-end"><span class="text-red-600 font-bold text-xs bg-red-50 px-3 py-1.5 rounded-lg border border-red-200"><i class="fas fa-times-circle mr-1"></i> Sudah ${statusReject}</span></div>`;
     } 
     else {
         statusBadge = '<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-clock mr-1"></i>Menunggu</span>';
         actionButtons = `<div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
-          <button onclick="adminVerifyFileParsial('${nik}', '${validasiColName}', 'ACC', this)" class="flex-1 md:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fas fa-check mr-1"></i> ACC</button>
-          <button onclick="adminVerifyFileParsial('${nik}', '${validasiColName}', 'Ditolak', this)" class="flex-1 md:flex-none bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fas fa-times mr-1"></i> Tolak</button>
+          <button onclick="adminVerifyFileParsial('${nik}', '${validasiColName}', '${statusSuccess}', this)" class="flex-1 md:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fas fa-check mr-1"></i> ACC</button>
+          <button onclick="adminVerifyFileParsial('${nik}', '${validasiColName}', '${statusReject}', this)" class="flex-1 md:flex-none bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm"><i class="fas fa-times mr-1"></i> Tolak</button>
         </div>`;
     }
     
@@ -1331,7 +1340,7 @@ async function adminVerifyFileParsial(nik, colName, status, btnElement) {
       Swal.fire({
         toast: true,
         position: 'top-end',
-        icon: status === 'ACC' ? 'success' : 'error',
+        icon: (status === 'ACC' || status === 'Lunas') ? 'success' : 'error',
         title: `Dokumen berhasil ${status}`,
         showConfirmButton: false,
         timer: 2000
