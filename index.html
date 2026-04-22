@@ -14,83 +14,106 @@
     </div>
 </div>
 
-<div id="print-area" class="hidden bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif; color: #000;"><div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;"><h2 style="margin:0; color: #1e3a8a;">STIS ABU ZAIRI</h2><p style="margin:0;">FORMULIR PENDAFTARAN MAHASISWA BARU</p></div><table style="width: 100%; border-collapse: collapse; font-size: 14px;"><tr><td style="padding: 8px; width: 35%;"><strong>No Pendaftaran</strong></td><td>: <span id="print-no"></span></td></tr><tr><td style="padding: 8px;"><strong>Nama Lengkap</strong></td><td>: <span id="print-nama"></span></td></tr><tr><td style="padding: 8px;"><strong>NIK</strong></td><td>: <span id="print-nik"></span></td></tr><tr><td style="padding: 8px;"><strong>Jalur / Prodi</strong></td><td>: <span id="print-jalur"></span> / <span id="print-prodi"></span></td></tr><tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr><tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr></table><div style="margin-top: 50px; float: right; text-align: center; width: 250px; font-size: 14px;"><p style="margin: 0;">Bondowoso, <span id="print-tanggal"></span></p><p style="margin: 0;">Hormat Kami,</p><br><br><br><br><p style="margin: 0;"><strong>Panitia PMB STIS Abu Zairi</strong></p></div><div style="clear: both;"></div></div>
-
-<!-- KARTU UJIAN DESAIN MANUAL 100% HTML/CSS PRESISI (900x550px) -->
-<div id="print-kartu" class="hidden mx-auto" style="width: 900px; height: 550px; background-color: #fff; border: 2px solid #000; font-family: Arial, sans-serif; color: #1e293b; box-sizing: border-box; display: flex; flex-direction: column;">
-    
-    <!-- Bagian Header (Logo & Kop Surat) -->
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; height: 130px; box-sizing: border-box;">
-        <img src="https://i.ibb.co.com/GvR2ntXc/Chat-GPT-Image-Apr-15-2026-02-27-34-PM.png" style="width: 80px; height: 80px; object-fit: contain;">
-        
-        <div style="flex: 1; margin: 0 20px; color: #1e3a8a;">
-            <h1 style="margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 1px; line-height: 1.2;">SEKOLAH TINGGI ILMU SYARIAH<br>ABU ZAIRI BONDOWOSO</h1>
-            <h2 style="margin: 5px 0 0 0; font-size: 18px; font-weight: bold; color: #333;">PENERIMAAN MAHASISWA BARU</h2>
+<!-- TEMPLATE CETAK (DISEMBUNYIKAN DARI LAYAR UTAMA AGAR TIDAK MERUSAK FOOTER) -->
+<div style="display: none;">
+    <!-- AREA FORMULIR -->
+    <div id="print-area" class="bg-white p-10 max-w-2xl mx-auto border" style="font-family: sans-serif; color: #000;">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+            <h2 style="margin:0; color: #1e3a8a;">STIS ABU ZAIRI</h2>
+            <p style="margin:0;">FORMULIR PENDAFTARAN MAHASISWA BARU</p>
         </div>
-
-        <div style="text-align: left; width: 200px;">
-            <div style="font-size: 14px; font-weight: bold; color: #333; margin-bottom: 5px;">Nomor Ujian</div>
-            <div id="kartu-no" style="border: 2px solid #000; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; letter-spacing: 2px; color: #000;"></div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr><td style="padding: 8px; width: 35%;"><strong>No Pendaftaran</strong></td><td>: <span id="print-no"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Nama Lengkap</strong></td><td>: <span id="print-nama"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>NIK</strong></td><td>: <span id="print-nik"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Jalur / Prodi</strong></td><td>: <span id="print-jalur"></span> / <span id="print-prodi"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Username Akun</strong></td><td>: <span id="print-user"></span></td></tr>
+            <tr><td style="padding: 8px;"><strong>Password Akun</strong></td><td>: <span id="print-pass"></span></td></tr>
+        </table>
+        <div style="margin-top: 50px; float: right; text-align: center; width: 250px; font-size: 14px;">
+            <p style="margin: 0;">Bondowoso, <span id="print-tanggal"></span></p>
+            <p style="margin: 0;">Hormat Kami,</p><br><br><br><br>
+            <p style="margin: 0;"><strong>Panitia PMB STIS Abu Zairi</strong></p>
         </div>
+        <div style="clear: both;"></div>
     </div>
 
-    <!-- Garis Pemisah -->
-    <div style="height: 3px; background-color: #000; width: 100%;"></div>
-
-    <!-- Bagian Utama (Foto & Biodata) -->
-    <div style="flex: 1; position: relative; padding: 20px 30px;">
-        <h2 style="text-align: left; margin: 0 0 20px 220px; font-size: 26px; font-weight: 900; color: #1e293b; letter-spacing: 1px;">KARTU TANDA PESERTA UJIAN</h2>
-
-        <div style="display: flex; gap: 40px; margin-top: 10px;">
-            <!-- Kotak Foto -->
-            <div style="width: 160px; height: 220px; background: #e2e8f0; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; box-sizing: border-box; flex-shrink: 0;">
-                <img id="kartu-foto" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                <span id="kartu-foto-alt" style="font-size: 12px; color: #64748b; font-weight: bold; text-align: center;">FOTO<br>3x4</span>
+    <!-- AREA KARTU UJIAN DESAIN MANUAL 100% HTML/CSS PRESISI (900x550px) -->
+    <div id="print-kartu" class="mx-auto" style="width: 900px; height: 550px; background-color: #fff; border: 2px solid #000; font-family: Arial, sans-serif; color: #1e293b; box-sizing: border-box; display: flex; flex-direction: column;">
+        
+        <!-- Bagian Header (Logo & Kop Surat) -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; height: 130px; box-sizing: border-box;">
+            <img src="https://i.ibb.co.com/GvR2ntXc/Chat-GPT-Image-Apr-15-2026-02-27-34-PM.png" style="width: 80px; height: 80px; object-fit: contain;">
+            
+            <div style="flex: 1; margin: 0 20px; color: #1e3a8a;">
+                <h1 style="margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 1px; line-height: 1.2;">SEKOLAH TINGGI ILMU SYARIAH<br>ABU ZAIRI BONDOWOSO</h1>
+                <h2 style="margin: 5px 0 0 0; font-size: 18px; font-weight: bold; color: #333;">PENERIMAAN MAHASISWA BARU</h2>
             </div>
 
-            <!-- Biodata Tabel & Box Lokasi -->
-            <div style="flex: 1; padding-top: 10px;">
-                <table style="width: 100%; font-size: 22px; margin-bottom: 30px; border-collapse: collapse; color: #333;">
-                    <tr>
-                        <td style="padding: 6px 0; width: 210px;">Nama Lengkap</td>
-                        <td style="padding: 6px 0; width: 30px;">:</td>
-                        <td style="padding: 6px 0; font-weight: bold;" id="kartu-nama"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0;">NIK</td>
-                        <td style="padding: 6px 0;">:</td>
-                        <td style="padding: 6px 0;" id="kartu-nik"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0;">Program Studi</td>
-                        <td style="padding: 6px 0;">:</td>
-                        <td style="padding: 6px 0;" id="kartu-prodi"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0;">Jalur Daftar</td>
-                        <td style="padding: 6px 0;">:</td>
-                        <td style="padding: 6px 0;" id="kartu-jalur"></td>
-                    </tr>
-                </table>
+            <div style="text-align: left; width: 200px;">
+                <div style="font-size: 14px; font-weight: bold; color: #333; margin-bottom: 5px;">Nomor Ujian</div>
+                <div id="kartu-no" style="border: 2px solid #000; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; letter-spacing: 2px; color: #000;"></div>
+            </div>
+        </div>
 
-                <div style="display: flex; gap: 30px;">
-                    <div style="flex: 1;">
-                        <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #000;">TANGGAL UJIAN</div>
-                        <div id="kartu-tanggal" style="border: 2px solid #000; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #000;"></div>
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #000;">LOKASI UJIAN</div>
-                        <div id="kartu-lokasi" style="border: 2px solid #000; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #000;"></div>
+        <!-- Garis Pemisah -->
+        <div style="height: 3px; background-color: #000; width: 100%;"></div>
+
+        <!-- Bagian Utama (Foto & Biodata) -->
+        <div style="flex: 1; position: relative; padding: 20px 30px;">
+            <h2 style="text-align: left; margin: 0 0 20px 220px; font-size: 26px; font-weight: 900; color: #1e293b; letter-spacing: 1px;">KARTU TANDA PESERTA UJIAN</h2>
+
+            <div style="display: flex; gap: 40px; margin-top: 10px;">
+                <!-- Kotak Foto -->
+                <div style="width: 160px; height: 220px; background: #e2e8f0; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 5px; box-sizing: border-box; flex-shrink: 0;">
+                    <img id="kartu-foto" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                    <span id="kartu-foto-alt" style="font-size: 12px; color: #64748b; font-weight: bold; text-align: center;">FOTO<br>3x4</span>
+                </div>
+
+                <!-- Biodata Tabel & Box Lokasi -->
+                <div style="flex: 1; padding-top: 10px;">
+                    <table style="width: 100%; font-size: 22px; margin-bottom: 30px; border-collapse: collapse; color: #333;">
+                        <tr>
+                            <td style="padding: 6px 0; width: 210px;">Nama Lengkap</td>
+                            <td style="padding: 6px 0; width: 30px;">:</td>
+                            <td style="padding: 6px 0; font-weight: bold;" id="kartu-nama"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0;">NIK</td>
+                            <td style="padding: 6px 0;">:</td>
+                            <td style="padding: 6px 0;" id="kartu-nik"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0;">Program Studi</td>
+                            <td style="padding: 6px 0;">:</td>
+                            <td style="padding: 6px 0;" id="kartu-prodi"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0;">Jalur Daftar</td>
+                            <td style="padding: 6px 0;">:</td>
+                            <td style="padding: 6px 0;" id="kartu-jalur"></td>
+                        </tr>
+                    </table>
+
+                    <div style="display: flex; gap: 30px;">
+                        <div style="flex: 1;">
+                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #000;">TANGGAL UJIAN</div>
+                            <div id="kartu-tanggal" style="border: 2px solid #000; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #000;"></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #000;">LOKASI UJIAN</div>
+                            <div id="kartu-lokasi" style="border: 2px solid #000; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: #000;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Bagian Bawah (Catatan) -->
-    <div style="background-color: #555555; color: white; padding: 15px 30px; font-size: 15px; line-height: 1.4; border-top: 2px solid #000;">
-        Cetaklah kartu ujian ini menggunakan printer berwarna.<br>
-        Ketika ujian, Anda perlu membawa : Kartu tanda peserta ujian, KTP yang sesuai saat mendaftar di pmb.stisabuzairi.sch.id, dan perlengkapan alat tulis.
+        <!-- Bagian Bawah (Catatan) -->
+        <div style="background-color: #555555; color: white; padding: 15px 30px; font-size: 15px; line-height: 1.4; border-top: 2px solid #000;">
+            Cetaklah kartu ujian ini menggunakan printer berwarna.<br>
+            Ketika ujian, Anda perlu membawa : Kartu tanda peserta ujian, KTP yang sesuai saat mendaftar di pmb.stisabuzairi.sch.id, dan perlengkapan alat tulis.
+        </div>
     </div>
 </div>
 
@@ -517,9 +540,10 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     let container = document.getElementById('print-preview-content');
     
     container.innerHTML = '';
-    el.classList.remove('hidden');
     
+    // Klon elemen asli (karena elemen asli disembunyikan di bawah)
     let clone = el.cloneNode(true);
+    clone.classList.remove('hidden'); 
     container.appendChild(clone);
     
     currentPrintElement = clone;
@@ -564,9 +588,6 @@ function closePrintPreview() {
     document.getElementById('print-preview-modal').classList.add('hidden');
     document.getElementById('print-preview-content').innerHTML = '';
     currentPrintElement = null;
-    
-    document.getElementById('print-area').classList.add('hidden');
-    document.getElementById('print-kartu').classList.add('hidden');
 }
 
 function showSuccessPopup(){
@@ -636,8 +657,8 @@ function cetakKartuUjian(){
     document.getElementById('kartu-prodi').innerText = currentMabaData.prodi;
     document.getElementById('kartu-jalur').innerText = currentMabaData.jalur;
     
-    document.getElementById('kartu-tanggal').innerText = "MENUNGGU JADWAL\nDARI PANITIA";
-    document.getElementById('kartu-lokasi').innerText = "KAMPUS UTAMA\nSTIS ABU ZAIRI";
+    document.getElementById('kartu-tanggal').innerText = "MENUNGGU JADWAL DARI PANITIA";
+    document.getElementById('kartu-lokasi').innerText = "KAMPUS UTAMA STIS ABU ZAIRI";
     
     if(currentMabaData['Foto Profil']){
         document.getElementById('kartu-foto').src = currentMabaData['Foto Profil'];
