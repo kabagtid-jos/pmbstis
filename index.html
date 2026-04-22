@@ -24,26 +24,28 @@
     <!-- Data Layout (di atas Background) -->
     <div style="position: absolute; z-index: 10; top: 0; left: 0; width: 100%; height: 100%;">
         <!-- Nomor Ujian -->
-        <div id="kartu-no" style="position: absolute; top: 90px; left: 675px; width: 190px; text-align: center; font-size: 26px; font-weight: 900; letter-spacing: 2px;"></div>
+        <div id="kartu-no" style="position: absolute; top: 42px; left: 698px; width: 185px; height: 35px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; letter-spacing: 1px; background: #fff;"></div>
         
         <!-- Barcode Code128 -->
-        <img id="kartu-barcode" style="position: absolute; top: 135px; left: 675px; width: 190px; height: 55px; mix-blend-mode: multiply;">
+        <div style="position: absolute; top: 82px; left: 698px; width: 185px; height: 45px; background: #fff; display: flex; align-items: center; justify-content: center;">
+            <img id="kartu-barcode" style="mix-blend-mode: multiply; max-width: 100%; max-height: 100%;">
+        </div>
         
         <!-- Foto -->
-        <div style="position: absolute; top: 185px; left: 35px; width: 155px; height: 215px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div style="position: absolute; top: 188px; left: 38px; width: 154px; height: 213px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <img id="kartu-foto" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
             <span id="kartu-foto-alt" style="font-size: 12px; color: #64748b; font-weight: bold;">FOTO 3x4</span>
         </div>
         
-        <!-- Biodata Utama -->
-        <div id="kartu-nama" style="position: absolute; top: 185px; left: 470px; font-size: 20px; font-weight: bold; text-transform: uppercase;"></div>
-        <div id="kartu-nik" style="position: absolute; top: 220px; left: 470px; font-size: 20px;"></div>
-        <div id="kartu-prodi" style="position: absolute; top: 255px; left: 470px; font-size: 20px;"></div>
-        <div id="kartu-jalur" style="position: absolute; top: 290px; left: 470px; font-size: 20px;"></div>
+        <!-- Biodata Utama (diberi background putih agar menutupi placeholder {{...}} bawaan JPG) -->
+        <div id="kartu-nama" style="position: absolute; top: 213px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; font-weight: bold; text-transform: uppercase; background: #fff;"></div>
+        <div id="kartu-nik" style="position: absolute; top: 249px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; background: #fff;"></div>
+        <div id="kartu-prodi" style="position: absolute; top: 285px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; background: #fff;"></div>
+        <div id="kartu-jalur" style="position: absolute; top: 321px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; background: #fff;"></div>
         
-        <!-- Tanggal & Lokasi Ujian -->
-        <div id="kartu-tanggal" style="position: absolute; top: 385px; left: 245px; font-size: 16px; font-weight: bold; width: 250px;"></div>
-        <div id="kartu-lokasi" style="position: absolute; top: 385px; left: 540px; font-size: 16px; font-weight: bold; width: 250px;"></div>
+        <!-- Tanggal & Lokasi Ujian (diberi background putih untuk menutupi placeholder) -->
+        <div id="kartu-tanggal" style="position: absolute; top: 392px; left: 244px; font-size: 14px; font-weight: bold; width: 258px; height: 28px; display: flex; align-items: center; padding: 0 5px; background: #fff;"></div>
+        <div id="kartu-lokasi" style="position: absolute; top: 392px; left: 538px; font-size: 14px; font-weight: bold; width: 258px; height: 42px; display: flex; align-items: center; padding: 0 5px; background: #fff; line-height: 1.3;"></div>
     </div>
 </div>
 
@@ -464,7 +466,6 @@ let currentPrintElement = null;
 let currentPrintFilename = '';
 let currentPrintType = '';
 
-// PERBAIKAN: Fungsi PDF diubah untuk menangani dimensi Kartu Ujian khusus (90x55mm format Landscape)
 function showPrintPreview(elementId, filename, title, type="a4") {
     document.getElementById('print-preview-title').innerText = title;
     let el = document.getElementById(elementId);
@@ -581,7 +582,6 @@ async function forgotPasswordUI(){
   }
 }
 
-// PERBAIKAN: Fungsi Cetak Kartu dengan desain Absolute Position / Template
 function cetakKartuUjian(){
     let noUjian = "26" + currentMabaData.nik.substring(12,16) + Math.floor(Math.random()*90+10);
     
@@ -591,17 +591,15 @@ function cetakKartuUjian(){
     document.getElementById('kartu-prodi').innerText = currentMabaData.prodi;
     document.getElementById('kartu-jalur').innerText = currentMabaData.jalur;
     
-    // Set Barcode dengan Format Code128 menggunakan JsBarcode
     JsBarcode("#kartu-barcode", noUjian, {
         format: "CODE128",
-        displayValue: false, // Nomor ujian sudah ada di atas barcode secara terpisah
+        displayValue: false, 
         margin: 0,
-        width: 2,
-        height: 55,
+        width: 1.8,
+        height: 45,
         lineColor: "#0f172a"
     });
     
-    // Jadwal / Lokasi Ujian (Anda bisa sesuaikan atau load dari database nanti)
     document.getElementById('kartu-tanggal').innerText = "MENUNGGU JADWAL DARI PANITIA";
     document.getElementById('kartu-lokasi').innerText = "KAMPUS UTAMA STIS ABU ZAIRI";
     
@@ -611,14 +609,12 @@ function cetakKartuUjian(){
         document.getElementById('kartu-foto-alt').style.display = 'none';
     }
     
-    // Mengatur Background Template dari Settings
     let bgImg = document.getElementById('kartu-bg');
     if(appData && appData.templateKartu) {
         bgImg.src = appData.templateKartu;
         bgImg.style.display = 'block';
     } else {
         bgImg.style.display = 'none'; 
-        // Jika tidak ada template, biarkan putih/kosong
     }
     
     showPrintPreview('print-kartu', `KartuUjian_${currentMabaData.nama}.pdf`, 'Pratinjau Kartu Ujian Masuk', 'kartu');
