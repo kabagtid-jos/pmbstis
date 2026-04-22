@@ -24,28 +24,30 @@
     <!-- Data Layout (di atas Background) -->
     <div style="position: absolute; z-index: 10; top: 0; left: 0; width: 100%; height: 100%;">
         <!-- Nomor Ujian -->
-        <div id="kartu-no" style="position: absolute; top: 42px; left: 698px; width: 185px; height: 35px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; letter-spacing: 1px; background: #fff;"></div>
+        <div id="kartu-no" style="position: absolute; top: 43px; right: 25px; width: 185px; height: 33px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; letter-spacing: 2px; background: transparent;"></div>
         
         <!-- Barcode Code128 -->
-        <div style="position: absolute; top: 82px; left: 698px; width: 185px; height: 45px; background: #fff; display: flex; align-items: center; justify-content: center;">
-            <img id="kartu-barcode" style="mix-blend-mode: multiply; max-width: 100%; max-height: 100%;">
+        <div style="position: absolute; top: 85px; right: 25px; width: 185px; height: 45px; display: flex; align-items: center; justify-content: center; background: transparent;">
+            <img id="kartu-barcode" style="max-width: 100%; max-height: 100%; mix-blend-mode: multiply;">
         </div>
         
         <!-- Foto -->
-        <div style="position: absolute; top: 188px; left: 38px; width: 154px; height: 213px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <div style="position: absolute; top: 187px; left: 36px; width: 156px; height: 216px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <img id="kartu-foto" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
             <span id="kartu-foto-alt" style="font-size: 12px; color: #64748b; font-weight: bold;">FOTO 3x4</span>
         </div>
         
-        <!-- Biodata Utama (diberi background putih agar menutupi placeholder {{...}} bawaan JPG) -->
-        <div id="kartu-nama" style="position: absolute; top: 213px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; font-weight: bold; text-transform: uppercase; background: #fff;"></div>
-        <div id="kartu-nik" style="position: absolute; top: 249px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; background: #fff;"></div>
-        <div id="kartu-prodi" style="position: absolute; top: 285px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; background: #fff;"></div>
-        <div id="kartu-jalur" style="position: absolute; top: 321px; left: 470px; width: 400px; height: 25px; display: flex; align-items: center; font-size: 18px; background: #fff;"></div>
+        <!-- Biodata Utama (Tanpa Background) -->
+        <div id="kartu-nama" style="position: absolute; top: 205px; left: 450px; width: 400px; height: 26px; display: flex; align-items: center; font-size: 19px; font-weight: bold; text-transform: uppercase;"></div>
+        <div id="kartu-nik" style="position: absolute; top: 242px; left: 450px; width: 400px; height: 26px; display: flex; align-items: center; font-size: 19px;"></div>
+        <div id="kartu-prodi" style="position: absolute; top: 279px; left: 450px; width: 400px; height: 26px; display: flex; align-items: center; font-size: 19px;"></div>
+        <div id="kartu-jalur" style="position: absolute; top: 316px; left: 450px; width: 400px; height: 26px; display: flex; align-items: center; font-size: 19px;"></div>
         
-        <!-- Tanggal & Lokasi Ujian (diberi background putih untuk menutupi placeholder) -->
-        <div id="kartu-tanggal" style="position: absolute; top: 392px; left: 244px; font-size: 14px; font-weight: bold; width: 258px; height: 28px; display: flex; align-items: center; padding: 0 5px; background: #fff;"></div>
-        <div id="kartu-lokasi" style="position: absolute; top: 392px; left: 538px; font-size: 14px; font-weight: bold; width: 258px; height: 42px; display: flex; align-items: center; padding: 0 5px; background: #fff; line-height: 1.3;"></div>
+        <!-- Tanggal Ujian -->
+        <div id="kartu-tanggal" style="position: absolute; top: 388px; left: 266px; width: 258px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; text-align: center; padding: 0 5px; box-sizing: border-box;"></div>
+        
+        <!-- Lokasi Ujian -->
+        <div id="kartu-lokasi" style="position: absolute; top: 388px; left: 593px; width: 263px; height: 58px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; text-align: center; line-height: 1.3; padding: 0 10px; box-sizing: border-box;"></div>
     </div>
 </div>
 
@@ -591,12 +593,13 @@ function cetakKartuUjian(){
     document.getElementById('kartu-prodi').innerText = currentMabaData.prodi;
     document.getElementById('kartu-jalur').innerText = currentMabaData.jalur;
     
+    // Mengecilkan ukuran barcode agar tidak nabrak batas 175px
     JsBarcode("#kartu-barcode", noUjian, {
         format: "CODE128",
         displayValue: false, 
         margin: 0,
-        width: 1.8,
-        height: 45,
+        width: 1.3, // DIKECILKAN AGAR PAS
+        height: 50,
         lineColor: "#0f172a"
     });
     
@@ -1373,6 +1376,7 @@ function genBerkasHtml(f, nik, rowData) {
     let statusSuccess = 'ACC';
     let statusReject = 'Ditolak';
     
+    // PERBAIKAN: Penanganan khusus untuk bukti bayar karena tidak ada kolom 'Validasi Bukti Bayar' di database
     if (x.type === 'URL Bukti Bayar') {
         validasiColName = 'Status Pembayaran';
         statusSuccess = 'Lunas';
@@ -1383,6 +1387,7 @@ function genBerkasHtml(f, nik, rowData) {
     let statusBadge = '';
     let actionButtons = '';
     
+    // PERBAIKAN: Menghilangkan tombol ACC/Tolak dan menggantinya dengan informasi jika statusnya sudah dinilai
     if (currentStatus === statusSuccess) {
         statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fas fa-check mr-1"></i>${statusSuccess}</span>`;
         actionButtons = `<div class="flex gap-2 w-full md:w-auto mt-2 md:mt-0 items-center justify-end"><span class="text-emerald-600 font-bold text-xs bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200"><i class="fas fa-check-circle mr-1"></i> Sudah di-${statusSuccess}</span></div>`;
@@ -1412,24 +1417,29 @@ function genBerkasHtml(f, nik, rowData) {
   return h;
 }
 
+// PERBAIKAN: Fungsi validasi tidak lagi menimpa / menutup modal utama, melainkan merespon halus & merefresh list
 async function adminVerifyFileParsial(nik, colName, status, btnElement) {
   let btnContainer = btnElement.parentElement;
   let originalHtml = btnContainer.innerHTML;
   
+  // Menampilkan indikator loading di dalam area tombol (tidak menggunakan pop up Swal.loading)
   btnContainer.innerHTML = '<span class="text-slate-500 text-xs font-bold px-3 py-1.5 flex items-center justify-center"><i class="fas fa-spinner fa-spin mr-2"></i> Memproses...</span>';
 
   try {
     let r = await fetchAPI('updateFileStatus', {nik: nik, colName: colName, status: status});
     
     if(r.success) {
+      // Ambil data admin terbaru secara diam-diam
       let lr = await fetchAPI('login', {username: adminCreds.user, password: adminCreds.pass});
       if(lr.success) {
         lastAdminData = lr.data;
         renderAdminDashboard(lr.data);
       }
       
+      // Update UI Modal secara diam-diam tanpa perlu ditutup (Silent Refresh)
       fetchMabaFiles(nik);
       
+      // Tampilkan toast notifikasi kecil yang elegan (Tidak menutup Pop Up Dokumen)
       Swal.fire({
         toast: true,
         position: 'top-end',
