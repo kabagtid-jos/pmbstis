@@ -526,10 +526,21 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     // Tampilan Clone untuk PREVIEW saja di dalam Modal
     let previewClone = el.cloneNode(true);
     previewClone.classList.remove('hidden'); 
-    if(type === 'kartu') previewClone.style.margin = '0 auto';
+    if(type === 'kartu') {
+        previewClone.style.margin = '0 auto';
+        // Perkecil preview kartu agar tidak terlalu memenuhi layar
+        if(window.innerWidth < 768) {
+            previewClone.style.transform = 'scale(0.4)';
+            previewClone.style.marginBottom = '-300px';
+        } else {
+            previewClone.style.transform = 'scale(0.7)';
+            previewClone.style.marginBottom = '-150px';
+        }
+        previewClone.style.transformOrigin = 'top center';
+    }
     container.appendChild(previewClone);
     
-    currentPrintElement = el; // Kita simpan rujukan ke elemen ASLI, bukan clone modal
+    currentPrintElement = el;
     currentPrintFilename = filename;
     currentPrintType = type;
     
@@ -541,40 +552,48 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengonversi...';
         btn.disabled = true;
         
-        // Buat container rendering terisolasi di Body agar tidak rusak oleh struktur Modal
+        // Buat container rendering terisolasi di Body agar ukuran tidak kacau oleh Modal
         let printContainer = document.createElement('div');
         printContainer.style.position = 'absolute';
         printContainer.style.top = '0';
-        printContainer.style.left = '0';
-        printContainer.style.zIndex = '-9999';
-        printContainer.style.opacity = '0';
-        printContainer.style.pointerEvents = 'none';
-        document.body.appendChild(printContainer);
+        printContainer.style.left = '-9999px'; // Sembunyikan jauh di luar layar
+        printContainer.style.backgroundColor = 'white';
 
         let renderClone = currentPrintElement.cloneNode(true);
         renderClone.classList.remove('hidden', 'mx-auto');
         renderClone.style.margin = '0';
-        printContainer.appendChild(renderClone);
         
-        let pdfFormat = type === 'kartu' ? [90, 55] : 'a4';
-        let pdfOrientation = type === 'kartu' ? 'landscape' : 'portrait';
+        if (type === 'kartu') {
+            // Trik A4 presisi: Kartu ukuran 900px disamakan dengan 90mm (skala 10px = 1mm).
+            // Maka kertas A4 (210mm x 297mm) kita buat controllernya berukuran 2100px x 2970px.
+            printContainer.style.width = '2100px';
+            printContainer.style.height = '2970px'; 
+            printContainer.style.display = 'flex';
+            printContainer.style.justifyContent = 'center'; // Posisi kartu di tengah horizontal
+            printContainer.style.paddingTop = '300px'; // Margin atas 30mm
+        } else {
+            // Untuk formulir standar
+            printContainer.style.width = '800px';
+            printContainer.style.padding = '20px';
+        }
+        
+        printContainer.appendChild(renderClone);
+        document.body.appendChild(printContainer);
         
         let opt = {
-            margin: type === 'kartu' ? 0 : 0.5,
+            margin: type === 'kartu' ? 0 : 10, // Margin formulir 10mm, margin kartu 0 karena pakai padding container
             filename: currentPrintFilename,
             pagebreak: { mode: 'avoid-all' },
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 3, 
+                scale: 2, 
                 useCORS: true, 
-                logging: false,
-                windowWidth: type === 'kartu' ? 900 : undefined
+                logging: false
             },
-            jsPDF: { unit: type === 'kartu' ? 'mm' : 'in', format: pdfFormat, orientation: pdfOrientation }
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Keduanya menggunakan format A4
         };
         
-        html2pdf().set(opt).from(renderClone).save().then(() => {
-            // Bersihkan container rahasia setelah PDF selesai di-download
+        html2pdf().set(opt).from(printContainer).save().then(() => {
             document.body.removeChild(printContainer);
             btn.innerHTML = oldText;
             btn.disabled = false;
