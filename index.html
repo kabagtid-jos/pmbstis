@@ -523,12 +523,12 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     
     container.innerHTML = '';
     
-    // --- 1. PREVIEW DI MODAL (Diperkecil agar pas di layar HP/Desktop) ---
+    // --- 1. PREVIEW DI MODAL (Tampilan asli HTML dengan Scale) ---
     let previewClone = el.cloneNode(true);
     previewClone.classList.remove('hidden'); 
     
     if (type === 'kartu') {
-        // Skala menyesuaikan lebar layar agar tidak memunculkan scroll horizontal
+        // Skala menyesuaikan lebar layar agar tidak memunculkan scroll horizontal di HP
         let scale = window.innerWidth < 640 ? 0.35 : 0.7;
         previewClone.style.transform = `scale(${scale})`;
         previewClone.style.transformOrigin = 'top center';
@@ -550,9 +550,12 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     
     document.getElementById('print-preview-modal').classList.remove('hidden');
     
+    let btn = document.getElementById('btn-download-pdf');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-download mr-2"></i> Download PDF';
+    
     // --- 2. LOGIKA KETIKA TOMBOL DOWNLOAD DIKLIK ---
-    document.getElementById('btn-download-pdf').onclick = function() {
-        let btn = this;
+    btn.onclick = function() {
         let oldText = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengonversi...';
         btn.disabled = true;
@@ -561,19 +564,20 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         let renderClone = sourceEl.cloneNode(true);
         renderClone.classList.remove('hidden', 'mx-auto');
         
-        // CONTAINER RAHASIA (Anti-Blank & Anti-Terpotong)
-        // Posisi absolute tepat pada scrollY saat ini memaksa HP merendernya.
+        // CONTAINER RAHASIA (Anti-Blank Putih & Anti-Pecah)
         let printWrapper = document.createElement('div');
         printWrapper.style.position = 'absolute';
+        // Letakkan tepat di area yang sedang dilihat pengguna saat ini (window.scrollY),
+        // sehingga browser smartphone WAJIB merendernya secara nyata.
         printWrapper.style.top = window.scrollY + 'px'; 
         printWrapper.style.left = '0';
-        printWrapper.style.zIndex = '50'; // Bersembunyi rapi di belakang modal (z-index 100)
+        printWrapper.style.zIndex = '-9999'; // Sembunyikan di bawah elemen website
         printWrapper.style.backgroundColor = 'white';
         
         if (type === 'kartu') {
             printWrapper.style.width = '900px';
             printWrapper.style.height = '550px';
-            renderClone.style.display = 'flex'; // Amankan desain flexbox kartu
+            renderClone.style.display = 'flex'; 
             renderClone.style.margin = '0';
         } else {
             printWrapper.style.width = '800px';
@@ -587,15 +591,15 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         let pdfFormat = type === 'kartu' ? [90, 55] : 'a4';
         let pdfOrientation = type === 'kartu' ? 'landscape' : 'portrait';
         
-        // Jeda 500ms agar font & gambar foto profil selesai dimuat sepenuhnya oleh browser
+        // Jeda 300ms untuk memastikan browser selesai me-render DOM baru sebelum di-capture
         setTimeout(() => {
             let opt = {
-                margin: 0,
+                margin: type === 'kartu' ? 0 : 10,
                 filename: currentPrintFilename,
                 pagebreak: { mode: 'avoid-all' },
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { 
-                    scale: 3, // Kualitas Resolusi HD
+                    scale: 2, // Resolusi tinggi namun aman untuk RAM HP
                     useCORS: true, 
                     logging: false,
                     windowWidth: type === 'kartu' ? 900 : 800
@@ -604,7 +608,6 @@ function showPrintPreview(elementId, filename, title, type="a4") {
             };
             
             html2pdf().set(opt).from(printWrapper).save().then(() => {
-                // Bersihkan elemen rahasia
                 if (document.body.contains(printWrapper)) {
                     document.body.removeChild(printWrapper);
                 }
@@ -627,7 +630,7 @@ function showPrintPreview(elementId, filename, title, type="a4") {
                 btn.disabled = false;
                 Swal.fire('Gagal', 'Terjadi kesalahan sistem saat memproses PDF.', 'error');
             });
-        }, 500); // 0.5 Detik Penundaan Render
+        }, 300);
     };
 }
 
