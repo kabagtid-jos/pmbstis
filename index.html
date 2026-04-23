@@ -523,12 +523,13 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     
     container.innerHTML = '';
     
-    let clone = el.cloneNode(true);
-    clone.classList.remove('hidden'); 
-    if(type === 'kartu') clone.style.margin = '0'; // Hilangkan margin agar tidak terbaca html2canvas
-    container.appendChild(clone);
+    // Tampilan Clone untuk PREVIEW saja di dalam Modal
+    let previewClone = el.cloneNode(true);
+    previewClone.classList.remove('hidden'); 
+    if(type === 'kartu') previewClone.style.margin = '0 auto';
+    container.appendChild(previewClone);
     
-    currentPrintElement = clone;
+    currentPrintElement = el; // Kita simpan rujukan ke elemen ASLI, bukan clone modal
     currentPrintFilename = filename;
     currentPrintType = type;
     
@@ -539,6 +540,21 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         let oldText = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengonversi...';
         btn.disabled = true;
+        
+        // Buat container rendering terisolasi di Body agar tidak rusak oleh struktur Modal
+        let printContainer = document.createElement('div');
+        printContainer.style.position = 'absolute';
+        printContainer.style.top = '0';
+        printContainer.style.left = '0';
+        printContainer.style.zIndex = '-9999';
+        printContainer.style.opacity = '0';
+        printContainer.style.pointerEvents = 'none';
+        document.body.appendChild(printContainer);
+
+        let renderClone = currentPrintElement.cloneNode(true);
+        renderClone.classList.remove('hidden', 'mx-auto');
+        renderClone.style.margin = '0';
+        printContainer.appendChild(renderClone);
         
         let pdfFormat = type === 'kartu' ? [90, 55] : 'a4';
         let pdfOrientation = type === 'kartu' ? 'landscape' : 'portrait';
@@ -557,7 +573,9 @@ function showPrintPreview(elementId, filename, title, type="a4") {
             jsPDF: { unit: type === 'kartu' ? 'mm' : 'in', format: pdfFormat, orientation: pdfOrientation }
         };
         
-        html2pdf().set(opt).from(currentPrintElement).save().then(() => {
+        html2pdf().set(opt).from(renderClone).save().then(() => {
+            // Bersihkan container rahasia setelah PDF selesai di-download
+            document.body.removeChild(printContainer);
             btn.innerHTML = oldText;
             btn.disabled = false;
             closePrintPreview();
@@ -568,6 +586,11 @@ function showPrintPreview(elementId, filename, title, type="a4") {
               timer: 2000,
               showConfirmButton: false
             });
+        }).catch(err => {
+            console.error(err);
+            document.body.removeChild(printContainer);
+            btn.innerHTML = oldText;
+            btn.disabled = false;
         });
     };
 }
