@@ -38,8 +38,8 @@
         <div style="clear: both;"></div>
     </div>
 
-    <!-- AREA KARTU UJIAN DESAIN MANUAL 100% HTML/CSS PRESISI (900x545px) -->
-    <div id="print-kartu" style="width: 900px; height: 545px; background-color: #fff; border: 2px solid #000; font-family: Arial, sans-serif; color: #1e293b; box-sizing: border-box; display: flex; flex-direction: column;">
+    <!-- AREA KARTU UJIAN DESAIN MANUAL 100% HTML/CSS PRESISI (900x550px) -->
+    <div id="print-kartu" style="width: 900px; height: 550px; background-color: #fff; border: 2px solid #000; font-family: Arial, sans-serif; color: #1e293b; box-sizing: border-box; display: flex; flex-direction: column;">
         
         <!-- Bagian Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; height: 130px; box-sizing: border-box;">
@@ -521,106 +521,110 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     let el = document.getElementById(elementId);
     let container = document.getElementById('print-preview-content');
     
-    // 1. Tampilkan loading UI saat mulai memproses
-    container.innerHTML = '<div class="text-center py-10 w-full flex flex-col items-center justify-center min-h-[300px]"><i class="fas fa-spinner fa-spin text-4xl text-primary mb-4"></i><p class="font-bold text-slate-600">Menyiapkan Pratinjau Dokumen...</p></div>';
+    container.innerHTML = '';
+    
+    // --- 1. Tampilkan Preview Berbasis HTML Asli (Instan & Anti Blank) ---
+    let previewClone = el.cloneNode(true);
+    previewClone.classList.remove('hidden'); 
+    if(type === 'kartu') {
+        previewClone.style.margin = '0 auto';
+        // Perkecil ukuran tampilan HTML agar pas di dalam kotak Modal
+        if(window.innerWidth < 768) {
+            previewClone.style.transform = 'scale(0.35)';
+            previewClone.style.marginBottom = '-350px';
+        } else {
+            previewClone.style.transform = 'scale(0.7)';
+            previewClone.style.marginBottom = '-150px';
+        }
+        previewClone.style.transformOrigin = 'top center';
+    }
+    container.appendChild(previewClone);
+    
+    currentPrintElement = el;
+    currentPrintFilename = filename;
+    currentPrintType = type;
+    
     document.getElementById('print-preview-modal').classList.remove('hidden');
     
     let btn = document.getElementById('btn-download-pdf');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Merender...';
-    btn.onclick = null;
-
-    // 2. Buat container render virtual di luar layar 
-    let printWrapper = document.createElement('div');
-    printWrapper.style.position = 'absolute';
-    printWrapper.style.top = '-9999px'; 
-    printWrapper.style.left = '-9999px';
-    printWrapper.style.backgroundColor = 'white';
-
-    let renderClone = el.cloneNode(true);
-    renderClone.classList.remove('hidden', 'mx-auto');
-    renderClone.style.margin = '0';
-    // PENTING: Dilarang memberi renderClone.style.display = 'block' agar Flexbox Kartu Ujian tidak hancur!
-
-    if (type === 'kartu') {
-        printWrapper.style.width = '900px';
-        printWrapper.style.height = '545px';
-    } else {
-        printWrapper.style.width = '800px';
-        printWrapper.style.padding = '40px';
-    }
-
-    printWrapper.appendChild(renderClone);
-    document.body.appendChild(printWrapper);
-
-    // 3. Beri jeda 800ms agar font & gambar (logo/foto) selesai dimuat sepenuhnya oleh browser
-    setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-download mr-2"></i> Download PDF';
+    
+    // --- 2. Proses Download yang Terisolasi (Mencegah Halaman Terpecah / Blank) ---
+    btn.onclick = function() {
+        let oldText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+        btn.disabled = true;
+        
+        // Pindahkan rendering ke container rahasia agar ukuran kanvas terdeteksi akurat (Tidak terganggu oleh Modal)
+        let printContainer = document.createElement('div');
+        printContainer.style.position = 'absolute';
+        printContainer.style.top = '0';
+        printContainer.style.left = '0';
+        printContainer.style.zIndex = '1'; // Disembunyikan di bawah backdrop modal tapi tetap di viewport (Ini trik anti-blank)
+        printContainer.style.backgroundColor = 'white';
+        
+        let renderClone = currentPrintElement.cloneNode(true);
+        renderClone.classList.remove('hidden', 'mx-auto');
+        renderClone.style.display = 'block';
+        renderClone.style.margin = '0';
+        
+        if (type === 'kartu') {
+            printContainer.style.width = '900px';
+            printContainer.style.height = '550px';
+        } else {
+            printContainer.style.width = '800px';
+            printContainer.style.padding = '40px';
+        }
+        
+        printContainer.appendChild(renderClone);
+        document.body.appendChild(printContainer);
+        
+        // Scroll layar ke atas agar html2canvas tidak memotong / memutihkan bagian bawah
+        let originalScrollY = window.scrollY;
+        window.scrollTo(0, 0);
+        
         let opt = {
             margin: type === 'kartu' ? 0 : 10,
-            filename: filename,
+            filename: currentPrintFilename,
             pagebreak: { mode: 'avoid-all' },
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 2, // Resolusi jernih 2x lipat
+                scale: 2, // Resolusi 2x lipat agar sangat tajam tanpa membuat HP / Browser crash
                 useCORS: true, 
                 logging: false,
                 windowWidth: type === 'kartu' ? 900 : 800
             },
             jsPDF: { 
                 unit: 'mm', 
-                format: type === 'kartu' ? [90, 54.5] : 'a4', 
+                format: type === 'kartu' ? [90, 55] : 'a4', // Ukuran pakem persis 90x55 mm
                 orientation: type === 'kartu' ? 'landscape' : 'portrait' 
             }
         };
-
-        // 4. Render HTML ke Canvas terlebih dahulu untuk Preview Asli
-        html2pdf().set(opt).from(printWrapper).toCanvas().get('canvas').then((canvas) => {
-            // Bersihkan elemen virtual dari body agar tidak memberatkan browser
-            if(document.body.contains(printWrapper)) document.body.removeChild(printWrapper);
-
-            // Tampilkan Canvas (Preview Asli) ke dalam layar Modal
-            container.innerHTML = '';
-            canvas.style.width = '100%';
-            canvas.style.height = 'auto';
-            canvas.style.maxWidth = type === 'kartu' ? '600px' : '800px';
-            canvas.style.borderRadius = '0.5rem';
-            canvas.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
-            canvas.style.margin = '0 auto';
-            container.appendChild(canvas);
-
-            // Aktifkan tombol Download
+        
+        html2pdf().set(opt).from(printContainer).save().then(() => {
+            // Bersihkan sisa render dan kembalikan posisi layar
+            if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
+            window.scrollTo(0, originalScrollY);
+            btn.innerHTML = oldText;
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-download mr-2"></i> Download PDF';
-
-            // 5. Bind aksi download agar langsung mengunduh dari canvas (Gambar) yang ada di layar
-            btn.onclick = function() {
-                let oldText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
-                btn.disabled = true;
-
-                // Eksekusi PDF secara instan dari Gambar Canvas
-                html2pdf().set(opt).from(canvas).save().then(() => {
-                    btn.innerHTML = oldText;
-                    btn.disabled = false;
-                    closePrintPreview();
-                    Swal.fire({
-                        title: 'Berhasil!',
-                        text: 'File PDF berhasil diunduh.',
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                });
-            };
-
+            closePrintPreview();
+            Swal.fire({
+              title: 'Berhasil!',
+              text: 'File PDF berhasil diunduh.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
         }).catch(err => {
             console.error("Render error: ", err);
-            if(document.body.contains(printWrapper)) document.body.removeChild(printWrapper);
-            container.innerHTML = '<div class="text-center py-10 w-full"><i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i><p class="font-bold text-slate-600">Gagal menyiapkan pratinjau dokumen.</p></div>';
-            btn.innerHTML = 'Gagal';
+            if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
+            window.scrollTo(0, originalScrollY);
+            btn.innerHTML = oldText;
+            btn.disabled = false;
+            Swal.fire('Gagal', 'Terjadi kesalahan saat memproses PDF.', 'error');
         });
-
-    }, 800);
+    };
 }
 
 function closePrintPreview() {
