@@ -528,10 +528,10 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     previewClone.classList.remove('hidden'); 
     if(type === 'kartu') {
         previewClone.style.margin = '0 auto';
-        // Perkecil preview kartu agar tidak terlalu memenuhi layar
+        // Perkecil preview kartu agar tidak terlalu memenuhi layar dan overflow
         if(window.innerWidth < 768) {
-            previewClone.style.transform = 'scale(0.4)';
-            previewClone.style.marginBottom = '-300px';
+            previewClone.style.transform = 'scale(0.35)';
+            previewClone.style.marginBottom = '-350px';
         } else {
             previewClone.style.transform = 'scale(0.7)';
             previewClone.style.marginBottom = '-150px';
@@ -552,57 +552,43 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengonversi...';
         btn.disabled = true;
         
-        // Buat container rendering terisolasi di Body agar ukuran tidak kacau oleh Modal
+        // Buat clone murni untuk di-render oleh html2pdf
+        let renderClone = currentPrintElement.cloneNode(true);
+        renderClone.classList.remove('hidden', 'mx-auto');
+        renderClone.style.display = 'block';
+        renderClone.style.margin = '0';
+        
+        // Letakkan elemen di body secara absolut, di bawah modal (z-index 50) agar terbaca jelas oleh html2canvas (mencegah blank putih)
         let printContainer = document.createElement('div');
         printContainer.style.position = 'absolute';
         printContainer.style.top = '0';
-        printContainer.style.left = '0'; // Jangan gunakan -9999px agar browser tetap merendernya
-        printContainer.style.zIndex = '-9999'; // Sembunyikan di bawah elemen lain
+        printContainer.style.left = '0';
+        printContainer.style.zIndex = '50'; 
         printContainer.style.backgroundColor = 'white';
-
-        let renderClone = currentPrintElement.cloneNode(true);
-        renderClone.classList.remove('hidden', 'mx-auto');
-        renderClone.style.margin = '0';
-        
-        if (type === 'kartu') {
-            printContainer.style.width = '2100px';
-            printContainer.style.height = '2970px'; 
-            
-            let wrapper = document.createElement('div');
-            wrapper.style.width = '100%';
-            wrapper.style.display = 'flex';
-            wrapper.style.justifyContent = 'center';
-            wrapper.style.paddingTop = '300px';
-            wrapper.appendChild(renderClone);
-            
-            printContainer.appendChild(wrapper);
-        } else {
-            printContainer.style.width = '800px';
-            printContainer.style.padding = '20px';
-            printContainer.appendChild(renderClone);
-        }
-        
+        printContainer.appendChild(renderClone);
         document.body.appendChild(printContainer);
         
-        // Scroll ke atas untuk menghindari bug potongan area html2canvas
-        window.scrollTo(0, 0);
+        // Atur Margin secara cerdas:
+        // Kertas A4 lebarnya 210mm. 
+        // Jika kita ingin kartu berukuran persis 90mm dan berada di tengah: 
+        // Margin Kiri = 60mm, Margin Kanan = 60mm. (210 - 60 - 60 = 90).
+        // Elemen akan otomatis diperkecil hingga pas 90x55mm tanpa perlu wrapper berukuran A4!
+        let pdfMargin = type === 'kartu' ? [30, 60, 0, 60] : 10;
         
         let opt = {
-            margin: type === 'kartu' ? 0 : 10, 
+            margin: pdfMargin, 
             filename: currentPrintFilename,
             pagebreak: { mode: 'avoid-all' },
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: type === 'kartu' ? 1 : 2, // Scale 1 untuk kartu agar canvas memori tidak crash (2100px AMAN)
+                scale: 3, // Resolusi internal PDF agar jernih dan HD
                 useCORS: true, 
-                logging: false,
-                scrollY: 0,
-                scrollX: 0
+                logging: false
             },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Paksa output ke ukuran kertas A4
         };
         
-        html2pdf().set(opt).from(printContainer).save().then(() => {
+        html2pdf().set(opt).from(renderClone).save().then(() => {
             if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
             btn.innerHTML = oldText;
             btn.disabled = false;
@@ -619,7 +605,7 @@ function showPrintPreview(elementId, filename, title, type="a4") {
             if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
             btn.innerHTML = oldText;
             btn.disabled = false;
-            Swal.fire('Gagal', 'Terjadi kesalahan sistem saat memproses PDF.', 'error');
+            Swal.fire('Gagal', 'Terjadi kesalahan saat memproses PDF.', 'error');
         });
     };
 }
