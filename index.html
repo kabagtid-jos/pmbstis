@@ -552,44 +552,63 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengonversi...';
         btn.disabled = true;
         
-        // Buat clone murni untuk di-render oleh html2pdf
-        let renderClone = currentPrintElement.cloneNode(true);
-        renderClone.classList.remove('hidden', 'mx-auto');
-        renderClone.style.display = 'block';
-        renderClone.style.margin = '0';
-        
-        // Letakkan elemen di body secara absolut, di bawah modal (z-index 50) agar terbaca jelas oleh html2canvas (mencegah blank putih)
+        // 1. Setup container virtual A4 murni
         let printContainer = document.createElement('div');
         printContainer.style.position = 'absolute';
         printContainer.style.top = '0';
         printContainer.style.left = '0';
-        printContainer.style.zIndex = '50'; 
+        printContainer.style.zIndex = '50'; // Posisi di belakang backdrop modal tapi tetap di viewport (anti blank)
         printContainer.style.backgroundColor = 'white';
-        printContainer.appendChild(renderClone);
+        
+        let renderClone = currentPrintElement.cloneNode(true);
+        renderClone.classList.remove('hidden', 'mx-auto');
+        renderClone.style.margin = '0';
+        
+        if (type === 'kartu') {
+            // Skala rasio presisi: 10px = 1mm
+            // Kertas A4: 210mm x 297mm -> 2100px x 2970px
+            printContainer.style.width = '2100px';
+            printContainer.style.height = '2970px';
+            
+            let wrapper = document.createElement('div');
+            wrapper.style.width = '100%';
+            wrapper.style.display = 'flex';
+            wrapper.style.justifyContent = 'center'; // Center horizontal
+            wrapper.style.paddingTop = '300px'; // Margin atas sejauh 30mm
+            
+            wrapper.appendChild(renderClone);
+            printContainer.appendChild(wrapper);
+        } else {
+            // Form standar
+            printContainer.style.width = '800px';
+            printContainer.style.padding = '40px';
+            printContainer.appendChild(renderClone);
+        }
+        
         document.body.appendChild(printContainer);
         
-        // Atur Margin secara cerdas:
-        // Kertas A4 lebarnya 210mm. 
-        // Jika kita ingin kartu berukuran persis 90mm dan berada di tengah: 
-        // Margin Kiri = 60mm, Margin Kanan = 60mm. (210 - 60 - 60 = 90).
-        // Elemen akan otomatis diperkecil hingga pas 90x55mm tanpa perlu wrapper berukuran A4!
-        let pdfMargin = type === 'kartu' ? [30, 60, 0, 60] : 10;
+        // 2. Hindari bug clipping html2canvas dengan mereset posisi scroll sementara
+        let originalScrollY = window.scrollY;
+        window.scrollTo(0, 0);
         
         let opt = {
-            margin: pdfMargin, 
+            margin: 0, // Dikosongkan karena kanvas printContainer sudah berbentuk A4 utuh
             filename: currentPrintFilename,
             pagebreak: { mode: 'avoid-all' },
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 3, // Resolusi internal PDF agar jernih dan HD
+                scale: type === 'kartu' ? 1.5 : 2, // Kualitas jernih namun tetap ramah memori HP
                 useCORS: true, 
-                logging: false
+                logging: false,
+                scrollY: 0,
+                scrollX: 0
             },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Paksa output ke ukuran kertas A4
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         
-        html2pdf().set(opt).from(renderClone).save().then(() => {
+        html2pdf().set(opt).from(printContainer).save().then(() => {
             if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
+            window.scrollTo(0, originalScrollY);
             btn.innerHTML = oldText;
             btn.disabled = false;
             closePrintPreview();
@@ -603,6 +622,7 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         }).catch(err => {
             console.error(err);
             if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
+            window.scrollTo(0, originalScrollY);
             btn.innerHTML = oldText;
             btn.disabled = false;
             Swal.fire('Gagal', 'Terjadi kesalahan saat memproses PDF.', 'error');
