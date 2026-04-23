@@ -512,7 +512,7 @@ async function submitForm(e){
   }
 }
 
-let currentPrintElement = null;
+let currentPrintElementId = null;
 let currentPrintFilename = '';
 let currentPrintType = '';
 
@@ -523,92 +523,91 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     
     container.innerHTML = '';
     
-    // --- 1. Tampilkan Preview Berbasis HTML Asli (Instan & Anti Blank) ---
+    // --- 1. PREVIEW DI MODAL (Diperkecil agar pas di layar HP/Desktop) ---
     let previewClone = el.cloneNode(true);
     previewClone.classList.remove('hidden'); 
-    if(type === 'kartu') {
-        previewClone.style.margin = '0 auto';
-        // Perkecil ukuran tampilan HTML agar pas di dalam kotak Modal
-        if(window.innerWidth < 768) {
-            previewClone.style.transform = 'scale(0.35)';
-            previewClone.style.marginBottom = '-350px';
-        } else {
-            previewClone.style.transform = 'scale(0.7)';
-            previewClone.style.marginBottom = '-150px';
-        }
-        previewClone.style.transformOrigin = 'top center';
-    }
-    container.appendChild(previewClone);
     
-    currentPrintElement = el;
+    if (type === 'kartu') {
+        // Skala menyesuaikan lebar layar agar tidak memunculkan scroll horizontal
+        let scale = window.innerWidth < 640 ? 0.35 : 0.7;
+        previewClone.style.transform = `scale(${scale})`;
+        previewClone.style.transformOrigin = 'top center';
+        
+        let wrapper = document.createElement('div');
+        wrapper.style.width = '100%';
+        wrapper.style.height = `${550 * scale}px`;
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.appendChild(previewClone);
+        container.appendChild(wrapper);
+    } else {
+        container.appendChild(previewClone);
+    }
+    
+    currentPrintElementId = elementId;
     currentPrintFilename = filename;
     currentPrintType = type;
     
     document.getElementById('print-preview-modal').classList.remove('hidden');
     
-    let btn = document.getElementById('btn-download-pdf');
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-download mr-2"></i> Download PDF';
-    
-    // --- 2. Proses Download yang Terisolasi ---
-    btn.onclick = function() {
+    // --- 2. LOGIKA KETIKA TOMBOL DOWNLOAD DIKLIK ---
+    document.getElementById('btn-download-pdf').onclick = function() {
+        let btn = this;
         let oldText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengonversi...';
         btn.disabled = true;
         
-        // Pindahkan rendering ke container rahasia
-        let printContainer = document.createElement('div');
-        printContainer.style.position = 'absolute';
-        printContainer.style.top = '0';
-        printContainer.style.left = '0';
-        printContainer.style.zIndex = '-10'; // Disembunyikan di bawah backdrop modal 
-        printContainer.style.backgroundColor = 'white';
-        
-        let renderClone = currentPrintElement.cloneNode(true);
+        let sourceEl = document.getElementById(currentPrintElementId);
+        let renderClone = sourceEl.cloneNode(true);
         renderClone.classList.remove('hidden', 'mx-auto');
-        renderClone.style.margin = '0';
-        // Hapus paksaan 'display: block' agar desain Flexbox dari kartu ujian tetap utuh dan rapi
+        
+        // CONTAINER RAHASIA (Anti-Blank & Anti-Terpotong)
+        // Posisi absolute tepat pada scrollY saat ini memaksa HP merendernya.
+        let printWrapper = document.createElement('div');
+        printWrapper.style.position = 'absolute';
+        printWrapper.style.top = window.scrollY + 'px'; 
+        printWrapper.style.left = '0';
+        printWrapper.style.zIndex = '50'; // Bersembunyi rapi di belakang modal (z-index 100)
+        printWrapper.style.backgroundColor = 'white';
         
         if (type === 'kartu') {
-            printContainer.style.width = '900px';
-            printContainer.style.height = '550px';
+            printWrapper.style.width = '900px';
+            printWrapper.style.height = '550px';
+            renderClone.style.display = 'flex'; // Amankan desain flexbox kartu
+            renderClone.style.margin = '0';
         } else {
-            printContainer.style.width = '800px';
-            printContainer.style.padding = '40px';
+            printWrapper.style.width = '800px';
+            printWrapper.style.padding = '40px';
+            renderClone.style.display = 'block';
         }
         
-        printContainer.appendChild(renderClone);
-        document.body.appendChild(printContainer);
+        printWrapper.appendChild(renderClone);
+        document.body.appendChild(printWrapper);
         
-        // Scroll layar ke atas agar tidak memotong / memutihkan bagian bawah
-        let originalScrollY = window.scrollY;
-        window.scrollTo(0, 0);
+        let pdfFormat = type === 'kartu' ? [90, 55] : 'a4';
+        let pdfOrientation = type === 'kartu' ? 'landscape' : 'portrait';
         
-        // --- 3. JEDA 600ms (Solusi Blank Putih) ---
-        // Memberi waktu bagi browser untuk me-render gambar dan DOM ke layar secara penuh sebelum PDF di-capture
+        // Jeda 500ms agar font & gambar foto profil selesai dimuat sepenuhnya oleh browser
         setTimeout(() => {
             let opt = {
-                margin: type === 'kartu' ? 0 : 10,
+                margin: 0,
                 filename: currentPrintFilename,
                 pagebreak: { mode: 'avoid-all' },
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { 
-                    scale: 2, // Resolusi 2x lipat (Jernih & Aman untuk HP)
+                    scale: 3, // Kualitas Resolusi HD
                     useCORS: true, 
                     logging: false,
                     windowWidth: type === 'kartu' ? 900 : 800
                 },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: type === 'kartu' ? [90, 55] : 'a4', // Ukuran pakem persis 90x55 mm
-                    orientation: type === 'kartu' ? 'landscape' : 'portrait' 
-                }
+                jsPDF: { unit: 'mm', format: pdfFormat, orientation: pdfOrientation }
             };
             
-            html2pdf().set(opt).from(printContainer).save().then(() => {
-                // Bersihkan sisa render dan kembalikan posisi layar
-                if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
-                window.scrollTo(0, originalScrollY);
+            html2pdf().set(opt).from(printWrapper).save().then(() => {
+                // Bersihkan elemen rahasia
+                if (document.body.contains(printWrapper)) {
+                    document.body.removeChild(printWrapper);
+                }
                 btn.innerHTML = oldText;
                 btn.disabled = false;
                 closePrintPreview();
@@ -620,21 +619,22 @@ function showPrintPreview(elementId, filename, title, type="a4") {
                   showConfirmButton: false
                 });
             }).catch(err => {
-                console.error("Render error: ", err);
-                if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
-                window.scrollTo(0, originalScrollY);
+                console.error(err);
+                if (document.body.contains(printWrapper)) {
+                    document.body.removeChild(printWrapper);
+                }
                 btn.innerHTML = oldText;
                 btn.disabled = false;
-                Swal.fire('Gagal', 'Terjadi kesalahan saat memproses PDF.', 'error');
+                Swal.fire('Gagal', 'Terjadi kesalahan sistem saat memproses PDF.', 'error');
             });
-        }, 600); // Penundaan (delay) 600 milidetik
+        }, 500); // 0.5 Detik Penundaan Render
     };
 }
 
 function closePrintPreview() {
     document.getElementById('print-preview-modal').classList.add('hidden');
     document.getElementById('print-preview-content').innerHTML = '';
-    currentPrintElement = null;
+    currentPrintElementId = null;
 }
 
 function showSuccessPopup(){
