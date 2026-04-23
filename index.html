@@ -556,7 +556,8 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         let printContainer = document.createElement('div');
         printContainer.style.position = 'absolute';
         printContainer.style.top = '0';
-        printContainer.style.left = '-9999px'; // Sembunyikan jauh di luar layar
+        printContainer.style.left = '0'; // Jangan gunakan -9999px agar browser tetap merendernya
+        printContainer.style.zIndex = '-9999'; // Sembunyikan di bawah elemen lain
         printContainer.style.backgroundColor = 'white';
 
         let renderClone = currentPrintElement.cloneNode(true);
@@ -564,37 +565,45 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         renderClone.style.margin = '0';
         
         if (type === 'kartu') {
-            // Trik A4 presisi: Kartu ukuran 900px disamakan dengan 90mm (skala 10px = 1mm).
-            // Maka kertas A4 (210mm x 297mm) kita buat controllernya berukuran 2100px x 2970px.
             printContainer.style.width = '2100px';
             printContainer.style.height = '2970px'; 
-            printContainer.style.display = 'flex';
-            printContainer.style.justifyContent = 'center'; // Posisi kartu di tengah horizontal
-            printContainer.style.paddingTop = '300px'; // Margin atas 30mm
+            
+            let wrapper = document.createElement('div');
+            wrapper.style.width = '100%';
+            wrapper.style.display = 'flex';
+            wrapper.style.justifyContent = 'center';
+            wrapper.style.paddingTop = '300px';
+            wrapper.appendChild(renderClone);
+            
+            printContainer.appendChild(wrapper);
         } else {
-            // Untuk formulir standar
             printContainer.style.width = '800px';
             printContainer.style.padding = '20px';
+            printContainer.appendChild(renderClone);
         }
         
-        printContainer.appendChild(renderClone);
         document.body.appendChild(printContainer);
         
+        // Scroll ke atas untuk menghindari bug potongan area html2canvas
+        window.scrollTo(0, 0);
+        
         let opt = {
-            margin: type === 'kartu' ? 0 : 10, // Margin formulir 10mm, margin kartu 0 karena pakai padding container
+            margin: type === 'kartu' ? 0 : 10, 
             filename: currentPrintFilename,
             pagebreak: { mode: 'avoid-all' },
             image: { type: 'jpeg', quality: 1 },
             html2canvas: { 
-                scale: 2, 
+                scale: type === 'kartu' ? 1 : 2, // Scale 1 untuk kartu agar canvas memori tidak crash (2100px AMAN)
                 useCORS: true, 
-                logging: false
+                logging: false,
+                scrollY: 0,
+                scrollX: 0
             },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Keduanya menggunakan format A4
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
         };
         
         html2pdf().set(opt).from(printContainer).save().then(() => {
-            document.body.removeChild(printContainer);
+            if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
             btn.innerHTML = oldText;
             btn.disabled = false;
             closePrintPreview();
@@ -607,9 +616,10 @@ function showPrintPreview(elementId, filename, title, type="a4") {
             });
         }).catch(err => {
             console.error(err);
-            document.body.removeChild(printContainer);
+            if(document.body.contains(printContainer)) document.body.removeChild(printContainer);
             btn.innerHTML = oldText;
             btn.disabled = false;
+            Swal.fire('Gagal', 'Terjadi kesalahan sistem saat memproses PDF.', 'error');
         });
     };
 }
