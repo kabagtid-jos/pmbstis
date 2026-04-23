@@ -38,8 +38,8 @@
         <div style="clear: both;"></div>
     </div>
 
-    <!-- AREA KARTU UJIAN DESAIN MANUAL 100% HTML/CSS PRESISI (900x550px) -->
-    <div id="print-kartu" class="mx-auto" style="width: 900px; height: 550px; background-color: #fff; border: 2px solid #000; font-family: Arial, sans-serif; color: #1e293b; box-sizing: border-box; display: flex; flex-direction: column;">
+    <!-- AREA KARTU UJIAN DESAIN MANUAL 100% HTML/CSS PRESISI (900x545px) -->
+    <div id="print-kartu" style="width: 900px; height: 545px; background-color: #fff; border: 2px solid #000; font-family: Arial, sans-serif; color: #1e293b; box-sizing: border-box; display: flex; flex-direction: column;">
         
         <!-- Bagian Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; height: 130px; box-sizing: border-box;">
@@ -525,6 +525,7 @@ function showPrintPreview(elementId, filename, title, type="a4") {
     
     let clone = el.cloneNode(true);
     clone.classList.remove('hidden'); 
+    if(type === 'kartu') clone.style.margin = '0'; // Hilangkan margin agar tidak terbaca html2canvas
     container.appendChild(clone);
     
     currentPrintElement = clone;
@@ -545,8 +546,14 @@ function showPrintPreview(elementId, filename, title, type="a4") {
         let opt = {
             margin: type === 'kartu' ? 0 : 0.5,
             filename: currentPrintFilename,
+            pagebreak: { mode: 'avoid-all' },
             image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 3, useCORS: true, logging: false },
+            html2canvas: { 
+                scale: 3, 
+                useCORS: true, 
+                logging: false,
+                windowWidth: type === 'kartu' ? 900 : undefined
+            },
             jsPDF: { unit: type === 'kartu' ? 'mm' : 'in', format: pdfFormat, orientation: pdfOrientation }
         };
         
