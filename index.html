@@ -1242,6 +1242,7 @@ async function mabaSubmitBiodata(e){
     pendIbu:document.getElementById('ortu-pend-ibu').value,
     pekIbu:document.getElementById('ortu-pek-ibu').value,
     pengIbu:document.getElementById('ortu-peng-ibu').value,
+    nikWali:document.getElementById('ortu-nik-wali').value,
     namaWali:document.getElementById('ortu-nama-wali').value,
     tglWali:document.getElementById('ortu-tgl-wali').value,
     pendWali:document.getElementById('ortu-pend-wali').value,
@@ -1253,6 +1254,7 @@ async function mabaSubmitBiodata(e){
     let res=await fetchAPI('saveBiodata',payload);
     if(res.success){
       currentMabaData['NISN']=payload.nisn;
+      currentMabaData['NIK Wali']=payload.nikWali;
       Object.keys(payload).forEach(k=>currentMabaData[k]=payload[k]);
       renderMabaDashboard(currentMabaData,false);
       Swal.fire('Berhasil!','Tersimpan.','success');
@@ -1306,7 +1308,12 @@ async function mabaSubmitFoto(){
   try{
     let base64Murni = pendingFotoBase64.includes(',') ? pendingFotoBase64.split(',')[1] : pendingFotoBase64;
     
-    let res=await fetchAPI('saveFoto',{nik:currentMabaData.nik,foto:base64Murni});
+    let res=await fetchAPI('saveFoto',{
+      nik: currentMabaData.nik,
+      nama: currentMabaData.nama,
+      prodi: currentMabaData.prodi,
+      foto: base64Murni
+    });
     btn.innerHTML=oldHtml;btn.disabled=false;
     if(res.success){
       currentMabaData['Foto Profil']=res.url || pendingFotoBase64;
