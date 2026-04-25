@@ -173,9 +173,11 @@ function preserveZero(val) {
 // Helper function: Mengubah Link Google Drive View menjadi Link Gambar Langsung (Direct Image Link)
 function getDirectImageUrl(url) {
     if (!url) return '';
-    let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    // Ekstrak ID File dari format link Google Drive apapun
+    let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-        return "https://drive.google.com/uc?export=view&id=" + match[1];
+        // Gunakan endpoint thumbnail Drive untuk memotong blokir keamanan Google
+        return "https://drive.google.com/thumbnail?id=" + match[1] + "&sz=w800";
     }
     return url;
 }
