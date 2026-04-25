@@ -170,6 +170,16 @@ function preserveZero(val) {
     return val;
 }
 
+// Helper function: Mengubah Link Google Drive View menjadi Link Gambar Langsung (Direct Image Link)
+function getDirectImageUrl(url) {
+    if (!url) return '';
+    let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+        return "https://drive.google.com/uc?export=view&id=" + match[1];
+    }
+    return url;
+}
+
 document.addEventListener('DOMContentLoaded',()=>{initTheme();loadInitData();generateCaptcha();fetchCountriesAPI();initWilayah();});
 
 async function fetchAPI(action,payload={}){
@@ -793,7 +803,8 @@ function cetakFormulirAdmin(nik) {
     document.getElementById('admin-print-tglcetak').innerText = new Date().toLocaleDateString('id-ID');
     document.getElementById('admin-print-ttd-nama').innerText = nama;
     
-    let fotoUrl = getVal('Foto Profil');
+    // Gunakan fungsi getDirectImageUrl untuk foto formulir cetak admin
+    let fotoUrl = getDirectImageUrl(getVal('Foto Profil'));
     let imgEl = document.getElementById('admin-print-foto');
     let altEl = document.getElementById('admin-print-foto-alt');
     if (fotoUrl && fotoUrl.startsWith('http')) {
@@ -843,8 +854,9 @@ function cetakKartuUjian(){
     document.getElementById('kartu-tanggal').innerText = (appData && appData.tglUjian) ? appData.tglUjian : "MENUNGGU JADWAL\nDARI PANITIA";
     document.getElementById('kartu-lokasi').innerText = (appData && appData.lokasiUjian) ? appData.lokasiUjian : "KAMPUS UTAMA\nSTIS ABU ZAIRI";
     
+    // Gunakan fungsi getDirectImageUrl untuk kartu ujian
     if(currentMabaData['Foto Profil']){
-        document.getElementById('kartu-foto').src = currentMabaData['Foto Profil'];
+        document.getElementById('kartu-foto').src = getDirectImageUrl(currentMabaData['Foto Profil']);
         document.getElementById('kartu-foto').style.display = 'block';
         document.getElementById('kartu-foto-alt').style.display = 'none';
     } else {
@@ -938,10 +950,12 @@ function renderMabaDashboard(data,autoNavigate=true){
   document.getElementById('maba-side-nik').innerText=data.nik||'-';
   document.getElementById('maba-side-jalur').innerText=data.jalur||'-';
   
+  // Gunakan fungsi getDirectImageUrl untuk Dashboard Utama Maba
   let sideFoto=document.querySelector('aside .w-24.h-24');
   if(sideFoto){
     if(data['Foto Profil']){
-       sideFoto.innerHTML=`<img src="${data['Foto Profil']}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.nama)}&background=0f172a&color=fff&size=256';" class="w-full h-full object-cover">`;
+       let fUrl = getDirectImageUrl(data['Foto Profil']);
+       sideFoto.innerHTML=`<img src="${fUrl}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(data.nama)}&background=0f172a&color=fff&size=256';" class="w-full h-full object-cover">`;
     } else {
        sideFoto.innerHTML=`<i class="fas fa-user text-slate-400"></i>`;
     }
@@ -1290,10 +1304,14 @@ function handleFotoPreview(input){
 function resetFotoPreview(){
   pendingFotoBase64=null;
   document.getElementById('inp-foto-profil').value='';
-  if(currentMabaData&&currentMabaData['Foto Profil'])
-    document.getElementById('foto-preview-box').innerHTML=`<img src="${currentMabaData['Foto Profil']}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentMabaData.nama)}&background=0f172a&color=fff&size=256';" class="w-full h-full object-cover">`;
-  else 
+  
+  // Gunakan fungsi getDirectImageUrl untuk pratinjau Upload Foto
+  if(currentMabaData&&currentMabaData['Foto Profil']){
+    let fUrl = getDirectImageUrl(currentMabaData['Foto Profil']);
+    document.getElementById('foto-preview-box').innerHTML=`<img src="${fUrl}" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentMabaData.nama)}&background=0f172a&color=fff&size=256';" class="w-full h-full object-cover">`;
+  } else {
     document.getElementById('foto-preview-box').innerHTML=`<i class="fas fa-user text-6xl"></i>`;
+  }
 }
 
 async function mabaSubmitFoto(){
